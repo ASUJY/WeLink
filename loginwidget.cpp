@@ -45,6 +45,14 @@ void LoginWidget::SetWidgetWinTitle() {
     ui->btnWinClose->setFlat(true);
     ui->btnWinMin->setFlat(true);
     ui->btnWinMax->setFlat(true);
+
+    connect(ui->btnWinClose, &QPushButton::clicked, this, [=](){
+        this->close();
+    });
+
+    connect(ui->btnWinMin, &QPushButton::clicked, this, [=](){
+        this->showMinimized();
+    });
 }
 
 void LoginWidget::SetWidgetHeadIcon() {

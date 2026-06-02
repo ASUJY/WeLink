@@ -2,6 +2,8 @@
 #define LOGINWIDGET_H
 
 #include <QWidget>
+#include <QMouseEvent>
+#include <QPoint>
 
 namespace Ui {
 class LoginWidget;
@@ -15,6 +17,11 @@ public:
     explicit LoginWidget(QWidget *parent = nullptr);
     ~LoginWidget();
 
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
 private:
     void SetWidgetWinTitle();
     void SetWidgetHeadIcon();
@@ -23,6 +30,8 @@ private:
 
 private:
     Ui::LoginWidget *ui;
+    bool m_drag = false;
+    QPoint m_dragPos;
 };
 
 #endif // LOGINWIDGET_H

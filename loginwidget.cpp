@@ -98,3 +98,32 @@ LoginWidget::~LoginWidget()
 {
     delete ui;
 }
+
+
+void LoginWidget::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        m_drag = true;
+        // 鼠标相对于窗体左上角的偏移 = 屏幕坐标 - 窗体左上角坐标
+        m_dragPos = event->globalPosition().toPoint() - this->pos();
+        event->accept(); // 消费本次鼠标事件，不再向下传递
+    }
+}
+
+void LoginWidget::mouseMoveEvent(QMouseEvent *event) {
+    if (m_drag && (event->buttons() & Qt::LeftButton)) {
+        // 新窗体位置 = 当前鼠标坐标 - 按下时的偏移
+        move(event->globalPosition().toPoint() - m_dragPos);
+        event->accept();
+        setCursor(Qt::ClosedHandCursor);
+    }
+}
+
+void LoginWidget::mouseReleaseEvent(QMouseEvent *event) {
+    m_drag = false;
+    event->accept();
+    setCursor(Qt::ArrowCursor);
+}
+
+
+
+

@@ -1,6 +1,7 @@
 #include "loginwidget.h"
 #include "ui_loginwidget.h"
 #include "clicklabel.h"
+
 #include <QGraphicsDropShadowEffect>
 #include <QFile>
 #include <QStyle>
@@ -11,12 +12,6 @@ LoginWidget::LoginWidget(QWidget *parent)
     , ui(new Ui::LoginWidget)
 {
     ui->setupUi(this);
-
-    /* 加载样式 */
-    QFile file(":/qss/resource/qss/default.css");
-    file.open(QIODevice::ReadOnly);
-    qApp->setStyleSheet(file.readAll());
-    file.close();
 
     this->setWindowTitle("");
     this->setFixedSize(320, 460);
@@ -89,8 +84,10 @@ void LoginWidget::SetWidgetWinBottom() {
     ClickLabel *labReg = new ClickLabel(ui->widgetWinBottom);
     labReg->setText("注册帐号");
 
-    connect(labReg, &ClickLabel::clicked, this, [](){
+    m_regWidget = new RegisterWidget;
 
+    connect(labReg, &ClickLabel::clicked, this, [=](){
+        m_regWidget->show();
     });
 
 

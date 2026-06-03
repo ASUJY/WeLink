@@ -74,7 +74,7 @@ QLineEdit:focus {
     border: 1px solid #12b7f5;
 }
 
-QPushButton#btnLogin {
+QPushButton#btnLogin, QPushButton#btnReg{
     background-color: #12b7f5;
     color: white;
     border-radius: 6px;
@@ -83,7 +83,7 @@ QPushButton#btnLogin {
     font-weight: bold;
 }
 
-QPushButton#btnLogin:hover {
+QPushButton#btnLogin:hover, QPushButton#btnReg:hover {
     background-color: #0e99d0;
 }
 

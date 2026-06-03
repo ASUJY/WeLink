@@ -17,6 +17,7 @@ qt_add_executable(WeLink
     resource.qrc
     mainwindow.ui
     clicklabel.h clicklabel.cpp
+    registerwidget.h registerwidget.cpp
 )
 
 target_link_libraries(WeLink

@@ -2,6 +2,8 @@
 
 #include <QNetworkProxy>
 #include <QSettings>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 namespace net {
 const int MAXRETRIES = 3;
@@ -9,14 +11,6 @@ const int MAXRETRIES = 3;
 TcpClient::TcpClient(CommunicationMediator* mediator, QObject *parent) : AbstractNet(parent) {
     m_retryTime = new QTimer(this);
     m_commMediator = mediator;
-
-    connect(m_tcpSocket, &QTcpSocket::disconnected, this, [this]() {
-        m_isOpenNetwork = false;
-        // 自动触发重连
-        if (m_retryTime && !m_retryTime->isActive()) {
-            m_retryTime->start();
-        }
-    });
 }
 
 TcpClient::~TcpClient() {
@@ -41,13 +35,13 @@ void TcpClient::CloseNetwork() {
         m_retryTime->deleteLater();
         m_retryTime = nullptr;
     }
-    m_isOpenNetwork = false;
+    // m_isOpenNetwork = false;
 }
 
 bool TcpClient::OpenNetwork() {
-    if (m_isOpenNetwork) {
-        return true;
-    }
+    // if (m_isOpenNetwork) {
+    //     return true;
+    // }
 
     // 无代理,直连模式
     QNetworkProxy proxy;
@@ -59,8 +53,16 @@ bool TcpClient::OpenNetwork() {
     }
 
     // connect(m_tcpSocket, &QTcpSocket::readyRead, this, &TcpClient::SlotRecvFromSocket,  Qt::UniqueConnection);
+    connect(m_tcpSocket, &QTcpSocket::readyRead, this, &TcpClient::RecvData, Qt::UniqueConnection);
     connect(m_tcpSocket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError err) {
         qDebug() << "连接错误：" << m_tcpSocket->errorString(); // 打印为什么连不上！
+    });
+    connect(m_tcpSocket, &QTcpSocket::disconnected, this, [this]() {
+        // m_isOpenNetwork = false;
+        // 自动触发重连
+        if (m_retryTime && !m_retryTime->isActive()) {
+            m_retryTime->start();
+        }
     });
     connect(m_retryTime, &QTimer::timeout, this, &TcpClient::AttemptReconnect,  Qt::UniqueConnection);
 
@@ -91,7 +93,7 @@ bool TcpClient::AttemptReconnect() {
         if (m_tcpSocket->waitForConnected(5000)) {
             qDebug() << "连接成功！";
             m_retryCount = 0;
-            m_isOpenNetwork = true;
+            // m_isOpenNetwork = true;
              m_retryTime->stop();
             return true;
         } else {
@@ -102,7 +104,7 @@ bool TcpClient::AttemptReconnect() {
         return false;
     }
     m_retryTime->stop();
-    m_isOpenNetwork = true;
+    // m_isOpenNetwork = true;
     return true;
 }
 
@@ -126,6 +128,12 @@ bool TcpClient::SendData(const QByteArray& data, int len) {
         return false;
     }
     return true;
+}
+
+void TcpClient::RecvData() {
+    qDebug() << "TcpClient";
+    QByteArray data = m_tcpSocket->readAll();
+    m_commMediator->RecvData(data, data.size());
 }
 
 }   // namespace net end

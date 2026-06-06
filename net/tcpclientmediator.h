@@ -12,6 +12,7 @@ public:
     ~TcpClientMediator();
 
     bool SendData(const QByteArray& data, int len) override;
+    void RecvData(const QByteArray& data, int len) override;
 };
 
 }   // namespace net end

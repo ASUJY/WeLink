@@ -21,4 +21,8 @@ bool TcpClientMediator::SendData(const QByteArray& data, int len) {
     return true;
 }
 
+void TcpClientMediator::RecvData(const QByteArray& data, int len) {
+    emit SIG_ReadyData(data, len);
+}
+
 }   // namespace net end

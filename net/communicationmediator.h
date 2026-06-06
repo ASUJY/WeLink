@@ -15,8 +15,10 @@ public:
     virtual ~CommunicationMediator() = default;
 
     virtual bool SendData(const QByteArray& data, int len) = 0;
+    virtual void RecvData(const QByteArray& data, int len) = 0;
 
 signals:
+    void SIG_ReadyData(const QByteArray& data, int len);
 
 protected:
     AbstractNet* m_net = nullptr;

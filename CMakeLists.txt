@@ -26,6 +26,7 @@ qt_add_executable(WeLink
     net/tcpclientmediator.h net/tcpclientmediator.cpp
     init.conf
     net/communicationmediator.h
+    common.h
 )
 
 target_link_libraries(WeLink

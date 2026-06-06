@@ -18,6 +18,9 @@ public:
     void CloseNetwork() override;
     bool SendData(const QByteArray& data, int len) override;
 
+public slots:
+    void RecvData() override;
+
     bool AttemptReconnect();
 
 

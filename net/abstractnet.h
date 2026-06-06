@@ -17,11 +17,14 @@ public:
     virtual void CloseNetwork() = 0;
     virtual bool SendData(const QByteArray& data, int len) = 0;
 
+public slots:
+    virtual void RecvData() = 0;
+
 signals:
 
 protected:
     CommunicationMediator* m_commMediator = nullptr;
-    bool m_isOpenNetwork = false;
+    // bool m_isOpenNetwork = false;
 };
 
 }   // namespace net end

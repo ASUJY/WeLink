@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(WeLink LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Svg)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Svg Network)
 
 set(CMAKE_AUTORCC ON)
 
@@ -18,6 +18,14 @@ qt_add_executable(WeLink
     mainwindow.ui
     clicklabel.h clicklabel.cpp
     registerwidget.h registerwidget.cpp
+
+    appcore.h appcore.cpp
+
+    net/abstractnet.h
+    net/tcpclient.h net/tcpclient.cpp
+    net/tcpclientmediator.h net/tcpclientmediator.cpp
+    init.conf
+    net/communicationmediator.h
 )
 
 target_link_libraries(WeLink
@@ -25,6 +33,7 @@ target_link_libraries(WeLink
         Qt::Core
         Qt::Widgets
         Qt::Svg
+        Qt::Network
 )
 
 install(TARGETS WeLink

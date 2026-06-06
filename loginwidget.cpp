@@ -84,10 +84,9 @@ void LoginWidget::SetWidgetWinBottom() {
     ClickLabel *labReg = new ClickLabel(ui->widgetWinBottom);
     labReg->setText("注册帐号");
 
-    m_regWidget = new RegisterWidget;
-
     connect(labReg, &ClickLabel::clicked, this, [=](){
-        m_regWidget->show();
+        // m_regWidget->show();
+        emit SigRegister();
     });
 
 

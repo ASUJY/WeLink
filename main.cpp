@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QStyleFactory>
 #include <QFile>
+#include "appcore.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,8 +17,9 @@ int main(int argc, char *argv[])
     qApp->setStyleSheet(file.readAll());
     file.close();
 
-    LoginWidget w;
-    w.show();
+    // LoginWidget w;
+    // w.show();
+    AppCore appCore;
 
     return QCoreApplication::exec();
 }

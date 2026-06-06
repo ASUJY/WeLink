@@ -5,8 +5,6 @@
 #include <QMouseEvent>
 #include <QPoint>
 
-#include "registerwidget.h"
-
 namespace Ui {
 class LoginWidget;
 }
@@ -24,6 +22,9 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
+signals:
+    void SigRegister();
+
 private:
     void SetWidgetWinTitle();
     void SetWidgetHeadIcon();
@@ -34,8 +35,6 @@ private:
     Ui::LoginWidget *ui;
     bool m_drag = false;
     QPoint m_dragPos;
-
-    RegisterWidget *m_regWidget;
 
 };
 

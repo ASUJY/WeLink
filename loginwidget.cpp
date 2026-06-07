@@ -27,6 +27,8 @@ LoginWidget::LoginWidget(QWidget *parent)
     SetWidgetWinBody();
     SetWidgetWinBottom();
 
+    connect(ui->btnLogin, &QPushButton::clicked, this, &LoginWidget::OnBtnLoginClicked);
+
 }
 
 void LoginWidget::SetWidgetWinTitle() {
@@ -128,6 +130,12 @@ void LoginWidget::mouseReleaseEvent(QMouseEvent *event) {
     setCursor(Qt::ArrowCursor);
 }
 
+void LoginWidget::OnBtnLoginClicked() {
+    QString username = ui->lineEditUser->text().trimmed();
+    QString passwd = ui->lineEditPwd->text().trimmed();
 
+    // 可以补充校验逻辑和用户提示，现在暂不补充
+    emit SigLoginCommit(username, passwd);
+}
 
 

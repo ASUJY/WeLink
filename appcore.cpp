@@ -9,13 +9,19 @@
 AppCore::AppCore() {
     m_loginWidget = new LoginWidget;
     m_registerWidget = new RegisterWidget;
+    m_mainWindow = new MainWindow;
     m_netMediator = new net::TcpClientMediator;
 
+    // Login
+    connect(m_loginWidget, &LoginWidget::SigLoginCommit, this, &AppCore::SlotLoginCommit);
+
+    // Register
     connect(m_loginWidget, &LoginWidget::SigRegister, m_registerWidget, &RegisterWidget::SlotShow);
     connect(m_registerWidget, &RegisterWidget::SigRegisterCommit, this, &AppCore::SlotRegisterCommit);
     connect(m_netMediator, &net::CommunicationMediator::SIG_ReadyData, this, &AppCore::SlotReadyRead);
 
     m_msgHandlerMap.insert({REG_MSG_ACK_SUCCESS, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
+     m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
 
     m_loginWidget->show();
 }
@@ -61,6 +67,27 @@ void AppCore::SlotRegisterCommit(QString username, QString phone, QString passwo
     bool res = m_netMediator->SendData(data, data.size());
 }
 
+void AppCore::SlotLoginCommit(QString username, QString password) {
+    // 登录的时候，应该可以用账号，手机号，用户名来进行登录，现在先简单用用户名进行登录，先跑通流程
+    QJsonObject dataJson;
+    dataJson.insert("username", username);
+    dataJson.insert("password", password);
+
+    QJsonObject json;
+    json.insert("data", dataJson);
+    json.insert("msgtype", LOGIN_MSG);
+
+    QJsonDocument document;
+    document.setObject(json);
+
+    auto data = document.toJson(QJsonDocument::Compact);
+    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
+
+    // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
+    bool res = m_netMediator->SendData(data, data.size());
+
+}
+
 void AppCore::SlotReadyRead(const QByteArray& data, int len) {
     QJsonParseError jsonError;
     QJsonDocument jsonDocument = QJsonDocument::fromJson(data, &jsonError);
@@ -70,11 +97,29 @@ void AppCore::SlotReadyRead(const QByteArray& data, int len) {
     if (jsonDocument.isObject()) {
         QJsonObject jsonObj = jsonDocument.object();
         int msgtype = jsonObj.value("msgtype").toInt();
-        m_msgHandlerMap[msgtype](data);
+        auto msgHandler = GetHandler(msgtype);
+        msgHandler(data);
+
     }
+}
+
+MsgHandler  AppCore::GetHandler(int msgtype) {
+    auto it = m_msgHandlerMap.find(msgtype);
+    if (it == m_msgHandlerMap.end()) {
+        // 返回一个默认的处理器，空操作
+        return [=](const QByteArray& data){
+            qDebug() << "msgtype:" << msgtype << " can not find handler!";
+        };
+    }
+    return it->second;
 }
 
 void AppCore::RegisterSuccess(const QByteArray& data) {
     // 临时弹窗告诉用户注册成功，后面有时间再优化UI界面
     QMessageBox::about(this->m_registerWidget, "提示", "注册成功");
+}
+
+void AppCore::LoginSuccess(const QByteArray& data) {
+    m_loginWidget->hide();
+    m_mainWindow->show();
 }

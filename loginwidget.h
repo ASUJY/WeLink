@@ -24,6 +24,10 @@ protected:
 
 signals:
     void SigRegister();
+    void SigLoginCommit(QString username, QString password);
+
+private slots:
+    void OnBtnLoginClicked();
 
 private:
     void SetWidgetWinTitle();

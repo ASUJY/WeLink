@@ -19,7 +19,9 @@ int main(int argc, char *argv[])
 
     // LoginWidget w;
     // w.show();
-    AppCore appCore;
+    // AppCore appCore;
+    MainWindow w;
+    w.show();
 
     return QCoreApplication::exec();
 }

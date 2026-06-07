@@ -14,6 +14,13 @@
         <file>resource/icon/minimize/default.svg</file>
         <file>resource/icon/minimize/hover.svg</file>
         <file>resource/icon/minimize/minimize.png</file>
+        <file>resource/icon/menu/chat.svg</file>
+        <file>resource/icon/menu/contact.svg</file>
+        <file>resource/icon/menu/more.svg</file>
+        <file>resource/icon/menu/chat2.svg</file>
+        <file>resource/icon/menu/chat3.svg</file>
+        <file>resource/icon/menu/contact2.svg</file>
+        <file>resource/icon/menu/head.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>resource/qss/default.css</file>

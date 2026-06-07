@@ -96,3 +96,15 @@ ClickLabel {
     color: #12B7F5;
     font-size: 14px;
 }
+
+QWidget#centralWidget {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+}
+QWidget#menuWidget {
+    background: #333;
+}
+#line {
+    border: none;
+    background: #ccc;
+}

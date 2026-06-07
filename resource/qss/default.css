@@ -108,3 +108,67 @@ QWidget#menuWidget {
     border: none;
     background: #ccc;
 }
+
+QPushButton#btnMWinClose {
+    border: none;
+    background-color: transparent;
+    background-image: url(":/resource/icon/close/default.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    /* 圆角半径 */
+    border-radius: 6px;
+}
+
+/* 鼠标悬停状态 */
+QPushButton#btnMWinClose:hover {
+    border: none;
+    background-color: transparent;
+    background-image: url(":/resource/icon/close/icons8-close.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 6px;
+    background-color: #ff3b30;
+}
+
+QPushButton#btnMWinMin {
+    border: none;
+    background-color: transparent;
+    background-image: url(":/resource/icon/minimize/default.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 6px;
+}
+
+QPushButton#btnMWinMin:hover {
+    border: none;
+    background-color: transparent;
+    background-image: url(":/resource/icon/minimize/minimize.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 6px;
+    background-color: #ffbd2e;
+}
+
+QPushButton#btnMWinMax {
+    border: none;
+    background-color: transparent;
+    background-image: url(":/resource/icon/maximize/default.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 6px;
+    background-color: #30D15B;
+}
+
+QPushButton#btnMWinMax:hover {
+    border: none;
+    background-color: transparent;
+    background-image: url(":/resource/icon/maximize/actice.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 6px;
+    background-color: #0E984A;
+}
+
+QPushButton#btnHead,QPushButton#btnAllChat, QPushButton#btnContact, QPushButton#btnMore {
+    border: none;
+}

@@ -104,9 +104,9 @@ QWidget#centralWidget {
 QWidget#menuWidget {
     background: #333;
 }
-#line {
+Line#line {
     border: none;
-    background: #ccc;
+    background: #ddd;
 }
 
 QPushButton#btnMWinClose {
@@ -196,5 +196,11 @@ QPushButton#btnSearch {
 QLineEdit#leditSearch {
     border: 0px;
     background: #ddd;
-    border-radius: 5px 5px 0 0;
+    border-radius: 0 5px 5px 0;
+    outline: none;
+}
+QListWidget#listWidget {
+    border: 0px;
+    background: #ddd;
+    border-radius: 5px;
 }

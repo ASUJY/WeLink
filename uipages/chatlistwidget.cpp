@@ -6,6 +6,10 @@ ChatListWidget::ChatListWidget(QWidget *parent)
     , ui(new Ui::ChatListWidget)
 {
     ui->setupUi(this);
+
+    setAttribute(Qt::WA_StyledBackground, true);
+    setAutoFillBackground(true);
+
 }
 
 ChatListWidget::~ChatListWidget()

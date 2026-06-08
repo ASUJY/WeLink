@@ -1,5 +1,7 @@
 #include "chatlistwidget.h"
 #include "ui_chatlistwidget.h"
+#include <QToolButton>
+#include <QMenu>
 
 ChatListWidget::ChatListWidget(QWidget *parent)
     : QWidget(parent)
@@ -9,6 +11,14 @@ ChatListWidget::ChatListWidget(QWidget *parent)
 
     setAttribute(Qt::WA_StyledBackground, true);
     setAutoFillBackground(true);
+
+    ui->btnPlus->setPopupMode(QToolButton::InstantPopup);
+    ui->btnPlus->setStyleSheet("QToolButton:menu-indicator {image: none;}");
+
+    QMenu *menu = new QMenu(this);
+    menu->addAction("添加朋友");
+    menu->addAction("选项2");
+    ui->btnPlus->setMenu(menu);
 
 }
 

@@ -183,7 +183,7 @@ QWidget#searchWidget {
     border-radius: 5px;
 }
 
-QPushButton#btnPlus,
+QToolButton#btnPlus,
 QPushButton#btnSearch {
     border: 0px;
     background: #ddd;

@@ -1,5 +1,5 @@
 #include "appcore.h"
-#include "net/tcpclientmediator.h"
+#include "tcpclientmediator.h"
 #include "common.h"
 
 #include <QJsonObject>

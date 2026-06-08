@@ -80,7 +80,7 @@ bool TcpClient::AttemptReconnect() {
         return false;
     }
 
-    QSettings conf = QSettings("../../init.conf", QSettings::IniFormat);
+    QSettings conf = QSettings("./init.conf", QSettings::IniFormat);
     QString ip = conf.value("/SERVER/IP").toString();
     int port = conf.value("/SERVER/PORT").toInt();
 

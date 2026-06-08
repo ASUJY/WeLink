@@ -1,53 +1,23 @@
 cmake_minimum_required(VERSION 3.19)
+
+# 工程名称 WeLink, 语言C++
 project(WeLink LANGUAGES CXX)
 
+# QT库最低要求6.5版本
+# 需要Core模块
+# Widgets模块(界面控件)
+# Svg模块(Svg图形支持)
+# Network模块
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Svg Network)
 
+# 开启自动处理 Qt 资源文件（.qrc）
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 
-qt_standard_project_setup()
+set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui_components/forms)
 
-qt_add_executable(WeLink
-    WIN32 MACOSX_BUNDLE
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui
-    loginwidget.h loginwidget.cpp loginwidget.ui
-    resource.qrc
-    mainwindow.ui
-    clicklabel.h clicklabel.cpp
-    registerwidget.h registerwidget.cpp
-
-    appcore.h appcore.cpp
-
-    net/abstractnet.h
-    net/tcpclient.h net/tcpclient.cpp
-    net/tcpclientmediator.h net/tcpclientmediator.cpp
-    init.conf
-    net/communicationmediator.h
-    common.h
-
-    uipages/chatlistwidget.h uipages/chatlistwidget.cpp uipages/chatlistwidget.ui
-)
-
-target_link_libraries(WeLink
-    PRIVATE
-        Qt::Core
-        Qt::Widgets
-        Qt::Svg
-        Qt::Network
-)
-
-install(TARGETS WeLink
-    BUNDLE  DESTINATION .
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
-qt_generate_deploy_app_script(
-    TARGET WeLink
-    OUTPUT_SCRIPT deploy_script
-    NO_UNSUPPORTED_PLATFORM_ERROR
-)
-install(SCRIPT ${deploy_script})
+add_subdirectory(common)
+add_subdirectory(net)
+add_subdirectory(ui_components)
+add_subdirectory(app)

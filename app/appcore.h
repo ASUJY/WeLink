@@ -6,7 +6,7 @@
 #include "loginwidget.h"
 #include "registerwidget.h"
 #include "mainwindow.h"
-#include "net/communicationmediator.h"
+#include "communicationmediator.h"
 
 using MsgHandler = std::function<void(const QByteArray& data)>;
 

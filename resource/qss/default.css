@@ -172,3 +172,29 @@ QPushButton#btnMWinMax:hover {
 QPushButton#btnHead,QPushButton#btnAllChat, QPushButton#btnContact, QPushButton#btnMore {
     border: none;
 }
+
+QWidget#ChatListWidget {
+    border: none;
+    background: #e3e3e3;
+}
+
+QWidget#searchWidget {
+    background: #ddd;
+    border-radius: 5px;
+}
+
+QPushButton#btnPlus,
+QPushButton#btnSearch {
+    border: 0px;
+    background: #ddd;
+    border-radius: 5px;
+}
+QPushButton#btnSearch {
+    padding: 3px;
+}
+
+QLineEdit#leditSearch {
+    border: 0px;
+    background: #ddd;
+    border-radius: 5px 5px 0 0;
+}

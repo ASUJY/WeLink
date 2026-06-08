@@ -27,6 +27,8 @@ qt_add_executable(WeLink
     init.conf
     net/communicationmediator.h
     common.h
+
+    uipages/chatlistwidget.h uipages/chatlistwidget.cpp uipages/chatlistwidget.ui
 )
 
 target_link_libraries(WeLink

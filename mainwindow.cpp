@@ -8,6 +8,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
     SetWidgetWinTitle();
+
+    m_allChatListWidget = new ChatListWidget;
+    ui->gridLayout_2->addWidget(m_allChatListWidget);
+    m_allChatListWidget->show();
 }
 
 MainWindow::~MainWindow()

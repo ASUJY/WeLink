@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMouseEvent>
+#include "uipages/chatlistwidget.h"
 
 enum Area {
     Top,
@@ -49,5 +50,7 @@ private:
     int m_posx;
     int m_posy;
     Area m_area;
+
+    ChatListWidget *m_allChatListWidget;
 };
 #endif // MAINWINDOW_H

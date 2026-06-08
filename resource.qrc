@@ -21,6 +21,8 @@
         <file>resource/icon/menu/chat3.svg</file>
         <file>resource/icon/menu/contact2.svg</file>
         <file>resource/icon/menu/head.png</file>
+        <file>resource/icon/menu/plus.svg</file>
+        <file>resource/icon/menu/search2.svg</file>
     </qresource>
     <qresource prefix="/qss">
         <file>resource/qss/default.css</file>

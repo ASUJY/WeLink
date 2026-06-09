@@ -13,6 +13,10 @@ using MsgHandler = std::function<void(const QByteArray& data)>;
 class AppCore : public QObject
 {
     Q_OBJECT
+
+signals:
+    void SIG_GetFriendInfoSuccess(const QByteArray& data);
+
 public:
     AppCore();
     ~AppCore();
@@ -21,11 +25,13 @@ public slots:
     void SlotRegisterCommit(QString username, QString phone, QString password);
     void SlotLoginCommit(QString username, QString password);
     void SlotReadyRead(const QByteArray& data, int len);
+    void SlotGetFriendInfo(QString username);
 
 private:
     MsgHandler GetHandler(int msgtype);
     void RegisterSuccess(const QByteArray& data);
     void LoginSuccess(const QByteArray& data);
+    void GetFriendInfoSuccess(const QByteArray& data);
 
 private:
     LoginWidget *m_loginWidget = nullptr;

@@ -15,6 +15,9 @@ public:
     explicit ChatListWidget(QWidget *parent = nullptr);
     ~ChatListWidget();
 
+signals:
+    void SIG_AddFriend();
+
 private:
     Ui::ChatListWidget *ui;
 };

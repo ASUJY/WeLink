@@ -8,8 +8,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
     SetWidgetWinTitle();
+    m_addFriendWindow = new AddFriendWindow;
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_GetFriendInfo, this, &MainWindow::SIG_GetFriendInfo);
+    connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
 
     m_allChatListWidget = new ChatListWidget;
+    connect(m_allChatListWidget, &ChatListWidget::SIG_AddFriend, this, &MainWindow::ShowAddFriendWindow);
     ui->gridLayout_2->addWidget(m_allChatListWidget);
     m_allChatListWidget->show();
 }
@@ -168,4 +172,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
 void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
     m_isMouseDown = false;
     unsetCursor();
+}
+
+void MainWindow::ShowAddFriendWindow() {
+    m_addFriendWindow->show();
 }

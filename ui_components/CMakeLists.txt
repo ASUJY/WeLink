@@ -10,6 +10,7 @@ target_sources(UiLib PRIVATE
     include/register/registerwidget.h
     include/mainwindow.h
     include/chatlistwidget.h
+    include/addfriendwindow.h
     
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}
@@ -18,6 +19,7 @@ target_sources(UiLib PRIVATE
     forms/loginwidget.ui
     forms/chatlistwidget.ui
     forms/mainwindow.ui
+    forms/addfriendwindow.ui
 )
 
 target_include_directories(UiLib PUBLIC

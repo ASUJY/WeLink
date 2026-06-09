@@ -2,6 +2,7 @@
 #include "ui_chatlistwidget.h"
 #include <QToolButton>
 #include <QMenu>
+#include <QDebug>
 
 ChatListWidget::ChatListWidget(QWidget *parent)
     : QWidget(parent)
@@ -16,9 +17,15 @@ ChatListWidget::ChatListWidget(QWidget *parent)
     ui->btnPlus->setStyleSheet("QToolButton:menu-indicator {image: none;}");
 
     QMenu *menu = new QMenu(this);
-    menu->addAction("添加朋友");
+    QAction *action1 = menu->addAction("添加朋友");
     menu->addAction("选项2");
+    connect(action1, &QAction::triggered, this, [=](){
+        qDebug() << "添加朋友";
+        emit SIG_AddFriend();
+    });
     ui->btnPlus->setMenu(menu);
+
+
 
 }
 

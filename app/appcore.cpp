@@ -20,8 +20,13 @@ AppCore::AppCore() {
     connect(m_registerWidget, &RegisterWidget::SigRegisterCommit, this, &AppCore::SlotRegisterCommit);
     connect(m_netMediator, &net::CommunicationMediator::SIG_ReadyData, this, &AppCore::SlotReadyRead);
 
+    // Add Friend
+    connect(m_mainWindow, &MainWindow::SIG_GetFriendInfo, this, &AppCore::SlotGetFriendInfo);
+    connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow, &MainWindow::SIG_GetFriendInfoSuccess);
+
     m_msgHandlerMap.insert({REG_MSG_ACK_SUCCESS, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
-     m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
 
     m_loginWidget->show();
 }
@@ -122,4 +127,24 @@ void AppCore::RegisterSuccess(const QByteArray& data) {
 void AppCore::LoginSuccess(const QByteArray& data) {
     m_loginWidget->hide();
     m_mainWindow->show();
+}
+
+void AppCore::SlotGetFriendInfo(QString username) {
+    QJsonObject dataJson;
+    dataJson.insert("username", username);
+    QJsonObject json;
+    json.insert("data", dataJson);
+    json.insert("msgtype", GET_FRIEND_INFO_REQ);
+    QJsonDocument document;
+    document.setObject(json);
+
+    auto data = document.toJson(QJsonDocument::Compact);
+    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
+    // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
+    bool res = m_netMediator->SendData(data, data.size());
+
+}
+
+void AppCore::GetFriendInfoSuccess(const QByteArray& data) {
+    emit SIG_GetFriendInfoSuccess(data);
 }

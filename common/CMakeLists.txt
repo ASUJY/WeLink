@@ -1,6 +1,7 @@
 add_library(CommonLib STATIC)
 
 target_sources(CommonLib PRIVATE
+    include/common.h
     include/clicklabel.h
     src/clicklabel.cpp
 )

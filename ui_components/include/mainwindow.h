@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMouseEvent>
 #include "chatlistwidget.h"
+#include "addfriendwindow.h"
 
 enum Area {
     Top,
@@ -27,6 +28,10 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+signals:
+    void SIG_GetFriendInfo(QString username);
+    void SIG_GetFriendInfoSuccess(const QByteArray& data);
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
@@ -40,6 +45,7 @@ private:
     void SetWidgetWinTitle();
     Area GetArea(int x, int y);
     Qt::CursorShape GetCursorForArea(Area area);
+    void ShowAddFriendWindow();
 
 private:
     Ui::MainWindow *ui;
@@ -52,5 +58,7 @@ private:
     Area m_area;
 
     ChatListWidget *m_allChatListWidget;
+    AddFriendWindow *m_addFriendWindow;
+
 };
 #endif // MAINWINDOW_H

@@ -17,6 +17,7 @@ set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui_components/forms)
 
+add_subdirectory(model)
 add_subdirectory(common)
 add_subdirectory(net)
 add_subdirectory(ui_components)

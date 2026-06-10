@@ -22,11 +22,13 @@ AppCore::AppCore() {
 
     // Add Friend
     connect(m_mainWindow, &MainWindow::SIG_GetFriendInfo, this, &AppCore::SlotGetFriendInfo);
-    connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow, &MainWindow::SIG_GetFriendInfoSuccess);
+    connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow, &MainWindow::SlotGetFriendInfoSuccess);
+    connect(m_mainWindow, &MainWindow::SIG_AddFriendReq, this, &AppCore::SlotAddFriendReq);
 
     m_msgHandlerMap.insert({REG_MSG_ACK_SUCCESS, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
 
     m_loginWidget->show();
 }
@@ -125,6 +127,20 @@ void AppCore::RegisterSuccess(const QByteArray& data) {
 }
 
 void AppCore::LoginSuccess(const QByteArray& data) {
+    QJsonParseError jsonError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) {
+        return;
+    }
+
+    if (!jsonDoc.isObject()) return;
+
+    QJsonObject jsonObj = jsonDoc.object();
+    QJsonValue dataVal = jsonObj.value("data");
+    QJsonObject dataObj = dataVal.toObject();
+
+    m_user.SetUserId(dataObj.value("userid").toInt());
+    m_user.SetUserName(dataObj.value("username").toString().toStdString());
     m_loginWidget->hide();
     m_mainWindow->show();
 }
@@ -147,4 +163,27 @@ void AppCore::SlotGetFriendInfo(QString username) {
 
 void AppCore::GetFriendInfoSuccess(const QByteArray& data) {
     emit SIG_GetFriendInfoSuccess(data);
+}
+
+void  AppCore::SlotAddFriendReq(User frienduser) {
+    qDebug() << frienduser.GetUserName() << "AppCore SlotAddFriendReq " << frienduser.GetUserId();
+    QJsonObject dataJson;
+    dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
+    dataJson.insert("friendid", QString::number(frienduser.GetUserId()));
+    dataJson.insert("username", QString::fromStdString(m_user.GetUserName()));
+    dataJson.insert("userid", QString::number(m_user.GetUserId()));
+    QJsonObject json;
+    json.insert("data", dataJson);
+    json.insert("msgtype", ADD_FRIEND_REQ);
+    QJsonDocument document;
+    document.setObject(json);
+
+    auto data = document.toJson(QJsonDocument::Compact);
+    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
+    // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
+    bool res = m_netMediator->SendData(data, data.size());
+}
+
+void AppCore::SlotReciveAddFriendReq(const QByteArray& data) {
+    qDebug() << "申请添加朋友";
 }

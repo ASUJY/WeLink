@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_addFriendWindow = new AddFriendWindow;
     connect(m_addFriendWindow, &AddFriendWindow::SIG_GetFriendInfo, this, &MainWindow::SIG_GetFriendInfo);
     connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
 
     m_allChatListWidget = new ChatListWidget;
     connect(m_allChatListWidget, &ChatListWidget::SIG_AddFriend, this, &MainWindow::ShowAddFriendWindow);
@@ -176,4 +177,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
 
 void MainWindow::ShowAddFriendWindow() {
     m_addFriendWindow->show();
+}
+
+void MainWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {
+    emit SIG_GetFriendInfoSuccess(data);
 }

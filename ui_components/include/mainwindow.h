@@ -31,6 +31,10 @@ class MainWindow : public QMainWindow
 signals:
     void SIG_GetFriendInfo(QString username);
     void SIG_GetFriendInfoSuccess(const QByteArray& data);
+    void SIG_AddFriendReq(User user);
+
+public slots:
+    void SlotGetFriendInfoSuccess(const QByteArray& data);
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

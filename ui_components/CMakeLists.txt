@@ -35,4 +35,5 @@ target_link_libraries(UiLib PUBLIC
     Qt::Svg
     NetLib
     CommonLib
+    ModelLib
 )

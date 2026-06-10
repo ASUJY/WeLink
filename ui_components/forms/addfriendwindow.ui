@@ -48,7 +48,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="initWidget"/>
      <widget class="QWidget" name="notfindWidget">
@@ -76,7 +76,7 @@
          <height>241</height>
         </rect>
        </property>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="btnAddFriend">
         <property name="geometry">
          <rect>
           <x>110</x>

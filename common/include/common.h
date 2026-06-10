@@ -11,6 +11,7 @@ enum E_MSG_TYPE : int {
     REG_MSG_ACK_FAIL,
     GET_FRIEND_INFO_REQ,
     GET_FRIEND_INFO_SUCCESS,
+    ADD_FRIEND_REQ,
 };
 
 #endif // COMMON_H

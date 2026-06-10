@@ -7,6 +7,7 @@
 #include "registerwidget.h"
 #include "mainwindow.h"
 #include "communicationmediator.h"
+#include "user.hpp"
 
 using MsgHandler = std::function<void(const QByteArray& data)>;
 
@@ -26,6 +27,9 @@ public slots:
     void SlotLoginCommit(QString username, QString password);
     void SlotReadyRead(const QByteArray& data, int len);
     void SlotGetFriendInfo(QString username);
+    void SlotAddFriendReq(User user);
+    void SlotReciveAddFriendReq(const QByteArray& data);
+
 
 private:
     MsgHandler GetHandler(int msgtype);
@@ -39,6 +43,7 @@ private:
     MainWindow* m_mainWindow = nullptr;
     net::CommunicationMediator *m_netMediator = nullptr;
     std::unordered_map<int, std::function<void(const QByteArray& data)>> m_msgHandlerMap;
+    User m_user;
 };
 
 #endif // APPCORE_H

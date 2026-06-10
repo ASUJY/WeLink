@@ -26,6 +26,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     CommonLib
     NetLib
     UiLib
+    ModelLib
 )
 
 # 安装和部署（可选）

@@ -2,6 +2,7 @@
 #define ADDFRIENDWINDOW_H
 
 #include <QDialog>
+#include "user.hpp"
 
 namespace Ui {
 class AddFriendWindow;
@@ -17,16 +18,19 @@ public:
 
 signals:
     void SIG_GetFriendInfo(QString username);
+    void SIG_AddFriendReq(User user);
 
 public slots:
     void SlotGetFriendInfoSuccess(const QByteArray& data);
 
 private slots:
     void SlotSearchFriend();
+    void SlotAddFriendReq();
     // void SlotGetFriendInfo();
 
 private:
     Ui::AddFriendWindow *ui;
+    User m_user;
 };
 
 #endif // ADDFRIENDWINDOW_H

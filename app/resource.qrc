@@ -1,28 +1,30 @@
 <RCC>
     <qresource prefix="/">
-        <file>resource/icon/app.png</file>
-        <file>resource/icon/unfocused.svg</file>
         <file>resource/icon/close/active.svg</file>
         <file>resource/icon/close/close.png</file>
         <file>resource/icon/close/default.svg</file>
         <file>resource/icon/close/hover.svg</file>
         <file>resource/icon/close/icons8-close.svg</file>
+        <file>resource/icon/app.png</file>
+        <file>resource/icon/unfocused.svg</file>
         <file>resource/icon/maximize/active.svg</file>
         <file>resource/icon/maximize/default.svg</file>
         <file>resource/icon/maximize/hover.svg</file>
+        <file>resource/icon/menu/chat.svg</file>
+        <file>resource/icon/menu/chat2.svg</file>
+        <file>resource/icon/menu/chat3.svg</file>
+        <file>resource/icon/menu/contact.svg</file>
+        <file>resource/icon/menu/contact2.svg</file>
+        <file>resource/icon/menu/head.png</file>
+        <file>resource/icon/menu/more.svg</file>
+        <file>resource/icon/menu/plus.svg</file>
+        <file>resource/icon/menu/search2.svg</file>
         <file>resource/icon/minimize/active.svg</file>
         <file>resource/icon/minimize/default.svg</file>
         <file>resource/icon/minimize/hover.svg</file>
         <file>resource/icon/minimize/minimize.png</file>
-        <file>resource/icon/menu/chat.svg</file>
-        <file>resource/icon/menu/contact.svg</file>
-        <file>resource/icon/menu/more.svg</file>
-        <file>resource/icon/menu/chat2.svg</file>
-        <file>resource/icon/menu/chat3.svg</file>
-        <file>resource/icon/menu/contact2.svg</file>
-        <file>resource/icon/menu/head.png</file>
-        <file>resource/icon/menu/plus.svg</file>
-        <file>resource/icon/menu/search2.svg</file>
+        <file>resource/icon/menu/aio_arrow_down.png</file>
+        <file>resource/icon/menu/aio_arrow_right.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>resource/qss/default.css</file>

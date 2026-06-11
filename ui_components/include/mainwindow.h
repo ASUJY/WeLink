@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include <QMouseEvent>
-#include "chatlistwidget.h"
+#include "chatpanewidget.h"
+#include "contactspanewidget.h"
 #include "addfriendwindow.h"
 
 enum Area {
@@ -16,6 +17,11 @@ enum Area {
     TopRight,
     BottomLeft,
     BottomRight
+};
+
+enum ChatPage {
+    ChatWidget = 0,
+    Contactwidget
 };
 
 QT_BEGIN_NAMESPACE
@@ -36,6 +42,9 @@ signals:
 public slots:
     void SlotGetFriendInfoSuccess(const QByteArray& data);
 
+private slots:
+    void SlotSelectEvent();
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
@@ -54,6 +63,10 @@ private:
 private:
     Ui::MainWindow *ui;
 
+    // 当前选中的按钮(右侧导航栏的按钮)
+    QPushButton *m_btn;
+    ChatPage m_page;
+
     bool m_isMouseDown = false;
     QPoint m_pressPos;
     QRect m_pressRect;
@@ -61,7 +74,8 @@ private:
     int m_posy;
     Area m_area;
 
-    ChatListWidget *m_allChatListWidget;
+    ChatPaneWidget *m_chatPaneWidget;
+    ContactsPaneWidget *m_contactsPaneWidget;
     AddFriendWindow *m_addFriendWindow;
 
 };

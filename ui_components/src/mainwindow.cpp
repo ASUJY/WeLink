@@ -3,7 +3,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow), m_page(ChatWidget)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
@@ -13,10 +13,19 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
     connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
 
-    m_allChatListWidget = new ChatListWidget;
-    connect(m_allChatListWidget, &ChatListWidget::SIG_AddFriend, this, &MainWindow::ShowAddFriendWindow);
-    ui->gridLayout_2->addWidget(m_allChatListWidget);
-    m_allChatListWidget->show();
+    m_chatPaneWidget = new ChatPaneWidget;
+    connect(m_chatPaneWidget, &ChatPaneWidget::SIG_AddFriend, this, &MainWindow::ShowAddFriendWindow);
+    ui->gridLayout_2->addWidget(m_chatPaneWidget);
+    m_chatPaneWidget->show();
+
+    m_contactsPaneWidget = new ContactsPaneWidget;
+
+    this->setMouseTracking(true);
+    this->installEventFilter(this); // 将事件过滤器对象(this)安装到目标对象(this)上
+
+    m_btn = ui->btnAllChat;
+    connect(ui->btnAllChat, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
+    connect(ui->btnContact, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
 }
 
 MainWindow::~MainWindow()
@@ -181,4 +190,35 @@ void MainWindow::ShowAddFriendWindow() {
 
 void MainWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {
     emit SIG_GetFriendInfoSuccess(data);
+}
+
+void MainWindow::SlotSelectEvent() {
+    // 取消右侧导航栏之前选中的按钮的选中状态，然后将当前的按钮设置为选中状态
+    m_btn->setChecked(false);
+    m_btn = (QPushButton*)sender();
+    m_btn->setChecked(true);
+
+    switch (m_page) {
+    case ChatWidget:
+        ui->gridLayout_2->removeWidget(m_chatPaneWidget);
+        // ui->gridLayout_3->removeWidget();
+        m_chatPaneWidget->hide();
+        break;
+    case Contactwidget:
+        ui->gridLayout_2->removeWidget(m_contactsPaneWidget);
+        m_contactsPaneWidget->hide();
+        break;
+    }
+
+    auto name = m_btn->objectName();
+    if (name == "btnAllChat") {
+        m_page = ChatPage::ChatWidget;
+        ui->gridLayout_2->addWidget(m_chatPaneWidget);
+        m_chatPaneWidget->show();
+    } else {
+        m_page = ChatPage::Contactwidget;
+        ui->gridLayout_2->addWidget(m_contactsPaneWidget);
+        m_contactsPaneWidget->show();
+    }
+
 }

@@ -180,6 +180,7 @@ QWidget#ChatListWidget {
 
 QWidget#searchWidget {
     background: #ddd;
+/*    border: none;*/
     border-radius: 5px;
 }
 
@@ -203,4 +204,25 @@ QListWidget#listWidget {
     border: 0px;
     background: #ddd;
     border-radius: 5px;
+}
+
+/*ContactListWidget*/
+ContactsListWidget#contactsListWidget {
+    border: 0px;
+    background: #ddd;
+    border-radius: 5px;
+}
+QPushButton#btnPlus {
+    border: 0px;
+    background: #ddd;
+    border-radius: 5px;
+    padding: 2px;
+}
+QWidget#nullWidget {
+    background: #ddd;
+}
+QWidget#toolWidget {
+    border: none;
+    background: #ddd;
+/*    margin: 1px;*/
 }

@@ -1,12 +1,12 @@
-#include "chatlistwidget.h"
-#include "ui_chatlistwidget.h"
+#include "chatpanewidget.h"
+#include "ui_chatpanewidget.h"
 #include <QToolButton>
 #include <QMenu>
 #include <QDebug>
 
-ChatListWidget::ChatListWidget(QWidget *parent)
+ChatPaneWidget::ChatPaneWidget(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::ChatListWidget)
+    , ui(new Ui::ChatPaneWidget)
 {
     ui->setupUi(this);
 
@@ -29,7 +29,7 @@ ChatListWidget::ChatListWidget(QWidget *parent)
 
 }
 
-ChatListWidget::~ChatListWidget()
+ChatPaneWidget::~ChatPaneWidget()
 {
     delete ui;
 }

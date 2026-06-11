@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ChatListWidget</class>
- <widget class="QWidget" name="ChatListWidget">
+ <class>ChatPaneWidget</class>
+ <widget class="QWidget" name="ChatPaneWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -141,7 +141,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../resource.qrc">
+            <iconset resource="../../app/resource.qrc">
              <normaloff>:/resource/icon/menu/search2.svg</normaloff>:/resource/icon/menu/search2.svg</iconset>
            </property>
            <property name="iconSize">
@@ -201,7 +201,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../resource.qrc">
+         <iconset resource="../../app/resource.qrc">
           <normaloff>:/resource/icon/menu/plus.svg</normaloff>:/resource/icon/menu/plus.svg</iconset>
         </property>
        </widget>
@@ -215,7 +215,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../resource.qrc"/>
+  <include location="../../app/resource.qrc"/>
  </resources>
  <connections/>
 </ui>

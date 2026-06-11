@@ -3,23 +3,35 @@ aux_source_directory(./src/login LOGIN_SRC_LIST)
 aux_source_directory(./src/register REGISTER_SRC_LIST)
 
 
-add_library(UiLib STATIC)
+add_library(UiLib STATIC
+    ../app/resource.qrc
+    )
 
 target_sources(UiLib PRIVATE
     include/login/loginwidget.h
     include/register/registerwidget.h
     include/mainwindow.h
-    include/chatlistwidget.h
+    include/chatpanewidget.h
     include/addfriendwindow.h
+    include/contactspanewidget.h
+    include/chatmainwidget.h
+    include/contactsmainwidget.h
+    include/contactslistviewgroup.h
+    include/contactslistwidget.h
+    include/contactsitem.h
     
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}
     ${REGISTER_SRC_LIST}
     
     forms/loginwidget.ui
-    forms/chatlistwidget.ui
+    forms/chatpanewidget.ui
     forms/mainwindow.ui
     forms/addfriendwindow.ui
+    forms/contactspanewidget.ui
+    forms/chatmainwidget.ui
+    forms/contactsmainwidget.ui
+    forms/contactslistviewgroup.ui
 )
 
 target_include_directories(UiLib PUBLIC

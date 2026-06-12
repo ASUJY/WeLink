@@ -41,4 +41,5 @@ void ContactsListViewGroup::mousePressEvent(QMouseEvent *event) {
         ui->labIcon->setPixmap(QPixmap(":/resource/icon/menu/aio_arrow_right.png"));
     }
     // 发射信号，展开列表
+    emit SIG_GroupOpenStatusDidChanged();
 }

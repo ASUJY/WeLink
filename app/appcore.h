@@ -17,6 +17,7 @@ class AppCore : public QObject
 
 signals:
     void SIG_GetFriendInfoSuccess(const QByteArray& data);
+    void SIG_ReciveAddFriendReq(const QByteArray& data);
 
 public:
     AppCore();

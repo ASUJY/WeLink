@@ -15,6 +15,9 @@ public:
     explicit ContactsPaneWidget(QWidget *parent = nullptr);
     ~ContactsPaneWidget();
 
+public slots:
+    void SlotReciveAddFriendReq(const QByteArray& data);
+
 private:
     Ui::ContactsPaneWidget *ui;
 };

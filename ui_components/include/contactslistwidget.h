@@ -12,8 +12,12 @@ public:
 
     void InsertItem(ContactsItem *item);
 
+public slots:
+    void SlotGroupOpenDidChanged();
+
 private:
     void UploadItems();
+    void AddChildItem(ContactsItem* item);
 
 signals:
 

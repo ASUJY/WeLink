@@ -25,6 +25,9 @@ AppCore::AppCore() {
     connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow, &MainWindow::SlotGetFriendInfoSuccess);
     connect(m_mainWindow, &MainWindow::SIG_AddFriendReq, this, &AppCore::SlotAddFriendReq);
 
+    // Added Friend
+    connect(this, &AppCore::SIG_ReciveAddFriendReq, m_mainWindow, &MainWindow::SlotReciveAddFriendReq);
+
     m_msgHandlerMap.insert({REG_MSG_ACK_SUCCESS, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
@@ -186,4 +189,5 @@ void  AppCore::SlotAddFriendReq(User frienduser) {
 
 void AppCore::SlotReciveAddFriendReq(const QByteArray& data) {
     qDebug() << "申请添加朋友";
+    emit SIG_ReciveAddFriendReq(data);
 }

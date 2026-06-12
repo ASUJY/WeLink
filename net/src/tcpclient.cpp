@@ -94,7 +94,7 @@ bool TcpClient::AttemptReconnect() {
             qDebug() << "连接成功！";
             m_retryCount = 0;
             // m_isOpenNetwork = true;
-             m_retryTime->stop();
+            m_retryTime->stop();
             return true;
         } else {
             qDebug() << "连接失败，错误信息：" << m_tcpSocket->errorString();

@@ -19,9 +19,10 @@ MainWindow::MainWindow(QWidget *parent)
     m_chatPaneWidget->show();
 
     m_contactsPaneWidget = new ContactsPaneWidget;
+    connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotReciveAddFriendReq);
 
-    this->setMouseTracking(true);
-    this->installEventFilter(this); // 将事件过滤器对象(this)安装到目标对象(this)上
+    // this->setMouseTracking(true);
+    // this->installEventFilter(this); // 将事件过滤器对象(this)安装到目标对象(this)上
 
     m_btn = ui->btnAllChat;
     connect(ui->btnAllChat, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
@@ -190,6 +191,10 @@ void MainWindow::ShowAddFriendWindow() {
 
 void MainWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {
     emit SIG_GetFriendInfoSuccess(data);
+}
+
+void MainWindow::SlotReciveAddFriendReq(const QByteArray& data) {
+    emit SIG_ReciveAddFriendReq(data);
 }
 
 void MainWindow::SlotSelectEvent() {

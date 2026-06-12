@@ -38,9 +38,11 @@ signals:
     void SIG_GetFriendInfo(QString username);
     void SIG_GetFriendInfoSuccess(const QByteArray& data);
     void SIG_AddFriendReq(User user);
+    void SIG_ReciveAddFriendReq(const QByteArray& data);
 
 public slots:
     void SlotGetFriendInfoSuccess(const QByteArray& data);
+    void SlotReciveAddFriendReq(const QByteArray& data);
 
 private slots:
     void SlotSelectEvent();

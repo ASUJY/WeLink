@@ -19,6 +19,7 @@ target_sources(UiLib PRIVATE
     include/contactslistviewgroup.h
     include/contactslistwidget.h
     include/contactsitem.h
+    include/contactslistviewchild.h
     
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}

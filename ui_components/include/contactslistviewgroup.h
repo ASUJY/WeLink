@@ -13,6 +13,9 @@ class ContactsListViewGroup : public QWidget
 {
     Q_OBJECT
 
+signals:
+    void SIG_GroupOpenStatusDidChanged();
+
 public:
     explicit ContactsListViewGroup(QWidget *parent = nullptr);
     ~ContactsListViewGroup();

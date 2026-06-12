@@ -26,6 +26,9 @@
         <file>resource/icon/menu/aio_arrow_down.png</file>
         <file>resource/icon/menu/aio_arrow_right.png</file>
         <file>resource/head/man.svg</file>
+        <file>resource/icon/menu/info.svg</file>
+        <file>resource/icon/menu/folder2.svg</file>
+        <file>resource/icon/menu/smile.svg</file>
     </qresource>
     <qresource prefix="/qss">
         <file>resource/qss/default.css</file>

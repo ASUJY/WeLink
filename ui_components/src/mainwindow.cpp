@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_chatPaneWidget, &ChatPaneWidget::SIG_AddFriend, this, &MainWindow::ShowAddFriendWindow);
     ui->gridLayout_2->addWidget(m_chatPaneWidget);
     m_chatPaneWidget->show();
+    m_chatMainWidget = new ChatMainWidget;
+
 
     m_contactsPaneWidget = new ContactsPaneWidget;
     connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotReciveAddFriendReq);
@@ -206,11 +208,13 @@ void MainWindow::SlotSelectEvent() {
     switch (m_page) {
     case ChatWidget:
         ui->gridLayout_2->removeWidget(m_chatPaneWidget);
-        // ui->gridLayout_3->removeWidget();
+        ui->gridLayout_3->removeWidget(m_chatMainWidget);
         m_chatPaneWidget->hide();
+        m_chatMainWidget->hide();
         break;
     case Contactwidget:
         ui->gridLayout_2->removeWidget(m_contactsPaneWidget);
+        // ui->gridLayout_3->removeWidget()
         m_contactsPaneWidget->hide();
         break;
     }
@@ -219,7 +223,9 @@ void MainWindow::SlotSelectEvent() {
     if (name == "btnAllChat") {
         m_page = ChatPage::ChatWidget;
         ui->gridLayout_2->addWidget(m_chatPaneWidget);
+        ui->gridLayout_3->addWidget(m_chatMainWidget);
         m_chatPaneWidget->show();
+        m_chatMainWidget->show();
     } else {
         m_page = ChatPage::Contactwidget;
         ui->gridLayout_2->addWidget(m_contactsPaneWidget);

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMouseEvent>
 #include "chatpanewidget.h"
+#include "chatmainwidget.h"
 #include "contactspanewidget.h"
 #include "addfriendwindow.h"
 
@@ -77,6 +78,7 @@ private:
     Area m_area;
 
     ChatPaneWidget *m_chatPaneWidget;
+    ChatMainWidget *m_chatMainWidget;
     ContactsPaneWidget *m_contactsPaneWidget;
     AddFriendWindow *m_addFriendWindow;
 

@@ -4,6 +4,12 @@
 #include <QMenu>
 #include <QDebug>
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
+#include "message.hpp"
+#include "friend.hpp"
+
 ChatPaneWidget::ChatPaneWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ChatPaneWidget)
@@ -32,4 +38,35 @@ ChatPaneWidget::ChatPaneWidget(QWidget *parent)
 ChatPaneWidget::~ChatPaneWidget()
 {
     delete ui;
+}
+
+void ChatPaneWidget::SlotReciveAddFriendReq(const QByteArray& data) {
+    QJsonParseError jsonError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
+
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) return;
+    if (!jsonDoc.isObject()) return;
+
+    QJsonObject jsonObj = jsonDoc.object();
+    QJsonValue dataVal = jsonObj.value("data");
+
+    QJsonObject dataObj = dataVal.toObject();
+    QString friendname = dataObj.value("sendername").toString();
+    int friendid = dataObj.value("senderid").toInt();
+
+    if (m_mapIdToChatItem.find(friendid) == m_mapIdToChatItem.end()) {
+        QList<Message> messages1;
+        Friend* fri = new Friend(friendid, friendname, ":/resource/head/man.svg", false, "2026", 0, messages1);
+
+        auto item = new QListWidgetItem;
+        QVariant var = QVariant::fromValue(fri);
+        item->setData(Qt::UserRole, var);
+        item->setSizeHint(QSize(250, 65));
+        ui->listWidget->addItem(item);
+
+        auto widget = new ChatListItem;
+        widget->SetItem(fri);
+        m_mapIdToChatItem[fri->GetUserId()] = widget;
+        ui->listWidget->setItemWidget(item, widget);
+    }
 }

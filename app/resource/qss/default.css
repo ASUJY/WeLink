@@ -226,3 +226,28 @@ QWidget#toolWidget {
     background: #ddd;
 /*    margin: 1px;*/
 }
+
+
+/* ChatListItem */
+QWidget#widget
+{
+  background: #dfdfdf;
+}
+QWidget#chatlistitem_widget
+{
+  background: red;
+  border-radius: 8px;
+}
+QLabel#labHeadIcon
+{
+}
+QLabel#labTime,
+QLabel#labMsg
+{
+  color: #aaa;
+}
+QLabel#labMsgCount
+{
+  color: #fff;
+  padding-left: 1px;
+}

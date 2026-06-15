@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_contactsPaneWidget = new ContactsPaneWidget;
     connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotReciveAddFriendReq);
+    connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendReq);
 
     // this->setMouseTracking(true);
     // this->installEventFilter(this); // 将事件过滤器对象(this)安装到目标对象(this)上

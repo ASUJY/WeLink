@@ -25,6 +25,8 @@ public:
     void SetItem(Friend *data);
     Friend *GetItem() const { return m_data; }
 
+    void UpdateFriend(Message& message);
+
 private:
     // 鼠标按下聊天列表项触发这个函数
     void mousePressEvent(QMouseEvent *event) override;

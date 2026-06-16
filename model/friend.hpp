@@ -26,7 +26,7 @@ public:
 
     // void SetMessages(QList<Message> messages) { m_messages = messages; }
     QList<Message> GetMessages() const { return  m_messages; }
-    // void AddMessage(Message& message) {m_messages.push_back(message);}
+    void AddMessage(Message& message) {m_messages.push_back(message);}
 protected:
 
     bool m_mute;        // 表示好友是否被静音的状态

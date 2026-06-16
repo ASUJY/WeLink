@@ -46,3 +46,7 @@ void ChatListItem::mousePressEvent(QMouseEvent *event) {
     ui->chatlistitem_widget->setVisible(false);
     emit SIG_Selected(this);
 }
+
+void ChatListItem::UpdateFriend(Message& message) {
+    m_data->AddMessage(message);
+}

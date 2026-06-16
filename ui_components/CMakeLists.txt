@@ -20,6 +20,8 @@ target_sources(UiLib PRIVATE
     include/contactsitem.h
     include/contactslistviewchild.h
     include/chatlistitem.h
+    include/senderwidget.h
+    include/label.h
     
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}
@@ -34,6 +36,7 @@ target_sources(UiLib PRIVATE
     forms/contactsmainwidget.ui
     forms/contactslistviewgroup.ui
     forms/chatlistitem.ui
+    forms/senderwidget.ui
 )
 
 target_include_directories(UiLib PUBLIC

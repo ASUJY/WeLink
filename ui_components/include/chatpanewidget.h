@@ -20,6 +20,7 @@ class ChatPaneWidget : public QWidget
 public:
     explicit ChatPaneWidget(QWidget *parent = nullptr);
     ~ChatPaneWidget();
+    static ChatListItem* GetItem() { return m_item; }
 
 public slots:
     void SlotReciveAddFriendReq(const QByteArray& data);

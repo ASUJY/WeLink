@@ -18,6 +18,9 @@ public:
 
     void SetData(Friend *data);
 
+private slots:
+    void SlotBtnSendMsgClicked();
+
 private:
     Ui::ChatMainWidget *ui;
 };

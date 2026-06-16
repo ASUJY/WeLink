@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_btn = ui->btnAllChat;
     connect(ui->btnAllChat, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
     connect(ui->btnContact, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
+
+    connect(m_chatPaneWidget, &ChatPaneWidget::SIG_ItemClicked, this, &MainWindow::SlotChatView);
 }
 
 MainWindow::~MainWindow()
@@ -233,4 +235,13 @@ void MainWindow::SlotSelectEvent() {
         m_contactsPaneWidget->show();
     }
 
+}
+
+void MainWindow::SlotChatView(QVariant var, PageType type) {
+    if (var.canConvert<Friend*>() && type == PageType::AllChatView) {
+        auto data = var.value<Friend*>();
+        ui->gridLayout_3->addWidget(m_chatMainWidget);
+        m_chatMainWidget->SetData(data);
+        m_chatMainWidget->show();
+    }
 }

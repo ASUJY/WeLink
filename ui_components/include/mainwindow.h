@@ -47,6 +47,7 @@ public slots:
 
 private slots:
     void SlotSelectEvent();
+    void SlotChatView(QVariant var, PageType type);
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

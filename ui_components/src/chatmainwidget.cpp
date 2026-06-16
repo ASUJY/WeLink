@@ -12,3 +12,11 @@ ChatMainWidget::~ChatMainWidget()
 {
     delete ui;
 }
+
+
+void ChatMainWidget::SetData(Friend *data) {
+    ui->listWidget->clear();    // 清空原来的聊天记录
+    qDebug() << "name: " << QString::fromStdString(data->GetUserName());
+    ui->labName->setText(QString::fromStdString(data->GetUserName()));
+    auto messages = data->GetMessages();
+}

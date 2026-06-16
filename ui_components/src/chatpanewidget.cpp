@@ -10,6 +10,8 @@
 #include "message.hpp"
 #include "friend.hpp"
 
+ChatListItem* ChatPaneWidget::m_item = nullptr;
+
 ChatPaneWidget::ChatPaneWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ChatPaneWidget)
@@ -68,5 +70,21 @@ void ChatPaneWidget::SlotReciveAddFriendReq(const QByteArray& data) {
         widget->SetItem(fri);
         m_mapIdToChatItem[fri->GetUserId()] = widget;
         ui->listWidget->setItemWidget(item, widget);
+
+        connect(widget, &ChatListItem::SIG_Selected, this, &ChatPaneWidget::SlotItemSelected);
     }
+}
+
+void ChatPaneWidget::SlotItemSelected(ChatListItem *item) {
+    if (item == nullptr) return;
+    if (m_item != nullptr) {
+        m_item->Selected(false);
+        m_item->Checked(false);
+    }
+    item->Selected(true);
+    item->Checked(true);
+    m_item = item;
+
+    QVariant var = QVariant::fromValue(item->GetItem());
+    emit SIG_ItemClicked(var, PageType::AllChatView);
 }

@@ -28,3 +28,21 @@ void ChatListItem::SetItem(Friend *data) {
     ui->chatlistitem_widget->setVisible(data->GetCount() != 0);
     ui->labMute->setVisible(data->GetMute());
 }
+
+void ChatListItem::Checked(bool checked) {
+    m_isChecked = checked;
+}
+
+void ChatListItem::Selected(bool selected) {
+    if (selected) {
+        ui->widget->setStyleSheet("QWidget#widget{background: #c3c3c3;}");
+    } else {
+        ui->widget->setStyleSheet("QWidget#widget{background: #dfdfdf;}");
+    }
+}
+
+void ChatListItem::mousePressEvent(QMouseEvent *event) {
+    ui->labMsgCount->setText("0");
+    ui->chatlistitem_widget->setVisible(false);
+    emit SIG_Selected(this);
+}

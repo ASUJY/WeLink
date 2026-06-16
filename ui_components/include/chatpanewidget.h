@@ -4,6 +4,11 @@
 #include <QWidget>
 #include "chatlistitem.h"
 
+enum PageType {
+    AllChatView,
+};
+
+
 namespace Ui {
 class ChatPaneWidget;
 }
@@ -19,13 +24,19 @@ public:
 public slots:
     void SlotReciveAddFriendReq(const QByteArray& data);
 
+private slots:
+    void SlotItemSelected(ChatListItem *item);
+
 signals:
     void SIG_AddFriend();
+    void SIG_ItemClicked(QVariant var, PageType type);
 
 private:
     Ui::ChatPaneWidget *ui;
     // 好友id与好友列表项的映射关系
     std::map<int, ChatListItem*> m_mapIdToChatItem;
+
+    static ChatListItem *m_item;    // 当前被选中的聊天项
 };
 
 #endif // CHATPANEWIDGET_H

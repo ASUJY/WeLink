@@ -30,6 +30,7 @@ public slots:
     void SlotGetFriendInfo(QString username);
     void SlotAddFriendReq(User user);
     void SlotReciveAddFriendReq(const QByteArray& data);
+    void SlotSendChatMsg(int id, QString& content);
 
 
 private:

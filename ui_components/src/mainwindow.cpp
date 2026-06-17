@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnContact, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
 
     connect(m_chatPaneWidget, &ChatPaneWidget::SIG_ItemClicked, this, &MainWindow::SlotChatView);
+    connect(m_chatMainWidget, &ChatMainWidget::SIG_SendChatMsg, this, &MainWindow::SlotSendChatMsg);
 }
 
 MainWindow::~MainWindow()
@@ -244,4 +245,8 @@ void MainWindow::SlotChatView(QVariant var, PageType type) {
         m_chatMainWidget->SetData(data);
         m_chatMainWidget->show();
     }
+}
+
+void MainWindow::SlotSendChatMsg(int id, QString& message) {
+    emit SIG_SendChatMsg(id, message);
 }

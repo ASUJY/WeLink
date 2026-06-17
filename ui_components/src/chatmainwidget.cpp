@@ -51,6 +51,7 @@ void ChatMainWidget::SlotBtnSendMsgClicked() {
     chatitem->UpdateFriend(message);
 
     //
+    emit SIG_SendChatMsg(chatitem->GetItem()->GetUserId(), content);
     ui->textEdit->clear();
     SetData(chatitem->GetItem());
 }

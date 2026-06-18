@@ -28,6 +28,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     NetLib
     UiLib
     ModelLib
+    DBMagr
 )
 
 # 安装和部署（可选）

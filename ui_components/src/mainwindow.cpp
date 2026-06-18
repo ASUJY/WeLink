@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnContact, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
 
     connect(m_chatPaneWidget, &ChatPaneWidget::SIG_ItemClicked, this, &MainWindow::SlotChatView);
-    connect(m_chatMainWidget, &ChatMainWidget::SIG_SendChatMsg, this, &MainWindow::SlotSendChatMsg);
+    // connect(m_chatMainWidget, &ChatMainWidget::SIG_SendChatMsg, this, &MainWindow::SlotSendChatMsg);
 }
 
 MainWindow::~MainWindow()

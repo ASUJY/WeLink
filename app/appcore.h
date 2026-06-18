@@ -8,6 +8,7 @@
 #include "mainwindow.h"
 #include "communicationmediator.h"
 #include "user.hpp"
+#include "usermodel.h"
 
 using MsgHandler = std::function<void(const QByteArray& data)>;
 
@@ -46,6 +47,7 @@ private:
     net::CommunicationMediator *m_netMediator = nullptr;
     std::unordered_map<int, std::function<void(const QByteArray& data)>> m_msgHandlerMap;
     User m_user;
+    UserModel m_userModel;
 };
 
 #endif // APPCORE_H

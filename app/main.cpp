@@ -4,7 +4,9 @@
 #include <QApplication>
 #include <QStyleFactory>
 #include <QFile>
+#include <QDir>
 #include "appcore.h"
+#include "dbmagr.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +18,19 @@ int main(int argc, char *argv[])
     file.open(QIODevice::ReadOnly);
     qApp->setStyleSheet(file.readAll());
     file.close();
+
+    QString dbPath = "./data/";
+    QDir dir(dbPath);
+    if (!dir.exists()) {
+        if (!dir.mkpath(".")) {
+            qDebug() << "无法创建目录:" << dir.absolutePath();
+            return -1;
+        }
+    }
+    qDebug() << "当前工作目录:" << QDir::currentPath();
+    qDebug() << "数据库路径:" << QFileInfo(dbPath).absoluteFilePath();
+    auto dbManager = DBMagr::Instance();
+    dbManager->OpenConnection("userConn", "./data/welink.db");
 
     // LoginWidget w;
     // w.show();

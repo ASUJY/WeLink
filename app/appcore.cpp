@@ -29,7 +29,7 @@ AppCore::AppCore() {
     connect(this, &AppCore::SIG_ReciveAddFriendReq, m_mainWindow, &MainWindow::SlotReciveAddFriendReq);
 
     // Send Message
-    connect(m_mainWindow, &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
+    // connect(m_mainWindow, &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
 
     m_msgHandlerMap.insert({REG_MSG_ACK_SUCCESS, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
@@ -64,6 +64,7 @@ void AppCore::SlotRegisterCommit(QString username, QString phone, QString passwo
     dataJson.insert("username", username);
     dataJson.insert("phone", phone);
     dataJson.insert("password", password);
+    dataJson.insert("avatar", "");
 
     QJsonObject json;
     json.insert("from", fromJson);
@@ -147,6 +148,13 @@ void AppCore::LoginSuccess(const QByteArray& data) {
 
     m_user.SetUserId(dataObj.value("userid").toInt());
     m_user.SetUserName(dataObj.value("username").toString().toStdString());
+    m_user.SetUserPhone(dataObj.value("phone").toString().toStdString());
+    m_user.SetUserAvatar(dataObj.value("avator").toString().toStdString());
+    if (!m_userModel.IsUserExit(m_user)) {
+        m_userModel.AddUser(m_user);
+    }
+
+
     m_loginWidget->hide();
     m_mainWindow->show();
 }

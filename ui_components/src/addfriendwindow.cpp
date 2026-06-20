@@ -41,6 +41,8 @@ void AddFriendWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {
 
     m_user.SetUserId(dataObj.value("userid").toString().toInt());
     m_user.SetUserName(dataObj.value("username").toString().toStdString());
+    ui->labHeadIcon->setPixmap(QPixmap(":/resource/head/man.svg"));
+    ui->labName->setText(QString::fromStdString(m_user.GetUserName()));
 }
 
 

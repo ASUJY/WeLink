@@ -251,3 +251,24 @@ QLabel#labMsgCount
   color: #fff;
   padding-left: 1px;
 }
+
+
+/* addfriendwindow.ui */
+QWidget#AddFriendWindow{
+    background-color: rgb(255, 255, 255);
+}
+QLabel#labName {
+    color: black;
+}
+QPushButton#btnAddFriend {
+    border: 2px solid rgb(7, 193, 96);
+    background-color: rgb(7, 193, 96);
+    border-radius: 8px;
+    color: rgb(255, 255, 255);
+}
+QPushButton#btnSearch {
+    color: black;
+}
+QLineEdit#leditSearch {
+     color: black;
+}

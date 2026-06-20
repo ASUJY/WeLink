@@ -36,13 +36,13 @@
     <number>0</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>6</number>
    </property>
    <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>6</number>
    </property>
    <property name="spacing">
     <number>0</number>
@@ -77,7 +77,7 @@
        <height>40</height>
       </size>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="leftMargin">
        <number>15</number>
       </property>
@@ -90,27 +90,24 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <property name="horizontalSpacing">
-       <number>15</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>0</number>
-      </property>
-      <item row="0" column="0">
+      <item>
        <widget class="QWidget" name="searchWidget" native="true">
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>25</height>
+          <height>30</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>25</height>
+          <height>30</height>
          </size>
         </property>
-        <layout class="QGridLayout" name="gridLayout_4">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -123,15 +120,12 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <item row="0" column="0" rowspan="2" colspan="2">
+         <item>
           <widget class="QPushButton" name="btnSearch">
            <property name="maximumSize">
             <size>
-             <width>25</width>
-             <height>25</height>
+             <width>30</width>
+             <height>30</height>
             </size>
            </property>
            <property name="focusPolicy">
@@ -152,7 +146,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2" rowspan="2">
+         <item>
           <widget class="QLineEdit" name="leditSearch">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -169,7 +163,7 @@
            <property name="maximumSize">
             <size>
              <width>16777215</width>
-             <height>16777215</height>
+             <height>30</height>
             </size>
            </property>
            <property name="placeholderText">
@@ -177,33 +171,49 @@
            </property>
           </widget>
          </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>5</width>
+             <height>30</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnPlus">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>25</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::FocusPolicy::StrongFocus</enum>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../app/resource.qrc">
+             <normaloff>:/resource/icon/menu/plus.svg</normaloff>:/resource/icon/menu/plus.svg</iconset>
+           </property>
+          </widget>
+         </item>
         </layout>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QToolButton" name="btnPlus">
-        <property name="minimumSize">
-         <size>
-          <width>25</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>25</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::FocusPolicy::StrongFocus</enum>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../../app/resource.qrc">
-          <normaloff>:/resource/icon/menu/plus.svg</normaloff>:/resource/icon/menu/plus.svg</iconset>
-        </property>
        </widget>
       </item>
      </layout>

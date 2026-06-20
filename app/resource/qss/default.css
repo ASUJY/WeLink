@@ -220,6 +220,17 @@ QListWidget#listWidget {
 QWidget#ChatPaneWidget {
     background: #f4f4f4;
 }
+QListWidget#listWidget {
+    border: 0px;
+    background: #f4f4f4;
+    border-radius: 5px;
+}
+QPushButton#btnSearch {
+    background: white;
+}
+QToolButton#btnPlus {
+    background: white;
+}
 
 /* ChatListItem */
 QWidget#widget

@@ -1,5 +1,5 @@
-
-#LoginWidget {
+/* loginwidget.ui */
+QWidget#LoginWidget {
     background-color: white;
     border-radius: 12px;
 }
@@ -95,6 +95,16 @@ QCheckBox {
 ClickLabel {
     color: #12B7F5;
     font-size: 14px;
+}
+
+/* mainwindow.ui */
+QWidget#chatWidget {
+   background: #f4f4f4;
+}
+
+QWidget#chatListwidget {
+    border: none;
+    background: #f4f4f4;
 }
 
 QWidget#centralWidget {
@@ -206,32 +216,15 @@ QListWidget#listWidget {
     border-radius: 5px;
 }
 
-/*ContactListWidget*/
-ContactsListWidget#contactsListWidget {
-    border: 0px;
-    background: #ddd;
-    border-radius: 5px;
+/* chatpanewidget.ui */
+QWidget#ChatPaneWidget {
+    background: #f4f4f4;
 }
-QPushButton#btnPlus {
-    border: 0px;
-    background: #ddd;
-    border-radius: 5px;
-    padding: 2px;
-}
-QWidget#nullWidget {
-    background: #ddd;
-}
-QWidget#toolWidget {
-    border: none;
-    background: #ddd;
-/*    margin: 1px;*/
-}
-
 
 /* ChatListItem */
 QWidget#widget
 {
-  background: #dfdfdf;
+  background: #f4f4f4;
 }
 QWidget#chatlistitem_widget
 {
@@ -252,10 +245,48 @@ QLabel#labMsgCount
   padding-left: 1px;
 }
 
+/*contactspanewidget.ui*/
+QWidget#ContactsPaneWidget {
+    border: 0px;
+    background: #f4f4f4;
+    border-radius: 5px;
+}
+QPushButton#btnPlus {
+    border: 1px;
+    background: #ddd;
+    border-radius: 5px;
+    padding: 2px;
+}
+QWidget#nullWidget {
+    background: #f4f4f4;
+}
+QWidget#toolWidget {
+    border: none;
+    background: #f4f4f4;
+/*    margin: 1px;*/
+}
+QWidget#searchWidget {
+    background: white;
+}
+QLineEdit#leditSearch {
+    background: white;
+}
+QLabel#labSearch {
+    background: white;
+}
+QPushButton#btnPlus {
+    background: white;
+}
+ContactsListWidget#contactsListWidget {
+    border: 0px;
+    background: #f4f4f4;
+    border-radius: 5px;
+}
+
 
 /* addfriendwindow.ui */
 QWidget#AddFriendWindow{
-    background-color: rgb(255, 255, 255);
+    background-color: white;
 }
 QLabel#labName {
     color: black;
@@ -271,4 +302,7 @@ QPushButton#btnSearch {
 }
 QLineEdit#leditSearch {
      color: black;
+}
+QStackedWidget::page > QWidget {
+    background-color: white;
 }

@@ -6,6 +6,7 @@ ContactsMainWidget::ContactsMainWidget(QWidget *parent)
     , ui(new Ui::ContactsMainWidget)
 {
     ui->setupUi(this);
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 ContactsMainWidget::~ContactsMainWidget()

@@ -22,7 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_contactsPaneWidget = new ContactsPaneWidget;
     connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotReciveAddFriendReq);
-    connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendReq);
+    m_contactsMainWidget = new ContactsMainWidget;
+    // connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendReq);
 
     // this->setMouseTracking(true);
     // this->installEventFilter(this); // 将事件过滤器对象(this)安装到目标对象(this)上
@@ -218,8 +219,9 @@ void MainWindow::SlotSelectEvent() {
         break;
     case Contactwidget:
         ui->gridLayout_2->removeWidget(m_contactsPaneWidget);
-        // ui->gridLayout_3->removeWidget()
+        ui->gridLayout_3->removeWidget(m_contactsMainWidget);
         m_contactsPaneWidget->hide();
+        m_contactsMainWidget->hide();
         break;
     }
 
@@ -233,7 +235,9 @@ void MainWindow::SlotSelectEvent() {
     } else {
         m_page = ChatPage::Contactwidget;
         ui->gridLayout_2->addWidget(m_contactsPaneWidget);
+        ui->gridLayout_3->addWidget(m_contactsMainWidget);
         m_contactsPaneWidget->show();
+        m_contactsMainWidget->show();
     }
 
 }

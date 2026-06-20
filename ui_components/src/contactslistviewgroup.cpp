@@ -26,6 +26,7 @@ void ContactsListViewGroup::SetGroupState(ContactsItem *item) {
 
 void ContactsListViewGroup::SetLabTitle(ContactsItem *item) {
     ui->labTitle->setText(item->GetGroupName());
+    ui->labTitle->setStyleSheet("color: black;");
 }
 
 void ContactsListViewGroup::mousePressEvent(QMouseEvent *event) {

@@ -6,6 +6,7 @@
 #include "chatpanewidget.h"
 #include "chatmainwidget.h"
 #include "contactspanewidget.h"
+#include "contactsmainwidget.h"
 #include "addfriendwindow.h"
 
 enum Area {
@@ -83,6 +84,7 @@ private:
     ChatPaneWidget *m_chatPaneWidget;
     ChatMainWidget *m_chatMainWidget;
     ContactsPaneWidget *m_contactsPaneWidget;
+    ContactsMainWidget *m_contactsMainWidget;
     AddFriendWindow *m_addFriendWindow;
 
 };

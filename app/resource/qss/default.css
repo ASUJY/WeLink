@@ -383,8 +383,11 @@ QPushButton#btnSearch {
     color: black;
 }
 QLineEdit#leditSearch {
-     color: black;
+    color: black;
 }
 QStackedWidget::page > QWidget {
     background-color: white;
+}
+QWidget#notfindWidget > QLabel#label {
+    color: black;
 }

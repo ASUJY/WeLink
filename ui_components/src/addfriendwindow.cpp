@@ -11,6 +11,7 @@ AddFriendWindow::AddFriendWindow(QWidget *parent)
     ui->stackedWidget->setCurrentIndex(0);
     connect(ui->btnSearch, &QPushButton::clicked, this, &AddFriendWindow::SlotSearchFriend);
     connect(ui->btnAddFriend, &QPushButton::clicked, this, &AddFriendWindow::SlotAddFriendReq);
+    connect(ui->leditSearch, &QLineEdit::textChanged, this, &AddFriendWindow::SlotChangedStackWidget);
 }
 
 AddFriendWindow::~AddFriendWindow()
@@ -45,6 +46,14 @@ void AddFriendWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {
     ui->labName->setText(QString::fromStdString(m_user.GetUserName()));
 }
 
+void AddFriendWindow::SlotGetFriendInfoFailed(const QByteArray& data) {
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void AddFriendWindow::SlotChangedStackWidget() {
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
 
 void AddFriendWindow::SlotAddFriendReq() {
     QString username = ui->leditSearch->text();
@@ -53,4 +62,6 @@ void AddFriendWindow::SlotAddFriendReq() {
         return;
     }
     emit SIG_AddFriendReq(m_user);
+    // this->hide();
+    // this->close();
 }

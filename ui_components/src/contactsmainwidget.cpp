@@ -7,6 +7,7 @@ ContactsMainWidget::ContactsMainWidget(QWidget *parent)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(3);
+    connect(ui->btnAddFriend, &QPushButton::clicked, this, &ContactsMainWidget::SlotAddFriendReq);
 }
 
 ContactsMainWidget::~ContactsMainWidget()
@@ -33,4 +34,10 @@ void ContactsMainWidget::SetStackedWidgetCurrentIndex(ContactsListViewChild *ite
     } else {
         ui->stackedWidget->setCurrentIndex(3);
     }
+}
+
+void ContactsMainWidget::SlotAddFriendReq() {
+    User user;
+    user.SetUserName(ui->labName->text().toStdString());
+    emit SIG_AddFriendReq(user);
 }

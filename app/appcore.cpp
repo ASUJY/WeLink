@@ -23,6 +23,7 @@ AppCore::AppCore() {
     // Add Friend
     connect(m_mainWindow, &MainWindow::SIG_GetFriendInfo, this, &AppCore::SlotGetFriendInfo);
     connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow, &MainWindow::SlotGetFriendInfoSuccess);
+     connect(this, &AppCore::SIG_GetFriendInfoFailed, m_mainWindow, &MainWindow::SlotGetFriendInfoFailed);
     connect(m_mainWindow, &MainWindow::SIG_AddFriendReq, this, &AppCore::SlotAddFriendReq);
 
     // Added Friend
@@ -34,6 +35,7 @@ AppCore::AppCore() {
     m_msgHandlerMap.insert({REG_MSG_ACK_SUCCESS, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
 
     m_loginWidget->show();
@@ -177,6 +179,10 @@ void AppCore::SlotGetFriendInfo(QString username) {
 
 void AppCore::GetFriendInfoSuccess(const QByteArray& data) {
     emit SIG_GetFriendInfoSuccess(data);
+}
+
+void  AppCore::GetFriendInfoFailed(const QByteArray& data) {
+    emit SIG_GetFriendInfoFailed(data);
 }
 
 void  AppCore::SlotAddFriendReq(User frienduser) {

@@ -22,6 +22,8 @@ signals:
 
 public slots:
     void SlotGetFriendInfoSuccess(const QByteArray& data);
+    void SlotGetFriendInfoFailed(const QByteArray& data);
+    void SlotChangedStackWidget();
 
 private slots:
     void SlotSearchFriend();

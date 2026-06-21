@@ -18,6 +18,7 @@ class AppCore : public QObject
 
 signals:
     void SIG_GetFriendInfoSuccess(const QByteArray& data);
+    void SIG_GetFriendInfoFailed(const QByteArray& data);
     void SIG_ReciveAddFriendReq(const QByteArray& data);
 
 public:
@@ -39,6 +40,7 @@ private:
     void RegisterSuccess(const QByteArray& data);
     void LoginSuccess(const QByteArray& data);
     void GetFriendInfoSuccess(const QByteArray& data);
+    void GetFriendInfoFailed(const QByteArray& data);
 
 private:
     LoginWidget *m_loginWidget = nullptr;

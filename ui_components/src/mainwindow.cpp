@@ -11,7 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_addFriendWindow = new AddFriendWindow;
     connect(m_addFriendWindow, &AddFriendWindow::SIG_GetFriendInfo, this, &MainWindow::SIG_GetFriendInfo);
     connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
-    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
+    connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoFailed);
+    // connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
 
 
     m_chatPaneWidget = new ChatPaneWidget;
@@ -25,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotReciveAddFriendReq);
     connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotAddFriendReq);
     connect(m_contactsPaneWidget, &ContactsPaneWidget::SIG_ItemDidSelected, this, &MainWindow::SlotContactsItemDidSelected);
+    connect(m_contactsMainWidget, &ContactsMainWidget::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
     m_contactsMainWidget = new ContactsMainWidget;
     // connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendReq);
 
@@ -201,6 +203,10 @@ void MainWindow::ShowAddFriendWindow() {
 
 void MainWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {
     emit SIG_GetFriendInfoSuccess(data);
+}
+
+void MainWindow::SlotGetFriendInfoFailed(const QByteArray& data) {
+    emit SIG_GetFriendInfoFailed(data);
 }
 
 void MainWindow::SlotReciveAddFriendReq(const QByteArray& data) {

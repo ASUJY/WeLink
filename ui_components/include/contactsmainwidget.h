@@ -11,11 +11,15 @@ class ContactsMainWidget;
 class ContactsMainWidget : public QWidget
 {
     Q_OBJECT
-
+signals:
+    void SIG_AddFriendReq(User user);
 public:
     explicit ContactsMainWidget(QWidget *parent = nullptr);
     ~ContactsMainWidget();
     void SetStackedWidgetCurrentIndex(ContactsListViewChild*);
+
+public slots:
+    void SlotAddFriendReq();
 
 private:
     Ui::ContactsMainWidget *ui;

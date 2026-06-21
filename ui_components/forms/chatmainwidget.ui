@@ -108,6 +108,33 @@
               <height>40</height>
              </size>
             </property>
+            <property name="palette">
+             <palette>
+              <active>
+               <colorrole role="ButtonText">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </active>
+              <inactive>
+               <colorrole role="ButtonText">
+                <brush brushstyle="SolidPattern">
+                 <color alpha="255">
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>0</blue>
+                 </color>
+                </brush>
+               </colorrole>
+              </inactive>
+              <disabled/>
+             </palette>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -128,24 +155,52 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <layout class="QGridLayout" name="gridLayout">
           <property name="leftMargin">
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>0</number>
+           <number>1</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
           </property>
           <property name="bottomMargin">
+           <number>100</number>
+          </property>
+          <property name="horizontalSpacing">
            <number>0</number>
           </property>
-          <property name="spacing">
-           <number>0</number>
+          <property name="verticalSpacing">
+           <number>100</number>
           </property>
           <item row="0" column="0">
-           <widget class="QListWidget" name="listWidget"/>
+           <widget class="QListWidget" name="listWidget">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -202,7 +257,7 @@
               <number>0</number>
              </property>
              <property name="bottomMargin">
-              <number>10</number>
+              <number>0</number>
              </property>
              <item>
               <widget class="QLabel" name="label">
@@ -355,7 +410,7 @@
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <property name="spacing">
-              <number>10</number>
+              <number>5</number>
              </property>
              <property name="leftMargin">
               <number>0</number>
@@ -394,7 +449,7 @@
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QPushButton" name="pushButton_2">
+                 <widget class="QPushButton" name="btnEmoji">
                   <property name="maximumSize">
                    <size>
                     <width>40</width>
@@ -417,7 +472,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton">
+                 <widget class="QPushButton" name="btnFileFolder">
                   <property name="maximumSize">
                    <size>
                     <width>40</width>

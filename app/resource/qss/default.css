@@ -204,18 +204,6 @@ QPushButton#btnSearch {
     padding: 3px;
 }
 
-QLineEdit#leditSearch {
-    border: 0px;
-    background: #ddd;
-    border-radius: 0 5px 5px 0;
-    outline: none;
-}
-QListWidget#listWidget {
-    border: 0px;
-    background: #ddd;
-    border-radius: 5px;
-}
-
 /* chatpanewidget.ui */
 QWidget#ChatPaneWidget {
     background: #f4f4f4;
@@ -256,6 +244,85 @@ QLabel#labMsgCount
   padding-left: 1px;
 }
 
+/* chatmainwidget.ui */
+QStackedWidget#ChatMainStackedWidget {
+/*    background: white;*/
+}
+QWidget#topWidget {
+/*    border-bottom: 1px solid black;*/
+}
+QWidget#midWidget {
+    border-bottom: 1px solid #f4f4f4;
+    border-top: 1px solid #f4f4f4;
+}
+QWidget#bottomWidget {
+    border: 1px;
+    background: white;
+}
+QTextEdit#textEdit {
+    border: none;
+    background: white;
+    color: black;
+}
+QWidget#bottomWidget > QWidget#widget {
+    border: none;
+    background: white;
+}
+
+
+QWidget#midWidget > QListWidget#listWidget {
+    background: white;
+    /*border-bottom: 10px solid red;
+    border-top: 10px solid red;
+    margin:0px;*/
+}
+
+QWidget#topWidget > QPushButton#btnInfo {
+    background-color: white;
+    color: black;
+    border: none;
+}
+QWidget#topWidget > QPushButton#btnInfo:hover {
+    background-color: #e6e6e6;  /* 悬停稍微变灰，保持交互反馈 */
+}
+QWidget#topWidget > QPushButton#btnInfo:pressed {
+    background-color: #cccccc;  /* 按下更深一点 */
+}
+QWidget#bottomMenuWidget > QWidget#widget_2 > QPushButton#btnEmoji {
+    background-color: white;
+    color: black;
+    border: none;
+}
+QWidget#bottomMenuWidget > QWidget#widget_2 > QPushButton#btnEmoji:hover {
+    background-color: #e6e6e6;  /* 悬停稍微变灰，保持交互反馈 */
+}
+QWidget#bottomMenuWidget > QWidget#widget_2 > QPushButton#btnEmoji:pressed {
+    background-color: #cccccc;  /* 按下更深一点 */
+}
+QWidget#bottomMenuWidget > QWidget#widget_2> QPushButton#btnFileFolder {
+    background-color: white;
+    color: black;
+    border: none;
+}
+QWidget#bottomMenuWidget > QWidget#widget_2> QPushButton#btnFileFolder:hover {
+    background-color: #e6e6e6;  /* 悬停稍微变灰，保持交互反馈 */
+}
+QWidget#bottomMenuWidget > QWidget#widget_2> QPushButton#btnFileFolder:pressed {
+    background-color: #cccccc;  /* 按下更深一点 */
+}
+QPushButton#btnSendMsg {
+    background-color: #f4f4f4;
+    color: black;
+    border: none;
+}
+QPushButton#btnSendMsg:hover {
+    background-color: #e6e6e6;  /* 悬停稍微变灰，保持交互反馈 */
+}
+QPushButton#btnSendMsg:pressed {
+    background-color: #cccccc;  /* 按下更深一点 */
+}
+
+
 /*contactspanewidget.ui*/
 QWidget#ContactsPaneWidget {
     border: 0px;
@@ -280,8 +347,12 @@ QWidget#searchWidget {
     background: white;
 }
 QLineEdit#leditSearch {
+    border: 0px;
     background: white;
+    border-radius: 0 5px 5px 0;
+    outline: none;
 }
+
 QLabel#labSearch {
     background: white;
 }

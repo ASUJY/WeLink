@@ -47,6 +47,7 @@ public slots:
     void SlotGetFriendInfoSuccess(const QByteArray& data);
     void SlotReciveAddFriendReq(const QByteArray& data);
     void SlotSendChatMsg(int id, QString &message);
+    void SlotContactsItemDidSelected(ContactsListViewChild*);
 
 private slots:
     void SlotSelectEvent();

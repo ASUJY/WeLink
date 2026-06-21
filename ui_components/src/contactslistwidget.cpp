@@ -54,6 +54,7 @@ void ContactsListWidget::AddChildItem(ContactsItem* item) {
     ContactsListViewChild *childItem = new ContactsListViewChild;
     childItem->setGeometry(0, 0, 300, 60);
     childItem->SetItem(item);
+    connect(childItem, &ContactsListViewChild::SIG_ItemDidSelected, this, &ContactsListWidget::SIG_ItemDidSelected);
 
     QListWidgetItem *qitem = new QListWidgetItem("");
     this->addItem(qitem);

@@ -32,3 +32,12 @@ void ContactsListViewChild::paintEvent(QPaintEvent *) {
     painter.setFont(font);
     painter.drawText(70, 0, w - 70, h / 2 - 2, Qt::AlignBottom, m_item->GetItemName());
 }
+
+void ContactsListViewChild::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton)
+    {
+        // User user;
+        // user.SetUserName(m_item->GetItemName().toStdString());
+        emit SIG_ItemDidSelected(this);
+    }
+}

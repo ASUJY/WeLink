@@ -2,6 +2,7 @@
 #define CONTACTSMAINWIDGET_H
 
 #include <QWidget>
+#include "contactslistviewchild.h"
 
 namespace Ui {
 class ContactsMainWidget;
@@ -14,6 +15,7 @@ class ContactsMainWidget : public QWidget
 public:
     explicit ContactsMainWidget(QWidget *parent = nullptr);
     ~ContactsMainWidget();
+    void SetStackedWidgetCurrentIndex(ContactsListViewChild*);
 
 private:
     Ui::ContactsMainWidget *ui;

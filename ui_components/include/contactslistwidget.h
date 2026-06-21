@@ -3,10 +3,13 @@
 
 #include <QListWidget>
 #include "contactsitem.h"
+#include "contactslistviewchild.h"
 
 class ContactsListWidget : public QListWidget
 {
     Q_OBJECT
+signals:
+    void SIG_ItemDidSelected(ContactsListViewChild*);
 public:
     explicit ContactsListWidget(QWidget *parent = nullptr);
 

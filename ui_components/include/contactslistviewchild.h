@@ -2,11 +2,16 @@
 #define CONTACTSLISTVIEWCHILD_H
 
 #include <QWidget>
+#include <QMouseEvent>
 #include "contactsitem.h"
+#include "user.hpp"
 
 class ContactsListViewChild : public QWidget
 {
     Q_OBJECT
+
+signals:
+    void SIG_ItemDidSelected(ContactsListViewChild*);
 
 public:
     explicit ContactsListViewChild(QWidget* parent = nullptr);
@@ -17,6 +22,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *);
+    void mousePressEvent(QMouseEvent *);
 
 private:
     ContactsItem *m_item;

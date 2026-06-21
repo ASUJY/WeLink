@@ -24,6 +24,8 @@ ContactsPaneWidget::ContactsPaneWidget(QWidget *parent)
     contactsItem->SetItemType(ContactsItemType::Group);
     contactsItem->SetItemName(tr("联系人"));
     ui->contactsListWidget->InsertItem(contactsItem);
+
+    connect(ui->contactsListWidget, &ContactsListWidget::SIG_ItemDidSelected, this, &ContactsPaneWidget::SIG_ItemDidSelected);
 }
 
 ContactsPaneWidget::~ContactsPaneWidget()
@@ -31,6 +33,15 @@ ContactsPaneWidget::~ContactsPaneWidget()
     delete ui;
 }
 
+void ContactsPaneWidget::SlotAddFriendReq(User user) {
+    ContactsItem *newFriendItem = new ContactsItem;
+    newFriendItem->SetGroupName(tr("新的朋友"));
+    newFriendItem->SetItemName(QString::fromStdString(user.GetUserName()));
+    newFriendItem->SetHeadIcon(":/resource/head/man.svg");
+    newFriendItem->SetItemType(ContactsItemType::Item);
+    newFriendItem->SetItemState(ContactsState::Send);
+    ui->contactsListWidget->InsertItem(newFriendItem);
+}
 
 void ContactsPaneWidget::SlotReciveAddFriendReq(const QByteArray& data) {
     QJsonParseError jsonError;
@@ -52,5 +63,6 @@ void ContactsPaneWidget::SlotReciveAddFriendReq(const QByteArray& data) {
     newFriendItem->SetItemName(friendname);
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
+    newFriendItem->SetItemState(ContactsState::Recevie);
     ui->contactsListWidget->InsertItem(newFriendItem);
 }

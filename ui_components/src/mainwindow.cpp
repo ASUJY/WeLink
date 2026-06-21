@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
     connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
 
+
     m_chatPaneWidget = new ChatPaneWidget;
     connect(m_chatPaneWidget, &ChatPaneWidget::SIG_AddFriend, this, &MainWindow::ShowAddFriendWindow);
     ui->gridLayout_2->addWidget(m_chatPaneWidget);
@@ -22,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_contactsPaneWidget = new ContactsPaneWidget;
     connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotReciveAddFriendReq);
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotAddFriendReq);
+    connect(m_contactsPaneWidget, &ContactsPaneWidget::SIG_ItemDidSelected, this, &MainWindow::SlotContactsItemDidSelected);
     m_contactsMainWidget = new ContactsMainWidget;
     // connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendReq);
 
@@ -253,4 +256,8 @@ void MainWindow::SlotChatView(QVariant var, PageType type) {
 
 void MainWindow::SlotSendChatMsg(int id, QString& message) {
     emit SIG_SendChatMsg(id, message);
+}
+
+void MainWindow::SlotContactsItemDidSelected(ContactsListViewChild *item) {
+    m_contactsMainWidget->SetStackedWidgetCurrentIndex(item);
 }

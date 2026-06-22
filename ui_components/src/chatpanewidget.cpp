@@ -75,6 +75,30 @@ void ChatPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     }
 }
 
+void ChatPaneWidget::SlotAddFriendReqAck(User user) {
+
+    QString friendname = QString::fromStdString(user.GetUserName());
+    int friendid = user.GetUserId();
+
+    if (m_mapIdToChatItem.find(friendid) == m_mapIdToChatItem.end()) {
+        QList<Message> messages1;
+        Friend* fri = new Friend(friendid, friendname, ":/resource/head/man.svg", false, "2026", 0, messages1);
+
+        auto item = new QListWidgetItem;
+        QVariant var = QVariant::fromValue(fri);
+        item->setData(Qt::UserRole, var);
+        item->setSizeHint(QSize(250, 65));
+        ui->listWidget->addItem(item);
+
+        auto widget = new ChatListItem;
+        widget->SetItem(fri);
+        m_mapIdToChatItem[fri->GetUserId()] = widget;
+        ui->listWidget->setItemWidget(item, widget);
+
+        connect(widget, &ChatListItem::SIG_Selected, this, &ChatPaneWidget::SlotItemSelected);
+    }
+}
+
 void ChatPaneWidget::SlotItemSelected(ChatListItem *item) {
     if (item == nullptr) return;
     if (m_item != nullptr) {

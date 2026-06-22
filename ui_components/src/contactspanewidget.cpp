@@ -43,6 +43,16 @@ void ContactsPaneWidget::SlotAddFriendReq(User user) {
     ui->contactsListWidget->InsertItem(newFriendItem);
 }
 
+void ContactsPaneWidget::SlotAddFriendReqAck(User user) {
+    ContactsItem *newFriendItem = new ContactsItem;
+    newFriendItem->SetGroupName(tr("联系人"));
+    newFriendItem->SetItemName(QString::fromStdString(user.GetUserName()));
+    newFriendItem->SetHeadIcon(":/resource/head/man.svg");
+    newFriendItem->SetItemType(ContactsItemType::Item);
+    newFriendItem->SetItemState(ContactsState::Done);
+    ui->contactsListWidget->InsertItem(newFriendItem);
+}
+
 void ContactsPaneWidget::SlotReciveAddFriendReq(const QByteArray& data) {
     qDebug() << "ContactsPaneWidget::SlotReciveAddFriendReq";
     QJsonParseError jsonError;

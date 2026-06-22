@@ -5,8 +5,8 @@
 
 class User {
 public:
-    User(int id = -1, std::string phone = "", std::string account = "",
-         std::string name = "", std::string avatar = "", std::string pwd = "",  std::string state = "offline") {
+    User(int id = -1, std::string name = "", std::string avatar = "", std::string phone = "", std::string account = "",
+        std::string pwd = "",  std::string state = "offline") {
         this->m_userid = id;
         this->m_userphone = phone;
         this->m_account = account;

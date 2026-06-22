@@ -20,6 +20,7 @@ void ChatListItem::SetItem(Friend *data) {
     auto pixmap = QPixmap(":/resource/head/man.svg");
     ui->labHeadIcon->setPixmap(pixmap);
     ui->labName->setText(QString::fromStdString(data->GetUserName()));
+    ui->labName->setStyleSheet("color: black;");
     ui->labTime->setText(data->GetTime());
     if (data->GetMessages().count() > 0) {
         // setContent(data)

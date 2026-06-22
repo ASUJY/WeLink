@@ -277,5 +277,9 @@ void MainWindow::SlotContactsItemDidSelected(ContactsListViewChild *item) {
 
 void MainWindow::SlotAddFriendReqAck(User user) {
     qDebug() << "MainWindow::SlotAddFriendReqAck";
+    // 在联系人列表中添加朋友项
+    m_contactsPaneWidget->SlotAddFriendReqAck(user);
+    // 在聊天列表中添加朋友项
+    m_chatPaneWidget->SlotAddFriendReqAck(user);
     emit SIG_AddFriendReqAck(user);
 }

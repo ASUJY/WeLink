@@ -24,6 +24,7 @@ public:
 
 public slots:
     void SlotReciveAddFriendAckAgree(const QByteArray& data);
+    void SlotAddFriendReqAck(User user);
 
 private slots:
     void SlotItemSelected(ChatListItem *item);

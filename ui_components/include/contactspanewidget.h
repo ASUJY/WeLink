@@ -20,6 +20,7 @@ public:
 
 public slots:
     void SlotReciveAddFriendReq(const QByteArray& data);
+    void SIG_ReciveAddFriendAckAgree(const QByteArray& data);
     void SlotAddFriendReq(User user);
     // void SlotItemDidSelected();
 

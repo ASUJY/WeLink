@@ -23,7 +23,7 @@ public:
     static ChatListItem* GetItem() { return m_item; }
 
 public slots:
-    void SlotReciveAddFriendReq(const QByteArray& data);
+    void SlotReciveAddFriendAckAgree(const QByteArray& data);
 
 private slots:
     void SlotItemSelected(ChatListItem *item);

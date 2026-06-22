@@ -1,10 +1,15 @@
 #include "contactslistwidget.h"
 #include "contactslistviewgroup.h"
 #include "contactslistviewchild.h"
+#include <QTimer>
 
 ContactsListWidget::ContactsListWidget(QWidget *parent)
     : QListWidget{parent}
-{}
+{
+    m_updateTimer = new QTimer(this);
+    m_updateTimer->setSingleShot(true);
+    connect(m_updateTimer, &QTimer::timeout, this, &ContactsListWidget::UploadItems);
+}
 
 
 void ContactsListWidget::InsertItem(ContactsItem* item) {
@@ -19,7 +24,8 @@ void ContactsListWidget::InsertItem(ContactsItem* item) {
             }
         }
     }
-    UploadItems();
+    // QTimer::singleShot(0, this, &ContactsListWidget::UploadItems);
+    m_updateTimer->start(50);
 }
 
 void ContactsListWidget::UploadItems() {
@@ -47,7 +53,8 @@ void ContactsListWidget::UploadItems() {
 
 void ContactsListWidget::SlotGroupOpenDidChanged()
 {
-    UploadItems();
+    // QTimer::singleShot(0, this, &ContactsListWidget::UploadItems);
+    m_updateTimer->start(50);
 }
 
 void ContactsListWidget::AddChildItem(ContactsItem* item) {

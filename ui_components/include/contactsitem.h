@@ -32,15 +32,17 @@ public:
     void SetGroupName(QString name) {m_groupName = name;}
     void SetIsOpen(bool isopen) {m_isOpen = isopen;}
     void SetItemName(QString name) {m_name = name;}
+    void SetItemId(uint64_t id) {m_id = id;}
     void SetHeadIcon(QString headIcon) {m_headIcon = headIcon;}
     void SetItemType(int type) {m_type = type;}
-     void SetItemState(int state) {m_state = state;}
+    void SetItemState(int state) {m_state = state;}
     void AddChildItem(ContactsItem* item) {
         if (item) m_childItems.append(item);
     }
     QString GetGroupName() {return m_groupName;}
     bool GetIsOpen() {return m_isOpen;}
     QString GetItemName() {return m_name;}
+    uint64_t GetItemId() {return m_id;}
     int GetItemType() {return m_type;}
     int GetItemState() {return m_state;}
     QString GetHeadIcon() {return m_headIcon;}
@@ -48,6 +50,7 @@ public:
 
 private:
     QString m_name;
+    uint64_t m_id;
     QString m_headIcon;
     int m_state = Done;
     int m_type = ContactsItemType::Group;

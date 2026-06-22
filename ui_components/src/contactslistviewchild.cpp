@@ -5,10 +5,10 @@
 ContactsListViewChild::ContactsListViewChild(QWidget *parent) {}
 
 ContactsListViewChild::~ContactsListViewChild() {
-    if (m_item) {
-        delete m_item;
-        m_item = nullptr;
-    }
+    // if (m_item) {
+    //     delete m_item;
+    //     m_item = nullptr;
+    // }
 }
 
 void ContactsListViewChild::paintEvent(QPaintEvent *) {

@@ -23,11 +23,13 @@ AppCore::AppCore() {
     // Add Friend
     connect(m_mainWindow, &MainWindow::SIG_GetFriendInfo, this, &AppCore::SlotGetFriendInfo);
     connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow, &MainWindow::SlotGetFriendInfoSuccess);
-     connect(this, &AppCore::SIG_GetFriendInfoFailed, m_mainWindow, &MainWindow::SlotGetFriendInfoFailed);
+    connect(this, &AppCore::SIG_GetFriendInfoFailed, m_mainWindow, &MainWindow::SlotGetFriendInfoFailed);
     connect(m_mainWindow, &MainWindow::SIG_AddFriendReq, this, &AppCore::SlotAddFriendReq);
+    connect(this, &AppCore::SIG_ReciveAddFriendAckAgree, m_mainWindow, &MainWindow::SlotReciveAddFriendAckAgree);
 
     // Added Friend
     connect(this, &AppCore::SIG_ReciveAddFriendReq, m_mainWindow, &MainWindow::SlotReciveAddFriendReq);
+    connect(m_mainWindow, &MainWindow::SIG_AddFriendReqAck, this, &AppCore::SlotAddFriendReqAck);
 
     // Send Message
     // connect(m_mainWindow, &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
@@ -37,6 +39,7 @@ AppCore::AppCore() {
     m_msgHandlerMap.insert({GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({ADD_FRIEND_ACK_AGREE, std::bind(&AppCore::SlotReciveAddFriendAckAgree, this, std::placeholders::_1)});
 
     m_loginWidget->show();
 }
@@ -207,6 +210,30 @@ void  AppCore::SlotAddFriendReq(User frienduser) {
 void AppCore::SlotReciveAddFriendReq(const QByteArray& data) {
     qDebug() << "申请添加朋友";
     emit SIG_ReciveAddFriendReq(data);
+}
+
+void AppCore::SlotReciveAddFriendAckAgree(const QByteArray& data) {
+    qDebug() << "对方已同意添加为朋友";
+    emit SIG_ReciveAddFriendAckAgree(data);
+}
+
+void AppCore::SlotAddFriendReqAck(User frienduser) {
+    qDebug() << frienduser.GetUserName() << "AppCore SlotAddFriendReqAck " << frienduser.GetUserId();
+    QJsonObject dataJson;
+    dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
+    dataJson.insert("friendid", QString::number(frienduser.GetUserId()));
+    dataJson.insert("username", QString::fromStdString(m_user.GetUserName()));
+    dataJson.insert("userid", QString::number(m_user.GetUserId()));
+    QJsonObject json;
+    json.insert("data", dataJson);
+    json.insert("msgtype", ADD_FRIEND_ACK_AGREE);
+    QJsonDocument document;
+    document.setObject(json);
+
+    auto data = document.toJson(QJsonDocument::Compact);
+    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
+    // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
+    bool res = m_netMediator->SendData(data, data.size());
 }
 
 void AppCore::SlotSendChatMsg(int id, QString& content) {

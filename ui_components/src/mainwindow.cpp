@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_addFriendWindow, &AddFriendWindow::SIG_GetFriendInfo, this, &MainWindow::SIG_GetFriendInfo);
     connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
     connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoFailed);
-    // connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
 
 
     m_chatPaneWidget = new ChatPaneWidget;
@@ -24,11 +24,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_contactsPaneWidget = new ContactsPaneWidget;
     connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotReciveAddFriendReq);
+    connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_contactsPaneWidget, &ContactsPaneWidget::SIG_ReciveAddFriendAckAgree);
     connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotAddFriendReq);
     connect(m_contactsPaneWidget, &ContactsPaneWidget::SIG_ItemDidSelected, this, &MainWindow::SlotContactsItemDidSelected);
-    connect(m_contactsMainWidget, &ContactsMainWidget::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
+
     m_contactsMainWidget = new ContactsMainWidget;
+    connect(m_contactsMainWidget, &ContactsMainWidget::SIG_AddFriendReqAck, this, &MainWindow::SlotAddFriendReqAck);
     // connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendReq);
+    connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendAckAgree);
 
     // this->setMouseTracking(true);
     // this->installEventFilter(this); // 将事件过滤器对象(this)安装到目标对象(this)上
@@ -213,6 +216,10 @@ void MainWindow::SlotReciveAddFriendReq(const QByteArray& data) {
     emit SIG_ReciveAddFriendReq(data);
 }
 
+void MainWindow::SlotReciveAddFriendAckAgree(const QByteArray& data) {
+    emit SIG_ReciveAddFriendAckAgree(data);
+}
+
 void MainWindow::SlotSelectEvent() {
     // 取消右侧导航栏之前选中的按钮的选中状态，然后将当前的按钮设置为选中状态
     m_btn->setChecked(false);
@@ -266,4 +273,9 @@ void MainWindow::SlotSendChatMsg(int id, QString& message) {
 
 void MainWindow::SlotContactsItemDidSelected(ContactsListViewChild *item) {
     m_contactsMainWidget->SetStackedWidgetCurrentIndex(item);
+}
+
+void MainWindow::SlotAddFriendReqAck(User user) {
+    qDebug() << "MainWindow::SlotAddFriendReqAck";
+    emit SIG_AddFriendReqAck(user);
 }

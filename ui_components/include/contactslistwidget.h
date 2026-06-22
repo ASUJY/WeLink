@@ -26,6 +26,7 @@ signals:
 
 private:
     QList<ContactsItem*> m_items;
+    QTimer* m_updateTimer;
 };
 
 #endif // CONTACTSLISTWIDGET_H

@@ -25,7 +25,7 @@ protected:
     void mousePressEvent(QMouseEvent *);
 
 private:
-    ContactsItem *m_item;
+    ContactsItem *m_item = nullptr;
 };
 
 #endif // CONTACTSLISTVIEWCHILD_H

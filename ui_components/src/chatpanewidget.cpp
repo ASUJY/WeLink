@@ -42,7 +42,7 @@ ChatPaneWidget::~ChatPaneWidget()
     delete ui;
 }
 
-void ChatPaneWidget::SlotReciveAddFriendReq(const QByteArray& data) {
+void ChatPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
 

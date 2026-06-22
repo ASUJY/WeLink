@@ -41,13 +41,17 @@ signals:
     void SIG_GetFriendInfoSuccess(const QByteArray& data);
     void SIG_GetFriendInfoFailed(const QByteArray& data);
     void SIG_AddFriendReq(User user);
+    void SIG_AddFriendReqAck(User user);
     void SIG_ReciveAddFriendReq(const QByteArray& data);
+    void SIG_ReciveAddFriendAckAgree(const QByteArray& data);
     void SIG_SendChatMsg(int id, const QString &message);
 
 public slots:
     void SlotGetFriendInfoSuccess(const QByteArray& data);
     void SlotGetFriendInfoFailed(const QByteArray& data);
     void SlotReciveAddFriendReq(const QByteArray& data);
+    void SlotAddFriendReqAck(User user);
+    void SlotReciveAddFriendAckAgree(const QByteArray& data);
     void SlotSendChatMsg(int id, QString &message);
     void SlotContactsItemDidSelected(ContactsListViewChild*);
 

@@ -7,7 +7,7 @@ ContactsMainWidget::ContactsMainWidget(QWidget *parent)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(3);
-    connect(ui->btnAddFriend, &QPushButton::clicked, this, &ContactsMainWidget::SlotAddFriendReq);
+    connect(ui->btnAddFriend, &QPushButton::clicked, this, &ContactsMainWidget::SlotAddFriendAgree);
 }
 
 ContactsMainWidget::~ContactsMainWidget()
@@ -16,6 +16,7 @@ ContactsMainWidget::~ContactsMainWidget()
 }
 
 void ContactsMainWidget::SetStackedWidgetCurrentIndex(ContactsListViewChild *item) {
+    m_item = item;
     if (item->GetItem()->GetItemState() == ContactsState::Send) {
         ui->labName_3->setText(item->GetItem()->GetItemName());
         ui->btnHeadIcon_3->setIcon(QIcon(":/resource/head/man.svg"));
@@ -36,8 +37,10 @@ void ContactsMainWidget::SetStackedWidgetCurrentIndex(ContactsListViewChild *ite
     }
 }
 
-void ContactsMainWidget::SlotAddFriendReq() {
+void ContactsMainWidget::SlotAddFriendAgree() {
+    qDebug() << "ContactsMainWidget::SlotAddFriendAgree";
     User user;
-    user.SetUserName(ui->labName->text().toStdString());
-    emit SIG_AddFriendReq(user);
+    user.SetUserName(m_item->GetItem()->GetItemName().toStdString());
+    user.SetUserId(m_item->GetItem()->GetItemId());
+    emit SIG_AddFriendReqAck(user);
 }

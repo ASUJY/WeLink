@@ -13,7 +13,7 @@ class ChatMainWidget : public QWidget
     Q_OBJECT
 
 signals:
-    void SIG_SendChatMsg(int id, QString content);
+    void SIG_SendChatMsg(int id, QString& content);
 
 public:
     explicit ChatMainWidget(QWidget *parent = nullptr);

@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QJsonObject>
+#include <QJsonDocument>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -41,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnContact, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
 
     connect(m_chatPaneWidget, &ChatPaneWidget::SIG_ItemClicked, this, &MainWindow::SlotChatView);
-    // connect(m_chatMainWidget, &ChatMainWidget::SIG_SendChatMsg, this, &MainWindow::SlotSendChatMsg);
+    connect(m_chatMainWidget, &ChatMainWidget::SIG_SendChatMsg, this, &MainWindow::SlotSendChatMsg);
 }
 
 MainWindow::~MainWindow()
@@ -268,6 +270,7 @@ void MainWindow::SlotChatView(QVariant var, PageType type) {
 }
 
 void MainWindow::SlotSendChatMsg(int id, QString& message) {
+    qDebug() << "MainWindow::SlotSendChatMsg: userid" << id;
     emit SIG_SendChatMsg(id, message);
 }
 
@@ -282,4 +285,30 @@ void MainWindow::SlotAddFriendReqAck(User user) {
     // 在聊天列表中添加朋友项
     m_chatPaneWidget->SlotAddFriendReqAck(user);
     emit SIG_AddFriendReqAck(user);
+}
+
+void MainWindow::SlotOneChat(const QByteArray& data) {
+
+    QJsonParseError jsonError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) {
+        return;
+    }
+
+    if (!jsonDoc.isObject()) return;
+
+    QJsonObject jsonObj = jsonDoc.object();
+    QJsonValue dataVal = jsonObj.value("data");
+    QJsonObject dataObj = dataVal.toObject();
+    qDebug() << "MainWindow::SlotOneChat" << dataObj.value("receiverId");
+    uint64_t id = dataObj.value("receiverId").toString().toULongLong();
+    QString content = dataObj.value("content").toString();
+    QString createtime = dataObj.value("createtime").toString();
+    qDebug() << "MainWindow::SlotOneChat";
+    qDebug() << "id: " << id << " content: " << content << " createtime: " << createtime;
+    auto item = m_chatPaneWidget->GetItemById(id);
+    if (item) {
+        Message message(content, createtime, Receive);
+        item->UpdateContent(message);
+    }
 }

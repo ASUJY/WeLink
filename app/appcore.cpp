@@ -32,7 +32,8 @@ AppCore::AppCore() {
     connect(m_mainWindow, &MainWindow::SIG_AddFriendReqAck, this, &AppCore::SlotAddFriendReqAck);
 
     // Send Message
-    // connect(m_mainWindow, &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
+    connect(m_mainWindow, &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
+    connect(this, &AppCore::SIG_ONECHAT, m_mainWindow, &MainWindow::SlotOneChat);
 
     m_msgHandlerMap.insert({REG_MSG_ACK_SUCCESS, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
@@ -40,6 +41,7 @@ AppCore::AppCore() {
     m_msgHandlerMap.insert({GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({ADD_FRIEND_ACK_AGREE, std::bind(&AppCore::SlotReciveAddFriendAckAgree, this, std::placeholders::_1)});
+     m_msgHandlerMap.insert({ONE_CHAT_MSG, std::bind(&AppCore::SlotOneChat, this, std::placeholders::_1)});
 
     m_loginWidget->show();
 }
@@ -236,6 +238,25 @@ void AppCore::SlotAddFriendReqAck(User frienduser) {
     bool res = m_netMediator->SendData(data, data.size());
 }
 
-void AppCore::SlotSendChatMsg(int id, QString& content) {
+void AppCore::SlotSendChatMsg(int id, const QString& content) {
+    qDebug() << "AppCore::SlotSendChatMsg userid: " << id;
+    QJsonObject dataJson;
+    QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    dataJson.insert("receiverId", QString::number(id));
+    dataJson.insert("content", content);
+    dataJson.insert("createtime", currentTime);
+    QJsonObject json;
+    json.insert("data", dataJson);
+    json.insert("msgtype", ONE_CHAT_MSG);
+    QJsonDocument document;
+    document.setObject(json);
 
+    auto data = document.toJson(QJsonDocument::Compact);
+    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
+    bool res = m_netMediator->SendData(data, data.size());
+}
+
+void AppCore::SlotOneChat(const QByteArray& data) {
+    qDebug() << "AppCore::SlotOneChat";
+    emit SIG_ONECHAT(data);
 }

@@ -55,7 +55,7 @@ void ChatPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     QJsonObject dataObj = dataVal.toObject();
     QString friendname = dataObj.value("sendername").toString();
     int friendid = dataObj.value("senderid").toInt();
-
+    qDebug() << "ChatPaneWidget::SlotReciveAddFriendAckAgree: " << "friendid: " << friendid;
     if (m_mapIdToChatItem.find(friendid) == m_mapIdToChatItem.end()) {
         QList<Message> messages1;
         Friend* fri = new Friend(friendid, friendname, ":/resource/head/man.svg", false, "2026", 0, messages1);
@@ -82,6 +82,7 @@ void ChatPaneWidget::SlotAddFriendReqAck(User user) {
 
     if (m_mapIdToChatItem.find(friendid) == m_mapIdToChatItem.end()) {
         QList<Message> messages1;
+        qDebug() << "ChatPaneWidget::SlotAddFriendReqAck: " << "friendid: " << friendid;
         Friend* fri = new Friend(friendid, friendname, ":/resource/head/man.svg", false, "2026", 0, messages1);
 
         auto item = new QListWidgetItem;
@@ -111,4 +112,11 @@ void ChatPaneWidget::SlotItemSelected(ChatListItem *item) {
 
     QVariant var = QVariant::fromValue(item->GetItem());
     emit SIG_ItemClicked(var, PageType::AllChatView);
+}
+
+ChatListItem* ChatPaneWidget::GetItemById(int id) {
+    if (m_mapIdToChatItem.find(id) == m_mapIdToChatItem.end()) {
+        return nullptr;
+    }
+    return m_mapIdToChatItem[id];
 }

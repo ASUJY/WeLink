@@ -37,6 +37,12 @@ void ChatMainWidget::SetData(Friend *data) {
                 item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));
             });
             widget->SetMessage(message.GetContent());
+        } else if (message.GetMsgType() == MsgType::Receive) {
+            auto widget = new SenderWidget(nullptr, ":/resource/head/man.svg");
+            ui->listWidget->setItemWidget(item, widget);
+            connect(widget, &SenderWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
+                item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));
+            });
         }
         ui->listWidget->scrollToBottom();
     }
@@ -51,6 +57,7 @@ void ChatMainWidget::SlotBtnSendMsgClicked() {
     chatitem->UpdateFriend(message);
 
     //
+    qDebug() << "ChatMainWidget::SlotBtnSendMsgClicked: userid: " << chatitem->GetItem()->GetUserId();
     emit SIG_SendChatMsg(chatitem->GetItem()->GetUserId(), content);
     ui->textEdit->clear();
     SetData(chatitem->GetItem());

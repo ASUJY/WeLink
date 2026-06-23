@@ -26,6 +26,8 @@ public:
     Friend *GetItem() const { return m_data; }
 
     void UpdateFriend(Message& message);
+    void SetContent(QString content);
+    void UpdateContent(Message& messages);
 
 private:
     // 鼠标按下聊天列表项触发这个函数

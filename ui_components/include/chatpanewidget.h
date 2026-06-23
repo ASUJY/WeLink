@@ -21,6 +21,7 @@ public:
     explicit ChatPaneWidget(QWidget *parent = nullptr);
     ~ChatPaneWidget();
     static ChatListItem* GetItem() { return m_item; }
+    ChatListItem* GetItemById(int id);
 
 public slots:
     void SlotReciveAddFriendAckAgree(const QByteArray& data);

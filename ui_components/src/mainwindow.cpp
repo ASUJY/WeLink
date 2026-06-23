@@ -300,8 +300,8 @@ void MainWindow::SlotOneChat(const QByteArray& data) {
     QJsonObject jsonObj = jsonDoc.object();
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
-    qDebug() << "MainWindow::SlotOneChat" << dataObj.value("receiverId");
-    uint64_t id = dataObj.value("receiverId").toString().toULongLong();
+    qDebug() << "MainWindow::SlotOneChat" << dataObj.value("senderId");
+    uint64_t id = dataObj.value("senderId").toString().toULongLong();
     QString content = dataObj.value("content").toString();
     QString createtime = dataObj.value("createtime").toString();
     qDebug() << "MainWindow::SlotOneChat";
@@ -310,5 +310,7 @@ void MainWindow::SlotOneChat(const QByteArray& data) {
     if (item) {
         Message message(content, createtime, Receive);
         item->UpdateContent(message);
+    } else {
+        qDebug() << "MainWindow::SlotOneChat failed";
     }
 }

@@ -22,6 +22,7 @@ void SenderWidget::Init(QString imageUrl) {
 
 void SenderWidget::SetMessage(QString message) {
     ui->labMsg->SetText(message);
+    ui->labMsg->setStyleSheet("color: black;");
 }
 
 void SenderWidget::SlotLabelSizeChanged(QRect rect) {

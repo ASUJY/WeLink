@@ -21,13 +21,14 @@ ChatMainWidget::~ChatMainWidget()
 
 void ChatMainWidget::SetData(Friend *data) {
     ui->listWidget->clear();    // 清空原来的聊天记录
-    qDebug() << "name: " << QString::fromStdString(data->GetUserName());
+    qDebug() << "ChatMainWidget::SetData name: " << QString::fromStdString(data->GetUserName());
     ui->labName->setText(QString::fromStdString(data->GetUserName()));
+    ui->labName->setStyleSheet("color: black;");
 
     auto messages = data->GetMessages();
     for (int i = 0; i < messages.count(); i++) {
         auto message = messages[i];
-        qDebug() << "message: " << message.GetContent();
+        qDebug() << "ChatMainWidget::SetData message: " << message.GetContent();
         auto item = new QListWidgetItem;
         ui->listWidget->addItem(item);
         if (message.GetMsgType() == MsgType::Sender) {
@@ -38,7 +39,7 @@ void ChatMainWidget::SetData(Friend *data) {
             });
             widget->SetMessage(message.GetContent());
         } else if (message.GetMsgType() == MsgType::Receive) {
-            auto widget = new SenderWidget(nullptr, ":/resource/head/man.svg");
+            auto widget = new SenderWidget(nullptr, ":/resource/icon/app.png");
             ui->listWidget->setItemWidget(item, widget);
             connect(widget, &SenderWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
                 item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));

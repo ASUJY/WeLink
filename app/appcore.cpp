@@ -242,6 +242,7 @@ void AppCore::SlotSendChatMsg(int id, const QString& content) {
     qDebug() << "AppCore::SlotSendChatMsg userid: " << id;
     QJsonObject dataJson;
     QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    dataJson.insert("senderId", QString::number(m_user.GetUserId()));
     dataJson.insert("receiverId", QString::number(id));
     dataJson.insert("content", content);
     dataJson.insert("createtime", currentTime);

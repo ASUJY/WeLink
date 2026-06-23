@@ -115,6 +115,10 @@ void ChatPaneWidget::SlotItemSelected(ChatListItem *item) {
 }
 
 ChatListItem* ChatPaneWidget::GetItemById(int id) {
+    qDebug() << "ChatPaneWidget::GetItemById";
+    for (auto i : m_mapIdToChatItem) {
+        qDebug() << i.first << " " << i.second;
+    }
     if (m_mapIdToChatItem.find(id) == m_mapIdToChatItem.end()) {
         return nullptr;
     }

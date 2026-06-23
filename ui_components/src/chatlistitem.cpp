@@ -61,6 +61,8 @@ void ChatListItem::SetContent(QString content)
 }
 
 void ChatListItem::UpdateContent(Message& messages) {
+    qDebug() << "ChatListItem::UpdateContent: message content:" << messages.GetContent()
+             << " message type: " << messages.GetMsgType() << " msg time: " << messages.GetTime();
     m_data->AddMessage(messages);
     m_data->AddCount(1);
     ui->labMsgCount->setText(QString::number(m_data->GetCount()));

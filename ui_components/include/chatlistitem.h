@@ -22,8 +22,8 @@ public:
     void Checked(bool checked);
     void Selected(bool selected);
 
-    void SetItem(Friend *data);
-    Friend *GetItem() const { return m_data; }
+    void SetItem(std::unique_ptr<Friend> data);
+    Friend *GetItem() const { return m_data.get(); }
 
     void UpdateFriend(Message& message);
     void SetContent(QString content);
@@ -35,7 +35,7 @@ private:
 
 private:
     Ui::ChatListItem *ui;
-    Friend *m_data;
+    std::unique_ptr<Friend> m_data;
     bool m_isChecked;   // 该item是否被点击
 };
 

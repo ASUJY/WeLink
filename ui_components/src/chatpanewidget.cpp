@@ -25,16 +25,13 @@ ChatPaneWidget::ChatPaneWidget(QWidget *parent)
     ui->btnPlus->setStyleSheet("QToolButton:menu-indicator {image: none;}");
 
     QMenu *menu = new QMenu(this);
-    QAction *action1 = menu->addAction("添加朋友");
+    QAction *addFriendAction = menu->addAction("添加朋友");
     menu->addAction("选项2");
-    connect(action1, &QAction::triggered, this, [=](){
+    connect(addFriendAction, &QAction::triggered, this, [=](){
         qDebug() << "添加朋友";
         emit SIG_AddFriend();
     });
     ui->btnPlus->setMenu(menu);
-
-
-
 }
 
 ChatPaneWidget::~ChatPaneWidget()
@@ -54,22 +51,25 @@ void ChatPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
 
     QJsonObject dataObj = dataVal.toObject();
     QString friendname = dataObj.value("sendername").toString();
-    int friendid = dataObj.value("senderid").toInt();
+    uint64_t friendid = dataObj.value("senderid").toInteger();
     qDebug() << "ChatPaneWidget::SlotReciveAddFriendAckAgree: " << "friendid: " << friendid;
     if (m_mapIdToChatItem.find(friendid) == m_mapIdToChatItem.end()) {
         QList<Message> messages1;
-        Friend* fri = new Friend(friendid, friendname, ":/resource/head/man.svg", false, "2026", 0, messages1);
+        std::unique_ptr<Friend> fri = std::make_unique<Friend>(friendid, friendname, ":/resource/head/man.svg", false, "2026", 0, messages1);
 
+        // 创建列表单行载体对象，代表列表中的一行。
         auto item = new QListWidgetItem;
-        QVariant var = QVariant::fromValue(fri);
-        item->setData(Qt::UserRole, var);
+        // QVariant var = QVariant::fromValue(fri.get());
+        // item->setData(Qt::UserRole, var);
         item->setSizeHint(QSize(250, 65));
+        // 在列表中新增一行
         ui->listWidget->addItem(item);
-
-        auto widget = new ChatListItem;
-        widget->SetItem(fri);
-        m_mapIdToChatItem[fri->GetUserId()] = widget;
+        auto widget = new ChatListItem(this);
+        widget->SetItem(std::move(fri));
+        // 把列表中的这一行的显示效果替换为自定义控件的显示效果
         ui->listWidget->setItemWidget(item, widget);
+
+        m_mapIdToChatItem[friendid] = widget;
 
         connect(widget, &ChatListItem::SIG_Selected, this, &ChatPaneWidget::SlotItemSelected);
     }
@@ -83,18 +83,19 @@ void ChatPaneWidget::SlotAddFriendReqAck(const User& user) {
     if (m_mapIdToChatItem.find(friendid) == m_mapIdToChatItem.end()) {
         QList<Message> messages1;
         qDebug() << "ChatPaneWidget::SlotAddFriendReqAck: " << "friendid: " << friendid;
-        Friend* fri = new Friend(friendid, friendname, ":/resource/head/man.svg", false, "2026", 0, messages1);
+        std::unique_ptr<Friend> fri = std::make_unique<Friend>(friendid, friendname, ":/resource/head/man.svg", false, "2026", 0, messages1);
 
         auto item = new QListWidgetItem;
-        QVariant var = QVariant::fromValue(fri);
-        item->setData(Qt::UserRole, var);
+        // QVariant var = QVariant::fromValue(fri);
+        // item->setData(Qt::UserRole, var);
         item->setSizeHint(QSize(250, 65));
         ui->listWidget->addItem(item);
 
-        auto widget = new ChatListItem;
-        widget->SetItem(fri);
-        m_mapIdToChatItem[fri->GetUserId()] = widget;
+        auto widget = new ChatListItem(this);
+        widget->SetItem(std::move(fri));
         ui->listWidget->setItemWidget(item, widget);
+
+        m_mapIdToChatItem[friendid] = widget;
 
         connect(widget, &ChatListItem::SIG_Selected, this, &ChatPaneWidget::SlotItemSelected);
     }
@@ -114,11 +115,7 @@ void ChatPaneWidget::SlotItemSelected(ChatListItem *item) {
     emit SIG_ItemClicked(var, PageType::AllChatView);
 }
 
-ChatListItem* ChatPaneWidget::GetItemById(int id) {
-    qDebug() << "ChatPaneWidget::GetItemById";
-    for (auto i : m_mapIdToChatItem) {
-        qDebug() << i.first << " " << i.second;
-    }
+ChatListItem* ChatPaneWidget::GetItemById(uint64_t id) {
     if (m_mapIdToChatItem.find(id) == m_mapIdToChatItem.end()) {
         return nullptr;
     }

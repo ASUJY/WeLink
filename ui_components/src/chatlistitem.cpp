@@ -13,21 +13,21 @@ ChatListItem::~ChatListItem()
     delete ui;
 }
 
-void ChatListItem::SetItem(Friend *data) {
+void ChatListItem::SetItem(std::unique_ptr<Friend> data) {
     if (data == nullptr) return;
 
-    m_data = data;
+    m_data = std::move(data);
     auto pixmap = QPixmap(":/resource/head/man.svg");
     ui->labHeadIcon->setPixmap(pixmap);
-    ui->labName->setText(QString::fromStdString(data->GetUserName()));
+    ui->labName->setText(QString::fromStdString(m_data->GetUserName()));
     ui->labName->setStyleSheet("color: black;");
-    ui->labTime->setText(data->GetTime());
-    if (data->GetMessages().count() > 0) {
+    ui->labTime->setText(m_data->GetTime());
+    if (m_data->GetMessages().count() > 0) {
         // setContent(data)
     }
-    ui->labMsgCount->setText(QString::number(data->GetCount()));
-    ui->chatlistitem_widget->setVisible(data->GetCount() != 0);
-    ui->labMute->setVisible(data->GetMute());
+    ui->labMsgCount->setText(QString::number(m_data->GetCount()));
+    ui->chatlistitem_widget->setVisible(m_data->GetCount() != 0);
+    ui->labMute->setVisible(m_data->GetMute());
 }
 
 void ChatListItem::Checked(bool checked) {

@@ -17,12 +17,12 @@ public:
     }
 
     void SetUserId(int id) {this->m_userid = id;}
-    void SetUserPhone(std::string phone) {this->m_userphone = phone;}
-    void SetUserAccount(std::string account) {this->m_account = account;}
-    void SetUserName(std::string name) {this->m_username = name;}
-    void SetUserAvatar(std::string avatar) {this->m_avatar = avatar;}
-    void SetPwd(std::string pwd) {this->m_password = pwd;}
-    void SetUserState(std::string state) {this->m_userstate = state;}
+    void SetUserPhone(const std::string phone) {this->m_userphone = phone;}
+    void SetUserAccount(const std::string account) {this->m_account = account;}
+    void SetUserName(const std::string name) {this->m_username = name;}
+    void SetUserAvatar(const std::string avatar) {this->m_avatar = avatar;}
+    void SetPwd(const std::string pwd) {this->m_password = pwd;}
+    void SetUserState(const std::string state) {this->m_userstate = state;}
 
     long long GetUserId() const {return m_userid;}
     std::string GetUserPhone() const {return m_userphone;}

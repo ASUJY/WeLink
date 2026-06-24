@@ -15,22 +15,21 @@ class Message
 public:
     explicit Message() = default;
     explicit Message(QString content, QString time, MsgType msgType):
-        _content(content), _time(time), _msgType(msgType){}
+        m_content(content), m_time(time), m_msgType(msgType){}
+    ~Message() = default;
 
-    void SetContent(QString content) { _content = content; }
-    QString GetContent() const { return _content; }
+    void SetContent(const QString content) { m_content = content; }
+    void SetTime(const QString time) { m_time = time; }
+    void SetMsgType(MsgType msgType) { m_msgType = msgType; }
 
-    void SetTime(QString time) { _time = time; }
-    QString GetTime() const { return _time; }
-
-    void SetMsgType(MsgType msgType) { _msgType = msgType; }
-    MsgType GetMsgType() const { return _msgType; }
+    QString GetContent() const { return m_content; }
+    QString GetTime() const { return m_time; }
+    MsgType GetMsgType() const { return m_msgType; }
 
 private:
-
-    QString _content;   // 消息内容
-    QString _time;      // 消息的发送时间
-    MsgType _msgType;   // 消息来源类别
+    QString m_content;   // 消息内容
+    QString m_time;      // 消息的发送时间
+    MsgType m_msgType;   // 消息来源类别
 };
 
 #endif // MESSAGE_H

@@ -3,6 +3,7 @@
 #include "chatlistitem.h"
 #include "chatpanewidget.h"
 #include "senderwidget.h"
+#include "receiverwidget.h"
 #include <QDebug>
 
 ChatMainWidget::ChatMainWidget(QWidget *parent)
@@ -10,12 +11,17 @@ ChatMainWidget::ChatMainWidget(QWidget *parent)
     , ui(new Ui::ChatMainWidget)
 {
     ui->setupUi(this);
+    ui->ChatMainStackedWidget->setCurrentIndex(1);
     connect(ui->btnSendMsg, &QPushButton::clicked, this, &ChatMainWidget::SlotBtnSendMsgClicked);
 }
 
 ChatMainWidget::~ChatMainWidget()
 {
     delete ui;
+}
+
+void ChatMainWidget::SetStackedWidgettCurrentIndex(int index) {
+    ui->ChatMainStackedWidget->setCurrentIndex(index);
 }
 
 
@@ -39,11 +45,12 @@ void ChatMainWidget::SetData(Friend *data) {
             });
             widget->SetMessage(message.GetContent());
         } else if (message.GetMsgType() == MsgType::Receive) {
-            auto widget = new SenderWidget(nullptr, ":/resource/icon/app.png");
+            auto widget = new ReceiverWidget(nullptr, ":/resource/icon/app.png");
             ui->listWidget->setItemWidget(item, widget);
-            connect(widget, &SenderWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
+            connect(widget, &ReceiverWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
                 item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));
             });
+            widget->SetMessage(message.GetContent());
         }
         ui->listWidget->scrollToBottom();
     }

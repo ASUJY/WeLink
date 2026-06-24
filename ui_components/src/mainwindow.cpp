@@ -10,40 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
     SetWidgetWinTitle();
-    m_addFriendWindow = new AddFriendWindow;
-    connect(m_addFriendWindow, &AddFriendWindow::SIG_GetFriendInfo, this, &MainWindow::SIG_GetFriendInfo);
-    connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
-    connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoFailed);
-    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
-
-
-    m_chatPaneWidget = new ChatPaneWidget;
-    connect(m_chatPaneWidget, &ChatPaneWidget::SIG_AddFriend, this, &MainWindow::ShowAddFriendWindow);
-    ui->gridLayout_2->addWidget(m_chatPaneWidget);
-    m_chatPaneWidget->show();
-    m_chatMainWidget = new ChatMainWidget;
-
-
-    m_contactsPaneWidget = new ContactsPaneWidget;
-    connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotReciveAddFriendReq);
-    connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_contactsPaneWidget, &ContactsPaneWidget::SIG_ReciveAddFriendAckAgree);
-    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, m_contactsPaneWidget, &ContactsPaneWidget::SlotAddFriendReq);
-    connect(m_contactsPaneWidget, &ContactsPaneWidget::SIG_ItemDidSelected, this, &MainWindow::SlotContactsItemDidSelected);
-
-    m_contactsMainWidget = new ContactsMainWidget;
-    connect(m_contactsMainWidget, &ContactsMainWidget::SIG_AddFriendReqAck, this, &MainWindow::SlotAddFriendReqAck);
-    // connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendReq);
-    connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendAckAgree);
-
-    // this->setMouseTracking(true);
-    // this->installEventFilter(this); // 将事件过滤器对象(this)安装到目标对象(this)上
-
-    m_btn = ui->btnAllChat;
-    connect(ui->btnAllChat, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
-    connect(ui->btnContact, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
-
-    connect(m_chatPaneWidget, &ChatPaneWidget::SIG_ItemClicked, this, &MainWindow::SlotChatView);
-    connect(m_chatMainWidget, &ChatMainWidget::SIG_SendChatMsg, this, &MainWindow::SlotSendChatMsg);
+    Init();
 }
 
 MainWindow::~MainWindow()
@@ -51,6 +18,66 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::Init() {
+    InitAddFriendWindow();
+    InitChatMainWidget();
+    InitChatPaneWidget();
+    InitContactsPaneWidget();
+    InitContactsMainWidget();
+
+    // this->setMouseTracking(true);
+    // this->installEventFilter(this); // 将事件过滤器对象(this)安装到目标对象(this)上
+    m_btn = ui->btnAllChat;
+    connect(ui->btnAllChat, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
+    connect(ui->btnContact, &QPushButton::clicked, this, &MainWindow::SlotSelectEvent);
+}
+
+void MainWindow::InitAddFriendWindow() {
+    m_addFriendWindow = std::make_unique<AddFriendWindow>();
+    connect(m_addFriendWindow.get(), &AddFriendWindow::SIG_GetFriendInfo, this, &MainWindow::SIG_GetFriendInfo);
+    connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow.get(), &AddFriendWindow::SlotGetFriendInfoSuccess);
+    connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow.get(), &AddFriendWindow::SlotGetFriendInfoFailed);
+    // 主动发送添加好友请求
+    connect(m_addFriendWindow.get(), &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
+}
+
+void MainWindow::InitChatMainWidget() {
+    m_chatMainWidget = std::make_unique<ChatMainWidget>();
+    // 主动发送消息
+    connect(m_chatMainWidget.get(), &ChatMainWidget::SIG_SendChatMsg, this, &MainWindow::SlotSendChatMsg);
+}
+
+void MainWindow::InitChatPaneWidget() {
+    m_chatPaneWidget = std::make_unique<ChatPaneWidget>();
+    // 添加好友按钮
+    connect(m_chatPaneWidget.get(), &ChatPaneWidget::SIG_AddFriend, this, &MainWindow::ShowAddFriendWindow);
+    // 选择聊天列表中的某一项，展示对应的聊天窗口
+    connect(m_chatPaneWidget.get(), &ChatPaneWidget::SIG_ItemClicked, this, &MainWindow::SlotChatView);
+    // 接收好友添加请求，在聊天列表中增加一项
+    connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_chatPaneWidget.get(), &ChatPaneWidget::SlotReciveAddFriendAckAgree);
+
+    ui->gridLayout_2->addWidget(m_chatPaneWidget.get());
+    m_chatPaneWidget->show();
+}
+
+void MainWindow::InitContactsPaneWidget() {
+    m_contactsPaneWidget = std::make_unique<ContactsPaneWidget>();
+    // 接收到好友发来的添加朋友请求，在 新的好友列表 中新增一项
+    connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotReciveAddFriendReq);
+    // 接收到好友发来的添加朋友通过请求，在 联系人列表 中新增一项
+    connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_contactsPaneWidget.get(), &ContactsPaneWidget::SIG_ReciveAddFriendAckAgree);
+    // 发送添加好友请求
+    connect(m_addFriendWindow.get(), &AddFriendWindow::SIG_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotAddFriendReq);
+    // 联系人列表中的某一项被选中，则展示对应的内容
+    connect(m_contactsPaneWidget.get(), &ContactsPaneWidget::SIG_ItemDidSelected, this, &MainWindow::SlotContactsItemDidSelected);
+
+}
+
+void MainWindow::InitContactsMainWidget() {
+    m_contactsMainWidget = std::make_unique<ContactsMainWidget>();
+    connect(m_contactsMainWidget.get(), &ContactsMainWidget::SIG_AddFriendReqAck, this, &MainWindow::SlotAddFriendReqAck);
+    // connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_chatPaneWidget, &ChatPaneWidget::SlotReciveAddFriendReq);
+}
 
 void MainWindow::SetWidgetWinTitle() {
     ui->winTitleWidget->setFixedHeight(24);
@@ -230,14 +257,14 @@ void MainWindow::SlotSelectEvent() {
 
     switch (m_page) {
     case ChatWidget:
-        ui->gridLayout_2->removeWidget(m_chatPaneWidget);
-        ui->gridLayout_3->removeWidget(m_chatMainWidget);
+        ui->gridLayout_2->removeWidget(m_chatPaneWidget.get());
+        ui->gridLayout_3->removeWidget(m_chatMainWidget.get());
         m_chatPaneWidget->hide();
         m_chatMainWidget->hide();
         break;
     case Contactwidget:
-        ui->gridLayout_2->removeWidget(m_contactsPaneWidget);
-        ui->gridLayout_3->removeWidget(m_contactsMainWidget);
+        ui->gridLayout_2->removeWidget(m_contactsPaneWidget.get());
+        ui->gridLayout_3->removeWidget(m_contactsMainWidget.get());
         m_contactsPaneWidget->hide();
         m_contactsMainWidget->hide();
         break;
@@ -246,14 +273,14 @@ void MainWindow::SlotSelectEvent() {
     auto name = m_btn->objectName();
     if (name == "btnAllChat") {
         m_page = ChatPage::ChatWidget;
-        ui->gridLayout_2->addWidget(m_chatPaneWidget);
-        ui->gridLayout_3->addWidget(m_chatMainWidget);
+        ui->gridLayout_2->addWidget(m_chatPaneWidget.get());
+        ui->gridLayout_3->addWidget(m_chatMainWidget.get());
         m_chatPaneWidget->show();
         m_chatMainWidget->show();
     } else {
         m_page = ChatPage::Contactwidget;
-        ui->gridLayout_2->addWidget(m_contactsPaneWidget);
-        ui->gridLayout_3->addWidget(m_contactsMainWidget);
+        ui->gridLayout_2->addWidget(m_contactsPaneWidget.get());
+        ui->gridLayout_3->addWidget(m_contactsMainWidget.get());
         m_contactsPaneWidget->show();
         m_contactsMainWidget->show();
     }
@@ -263,13 +290,14 @@ void MainWindow::SlotSelectEvent() {
 void MainWindow::SlotChatView(QVariant var, PageType type) {
     if (var.canConvert<Friend*>() && type == PageType::AllChatView) {
         auto data = var.value<Friend*>();
-        ui->gridLayout_3->addWidget(m_chatMainWidget);
+        ui->gridLayout_3->addWidget(m_chatMainWidget.get());
+        m_chatMainWidget->SetStackedWidgettCurrentIndex(0);
         m_chatMainWidget->SetData(data);
         m_chatMainWidget->show();
     }
 }
 
-void MainWindow::SlotSendChatMsg(int id, QString& message) {
+void MainWindow::SlotSendChatMsg(int id, const QString& message) {
     qDebug() << "MainWindow::SlotSendChatMsg: userid" << id;
     emit SIG_SendChatMsg(id, message);
 }
@@ -278,7 +306,7 @@ void MainWindow::SlotContactsItemDidSelected(ContactsListViewChild *item) {
     m_contactsMainWidget->SetStackedWidgetCurrentIndex(item);
 }
 
-void MainWindow::SlotAddFriendReqAck(User user) {
+void MainWindow::SlotAddFriendReqAck(const User& user) {
     qDebug() << "MainWindow::SlotAddFriendReqAck";
     // 在联系人列表中添加朋友项
     m_contactsPaneWidget->SlotAddFriendReqAck(user);

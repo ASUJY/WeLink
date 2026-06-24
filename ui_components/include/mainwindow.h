@@ -37,11 +37,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 signals:
-    void SIG_GetFriendInfo(QString username);
+    void SIG_GetFriendInfo(const QString& username);
     void SIG_GetFriendInfoSuccess(const QByteArray& data);
     void SIG_GetFriendInfoFailed(const QByteArray& data);
-    void SIG_AddFriendReq(User user);
-    void SIG_AddFriendReqAck(User user);
+    void SIG_AddFriendReq(const User& user);
+    void SIG_AddFriendReqAck(const User& user);
     void SIG_ReciveAddFriendReq(const QByteArray& data);
     void SIG_ReciveAddFriendAckAgree(const QByteArray& data);
     void SIG_SendChatMsg(int id, const QString &message);
@@ -50,9 +50,9 @@ public slots:
     void SlotGetFriendInfoSuccess(const QByteArray& data);
     void SlotGetFriendInfoFailed(const QByteArray& data);
     void SlotReciveAddFriendReq(const QByteArray& data);
-    void SlotAddFriendReqAck(User user);
+    void SlotAddFriendReqAck(const User& user);
     void SlotReciveAddFriendAckAgree(const QByteArray& data);
-    void SlotSendChatMsg(int id, QString &message);
+    void SlotSendChatMsg(int id, const QString &message);
     void SlotContactsItemDidSelected(ContactsListViewChild*);
     void SlotOneChat(const QByteArray& data);
 
@@ -70,6 +70,12 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
+    void Init();
+    void InitAddFriendWindow();
+    void InitChatMainWidget();
+    void InitChatPaneWidget();
+    void InitContactsPaneWidget();
+    void InitContactsMainWidget();
     void SetWidgetWinTitle();
     Area GetArea(int x, int y);
     Qt::CursorShape GetCursorForArea(Area area);
@@ -79,21 +85,21 @@ private:
     Ui::MainWindow *ui;
 
     // 当前选中的按钮(右侧导航栏的按钮)
-    QPushButton *m_btn;
-    ChatPage m_page;
+    QPushButton* m_btn;
+    ChatPage m_page = ChatWidget;
 
     bool m_isMouseDown = false;
     QPoint m_pressPos;
     QRect m_pressRect;
-    int m_posx;
-    int m_posy;
+    int m_posx = 0;
+    int m_posy = 0;
     Area m_area;
 
-    ChatPaneWidget *m_chatPaneWidget;
-    ChatMainWidget *m_chatMainWidget;
-    ContactsPaneWidget *m_contactsPaneWidget;
-    ContactsMainWidget *m_contactsMainWidget;
-    AddFriendWindow *m_addFriendWindow;
+    std::unique_ptr<ChatPaneWidget> m_chatPaneWidget;
+    std::unique_ptr<ChatMainWidget> m_chatMainWidget;
+    std::unique_ptr<ContactsPaneWidget> m_contactsPaneWidget;
+    std::unique_ptr<ContactsMainWidget> m_contactsMainWidget;
+    std::unique_ptr<AddFriendWindow> m_addFriendWindow;
 
 };
 #endif // MAINWINDOW_H

@@ -75,7 +75,7 @@ void ChatPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     }
 }
 
-void ChatPaneWidget::SlotAddFriendReqAck(User user) {
+void ChatPaneWidget::SlotAddFriendReqAck(const User& user) {
 
     QString friendname = QString::fromStdString(user.GetUserName());
     int friendid = user.GetUserId();

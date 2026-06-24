@@ -391,3 +391,14 @@ QStackedWidget::page > QWidget {
 QWidget#notfindWidget > QLabel#label {
     color: black;
 }
+
+/* receivewidget.ui*/
+QWidget#ReceiveWidget {
+    border: none;
+}
+
+QWidget#ReceiveWidget > QWidget#widget > Label#labMsg {
+    border-radius: 5px;
+    background: #07c060;
+    padding: 0 10px;
+}

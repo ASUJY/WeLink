@@ -166,7 +166,7 @@ void AppCore::LoginSuccess(const QByteArray& data) {
     m_mainWindow->show();
 }
 
-void AppCore::SlotGetFriendInfo(QString username) {
+void AppCore::SlotGetFriendInfo(const QString& username) {
     QJsonObject dataJson;
     dataJson.insert("username", username);
     QJsonObject json;
@@ -190,7 +190,7 @@ void  AppCore::GetFriendInfoFailed(const QByteArray& data) {
     emit SIG_GetFriendInfoFailed(data);
 }
 
-void  AppCore::SlotAddFriendReq(User frienduser) {
+void  AppCore::SlotAddFriendReq(const User& frienduser) {
     qDebug() << frienduser.GetUserName() << "AppCore SlotAddFriendReq " << frienduser.GetUserId();
     QJsonObject dataJson;
     dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
@@ -219,7 +219,7 @@ void AppCore::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     emit SIG_ReciveAddFriendAckAgree(data);
 }
 
-void AppCore::SlotAddFriendReqAck(User frienduser) {
+void AppCore::SlotAddFriendReqAck(const User& frienduser) {
     qDebug() << frienduser.GetUserName() << "AppCore SlotAddFriendReqAck " << frienduser.GetUserId();
     QJsonObject dataJson;
     dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));

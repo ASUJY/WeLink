@@ -12,7 +12,7 @@ class ContactsMainWidget : public QWidget
 {
     Q_OBJECT
 signals:
-    void SIG_AddFriendReqAck(User user);
+    void SIG_AddFriendReqAck(const User& user);
 public:
     explicit ContactsMainWidget(QWidget *parent = nullptr);
     ~ContactsMainWidget();

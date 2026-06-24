@@ -43,7 +43,7 @@ void ContactsPaneWidget::SlotAddFriendReq(User user) {
     ui->contactsListWidget->InsertItem(newFriendItem);
 }
 
-void ContactsPaneWidget::SlotAddFriendReqAck(User user) {
+void ContactsPaneWidget::SlotAddFriendReqAck(const User& user) {
     ContactsItem *newFriendItem = new ContactsItem;
     newFriendItem->SetGroupName(tr("联系人"));
     newFriendItem->SetItemName(QString::fromStdString(user.GetUserName()));

@@ -4,7 +4,8 @@ aux_source_directory(./src/register REGISTER_SRC_LIST)
 
 
 add_library(UiLib STATIC
-    ../app/resource.qrc)
+    ../app/resource.qrc
+    )
 
 target_sources(UiLib PRIVATE
     include/login/loginwidget.h
@@ -22,6 +23,7 @@ target_sources(UiLib PRIVATE
     include/chatlistitem.h
     include/senderwidget.h
     include/label.h
+    include/receiverwidget.h
     
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}
@@ -37,6 +39,7 @@ target_sources(UiLib PRIVATE
     forms/contactslistviewgroup.ui
     forms/chatlistitem.ui
     forms/senderwidget.ui
+    forms/receiverwidget.ui
 )
 
 target_include_directories(UiLib PUBLIC

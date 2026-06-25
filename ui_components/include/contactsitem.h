@@ -2,7 +2,8 @@
 #define CONTACTSITEM_H
 
 #include <QString>
-#include <QList>
+#include <QMap>
+#include <memory>
 
 enum ContactsItemType : int {
     Group = 0,
@@ -19,34 +20,37 @@ class ContactsItem
 {
 public:
     ContactsItem() = default;
-    ~ContactsItem() {
-        int n = m_childItems.size();
-        if (n > 0) {
-            for (ContactsItem* item : m_childItems) {
-                delete item;
-            }
-            m_childItems.clear();
-        }
-    }
+    ContactsItem(const ContactsItem&) = delete;
+    ContactsItem& operator=(const ContactsItem&) = delete;
+    ContactsItem(ContactsItem&&) = default;
+    ContactsItem& operator=(ContactsItem&&) = default;
+    ~ContactsItem() = default;
 
-    void SetGroupName(QString name) {m_groupName = name;}
+    void SetGroupName(const QString& name) {m_groupName = name;}
     void SetIsOpen(bool isopen) {m_isOpen = isopen;}
-    void SetItemName(QString name) {m_name = name;}
+    void SetItemName(const QString& name) {m_name = name;}
     void SetItemId(uint64_t id) {m_id = id;}
-    void SetHeadIcon(QString headIcon) {m_headIcon = headIcon;}
+    void SetHeadIcon(const QString& headIcon) {m_headIcon = headIcon;}
     void SetItemType(int type) {m_type = type;}
     void SetItemState(int state) {m_state = state;}
-    void AddChildItem(ContactsItem* item) {
-        if (item) m_childItems.append(item);
+    void AddChildItem(uint64_t id, std::unique_ptr<ContactsItem> item) {
+        m_childItems[id] = std::move(item);
     }
-    QString GetGroupName() {return m_groupName;}
-    bool GetIsOpen() {return m_isOpen;}
-    QString GetItemName() {return m_name;}
-    uint64_t GetItemId() {return m_id;}
-    int GetItemType() {return m_type;}
-    int GetItemState() {return m_state;}
-    QString GetHeadIcon() {return m_headIcon;}
-    QList<ContactsItem *> GetChildItems() {return m_childItems;}
+    QString GetGroupName() const {return m_groupName;}
+    bool GetIsOpen() const {return m_isOpen;}
+    QString GetItemName() const {return m_name;}
+    uint64_t GetItemId() const {return m_id;}
+    int GetItemType() const {return m_type;}
+    int GetItemState() const {return m_state;}
+    QString GetHeadIcon() const {return m_headIcon;}
+    const std::map<uint64_t, std::shared_ptr<ContactsItem>>& GetChildItems() const {return m_childItems;}
+    std::shared_ptr<ContactsItem> GetChildItemById(uint64_t id) const {
+        auto it = m_childItems.find(id);
+        if (it != m_childItems.end()) {
+            return it->second;  // 拷贝shared_ptr，引用计数+1，调用方持有副本
+        }
+        return nullptr;
+    }
 
 private:
     QString m_name;
@@ -58,9 +62,9 @@ private:
     // 用于列表中的分组，例如联系人列表，新的好友列表
     QString m_groupName;
     bool m_isOpen = false;
-
     // 分组这一条目下的子条目，例如联系人列表是一个条目，联系人列表中的每一个联系人是子条目
-    QList<ContactsItem *> m_childItems;
+    // 分组列表项下的好友项，共享
+    std::map<uint64_t, std::shared_ptr<ContactsItem>> m_childItems;
 };
 
 #endif // CONTACTSITEM_H

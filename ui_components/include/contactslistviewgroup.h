@@ -17,18 +17,20 @@ signals:
     void SIG_GroupOpenStatusDidChanged();
 
 public:
-    explicit ContactsListViewGroup(QWidget *parent = nullptr);
+    explicit ContactsListViewGroup(const std::shared_ptr<ContactsItem>& item, QWidget *parent = nullptr);
     ~ContactsListViewGroup();
-
-    void SetGroupState(ContactsItem *item);
-    void SetLabTitle(ContactsItem *item);
 
 protected:
     void mousePressEvent(QMouseEvent *event);
 
 private:
+    void SetGroupState();
+    void SetLabTitle();
+
+private:
     Ui::ContactsListViewGroup *ui;
-    ContactsItem *m_item = nullptr;
+    std::shared_ptr<ContactsItem> m_item;
+
 };
 
 #endif // CONTACTSLISTVIEWGROUP_H

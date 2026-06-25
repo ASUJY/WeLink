@@ -11,19 +11,19 @@ ContactsPaneWidget::ContactsPaneWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ContactsItem *newFriendsItem = new ContactsItem;
+    std::unique_ptr<ContactsItem> newFriendsItem = std::make_unique<ContactsItem>();
     newFriendsItem->SetGroupName(tr("新的朋友"));
     newFriendsItem->SetIsOpen(false);
     newFriendsItem->SetItemType(ContactsItemType::Group);
     newFriendsItem->SetItemName(tr("新的朋友"));
-    ui->contactsListWidget->InsertItem(newFriendsItem);
+    ui->contactsListWidget->InsertItem(std::move(newFriendsItem));
 
-    ContactsItem *contactsItem = new ContactsItem;
+    std::unique_ptr<ContactsItem> contactsItem = std::make_unique<ContactsItem>();
     contactsItem->SetGroupName(tr("联系人"));
     contactsItem->SetIsOpen(false);
     contactsItem->SetItemType(ContactsItemType::Group);
     contactsItem->SetItemName(tr("联系人"));
-    ui->contactsListWidget->InsertItem(contactsItem);
+    ui->contactsListWidget->InsertItem(std::move(contactsItem));
 
     connect(ui->contactsListWidget, &ContactsListWidget::SIG_ItemDidSelected, this, &ContactsPaneWidget::SIG_ItemDidSelected);
 }
@@ -33,24 +33,26 @@ ContactsPaneWidget::~ContactsPaneWidget()
     delete ui;
 }
 
-void ContactsPaneWidget::SlotAddFriendReq(User user) {
-    ContactsItem *newFriendItem = new ContactsItem;
+void ContactsPaneWidget::SlotAddFriendReq(const User& user) {
+    qDebug() << "ContactsPaneWidget::SlotAddFriendReq start";
+    std::unique_ptr<ContactsItem> newFriendItem = std::make_unique<ContactsItem>();
     newFriendItem->SetGroupName(tr("新的朋友"));
     newFriendItem->SetItemName(QString::fromStdString(user.GetUserName()));
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
     newFriendItem->SetItemState(ContactsState::Send);
-    ui->contactsListWidget->InsertItem(newFriendItem);
+    ui->contactsListWidget->InsertItem(std::move(newFriendItem));
+    qDebug() << "ContactsPaneWidget::SlotAddFriendReq end";
 }
 
 void ContactsPaneWidget::SlotAddFriendReqAck(const User& user) {
-    ContactsItem *newFriendItem = new ContactsItem;
+    std::unique_ptr<ContactsItem> newFriendItem = std::make_unique<ContactsItem>();
     newFriendItem->SetGroupName(tr("联系人"));
     newFriendItem->SetItemName(QString::fromStdString(user.GetUserName()));
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
     newFriendItem->SetItemState(ContactsState::Done);
-    ui->contactsListWidget->InsertItem(newFriendItem);
+    ui->contactsListWidget->InsertItem(std::move(newFriendItem));
 }
 
 void ContactsPaneWidget::SlotReciveAddFriendReq(const QByteArray& data) {
@@ -69,17 +71,17 @@ void ContactsPaneWidget::SlotReciveAddFriendReq(const QByteArray& data) {
     QString friendname = dataObj.value("sendername").toString();
     int friendid = dataObj.value("senderid").toInt();
 
-    ContactsItem *newFriendItem = new ContactsItem;
+    std::unique_ptr<ContactsItem> newFriendItem = std::make_unique<ContactsItem>();
     newFriendItem->SetGroupName(tr("新的朋友"));
     newFriendItem->SetItemName(friendname);
     newFriendItem->SetItemId(friendid);
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
     newFriendItem->SetItemState(ContactsState::Recevie);
-    ui->contactsListWidget->InsertItem(newFriendItem);
+    ui->contactsListWidget->InsertItem(std::move(newFriendItem));
 }
 
-void ContactsPaneWidget::SIG_ReciveAddFriendAckAgree(const QByteArray& data) {
+void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     qDebug() << "ContactsPaneWidget::SIG_ReciveAddFriendAckAgree";
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
@@ -95,12 +97,12 @@ void ContactsPaneWidget::SIG_ReciveAddFriendAckAgree(const QByteArray& data) {
     QString friendname = dataObj.value("sendername").toString();
     int friendid = dataObj.value("senderid").toInt();
 
-    ContactsItem *newFriendItem = new ContactsItem;
+    std::unique_ptr<ContactsItem> newFriendItem = std::make_unique<ContactsItem>();
     newFriendItem->SetGroupName(tr("联系人"));
     newFriendItem->SetItemName(friendname);
     newFriendItem->SetItemId(friendid);
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
     newFriendItem->SetItemState(ContactsState::Done);
-    ui->contactsListWidget->InsertItem(newFriendItem);
+    ui->contactsListWidget->InsertItem(std::move(newFriendItem));
 }

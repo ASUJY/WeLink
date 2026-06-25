@@ -15,20 +15,20 @@ ContactsMainWidget::~ContactsMainWidget()
     delete ui;
 }
 
-void ContactsMainWidget::SetStackedWidgetCurrentIndex(ContactsListViewChild *item) {
+void ContactsMainWidget::SetStackedWidgetCurrentIndex(const std::shared_ptr<ContactsItem>& item) {
     m_item = item;
-    if (item->GetItem()->GetItemState() == ContactsState::Send) {
-        ui->labName_3->setText(item->GetItem()->GetItemName());
+    if (item->GetItemState() == ContactsState::Send) {
+        ui->labName_3->setText(item->GetItemName());
         ui->btnHeadIcon_3->setIcon(QIcon(":/resource/head/man.svg"));
         ui->labName_3->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(1);
-    } else if (item->GetItem()->GetItemState() == ContactsState::Recevie) {
-        ui->labName->setText(item->GetItem()->GetItemName());
+    } else if (item->GetItemState() == ContactsState::Recevie) {
+        ui->labName->setText(item->GetItemName());
         ui->btnHeadIcon->setIcon(QIcon(":/resource/head/man.svg"));
         ui->labName->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(0);
-    } else if (item->GetItem()->GetItemState() == ContactsState::Done) {
-        ui->labName_2->setText(item->GetItem()->GetItemName());
+    } else if (item->GetItemState() == ContactsState::Done) {
+        ui->labName_2->setText(item->GetItemName());
         ui->btnHeadIcon_2->setIcon(QIcon(":/resource/head/man.svg"));
         ui->labName_2->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(2);
@@ -40,7 +40,7 @@ void ContactsMainWidget::SetStackedWidgetCurrentIndex(ContactsListViewChild *ite
 void ContactsMainWidget::SlotAddFriendAgree() {
     qDebug() << "ContactsMainWidget::SlotAddFriendAgree";
     User user;
-    user.SetUserName(m_item->GetItem()->GetItemName().toStdString());
-    user.SetUserId(m_item->GetItem()->GetItemId());
+    user.SetUserName(m_item->GetItemName().toStdString());
+    user.SetUserId(m_item->GetItemId());
     emit SIG_AddFriendReqAck(user);
 }

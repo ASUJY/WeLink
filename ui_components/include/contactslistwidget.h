@@ -2,30 +2,38 @@
 #define CONTACTSLISTWIDGET_H
 
 #include <QListWidget>
+#include <vector>
+#include <memory>
 #include "contactsitem.h"
-#include "contactslistviewchild.h"
 
 class ContactsListWidget : public QListWidget
 {
     Q_OBJECT
 signals:
-    void SIG_ItemDidSelected(ContactsListViewChild*);
+    void SIG_ItemDidSelected(std::shared_ptr<ContactsItem>);
+
 public:
     explicit ContactsListWidget(QWidget *parent = nullptr);
+    ~ContactsListWidget() = default;
+    ContactsListWidget(const ContactsListWidget&) = delete;
+    ContactsListWidget& operator=(const ContactsListWidget&) = delete;
 
-    void InsertItem(ContactsItem *item);
+    void InsertItem(std::unique_ptr<ContactsItem> item);
 
 public slots:
     void SlotGroupOpenDidChanged();
+    void SlotItemDidSelected(uint64_t id);
 
 private:
+    // 刷新列表项(重绘)
     void UploadItems();
     void AddChildItem(ContactsItem* item);
 
 signals:
 
 private:
-    QList<ContactsItem*> m_items;
+    // 分组列表项，共享，contactslistviewgroup要获取信息用于展示；分组列表项下的好友项，共享
+    std::vector<std::shared_ptr<ContactsItem>> m_items;
     QTimer* m_updateTimer;
 };
 

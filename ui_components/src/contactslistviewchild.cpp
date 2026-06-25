@@ -2,7 +2,8 @@
 
 #include <QPainter>
 
-ContactsListViewChild::ContactsListViewChild(QWidget *parent) {}
+ContactsListViewChild::ContactsListViewChild(uint64_t id, const QString& name, const QString& headIcon, QWidget *parent)
+    : m_userid(id), m_username(name), m_headIcon(headIcon) {}
 
 ContactsListViewChild::~ContactsListViewChild() {
     // if (m_item) {
@@ -17,7 +18,7 @@ void ContactsListViewChild::paintEvent(QPaintEvent *) {
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.fillRect(this->rect(), QColor("#D9D8D7"));
     // 绘制头像
-    QPixmap pixmap(m_item->GetHeadIcon());
+    QPixmap pixmap(m_headIcon);
     painter.drawPixmap(10, 10, 40, 40, pixmap);
 
     int w = this->rect().width();
@@ -30,7 +31,7 @@ void ContactsListViewChild::paintEvent(QPaintEvent *) {
     font.setPixelSize(12);
     painter.setPen(pen);
     painter.setFont(font);
-    painter.drawText(70, 0, w - 70, h / 2 - 2, Qt::AlignBottom, m_item->GetItemName());
+    painter.drawText(70, 0, w - 70, h / 2 - 2, Qt::AlignBottom, m_username);
 }
 
 void ContactsListViewChild::mousePressEvent(QMouseEvent *event) {
@@ -38,6 +39,6 @@ void ContactsListViewChild::mousePressEvent(QMouseEvent *event) {
     {
         // User user;
         // user.SetUserName(m_item->GetItemName().toStdString());
-        emit SIG_ItemDidSelected(this);
+        emit SIG_ItemDidSelected(m_userid);
     }
 }

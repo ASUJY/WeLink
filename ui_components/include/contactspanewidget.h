@@ -2,8 +2,9 @@
 #define CONTACTSPANEWIDGET_H
 
 #include <QWidget>
+#include <memory>
 #include "user.hpp"
-#include "contactslistviewchild.h"
+#include "contactsitem.h"
 
 namespace Ui {
 class ContactsPaneWidget;
@@ -13,15 +14,15 @@ class ContactsPaneWidget : public QWidget
 {
     Q_OBJECT
 signals:
-    void SIG_ItemDidSelected(ContactsListViewChild*);
+    void SIG_ItemDidSelected(std::shared_ptr<ContactsItem>);
 public:
     explicit ContactsPaneWidget(QWidget *parent = nullptr);
     ~ContactsPaneWidget();
 
 public slots:
     void SlotReciveAddFriendReq(const QByteArray& data);
-    void SIG_ReciveAddFriendAckAgree(const QByteArray& data);
-    void SlotAddFriendReq(User user);
+    void SlotReciveAddFriendAckAgree(const QByteArray& data);
+    void SlotAddFriendReq(const User& user);
     void SlotAddFriendReqAck(const User& user);
     // void SlotItemDidSelected();
 

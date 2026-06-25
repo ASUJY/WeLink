@@ -12,14 +12,15 @@ ContactsListWidget::ContactsListWidget(QWidget *parent)
 }
 
 
-void ContactsListWidget::InsertItem(ContactsItem* item) {
+void ContactsListWidget::InsertItem(std::unique_ptr<ContactsItem> item) {
     if (item->GetItemType() == ContactsItemType::Group) {
-        m_items.append(item);
+        m_items.push_back(std::move(item));
     } else {
-        foreach (ContactsItem *groupItem, m_items) {
+        for (const std::shared_ptr<ContactsItem> &groupItem : m_items) {
             if (!groupItem->GetGroupName().compare(item->GetGroupName())) {
                 // 往指定分组中添加联系人条目
-                groupItem->AddChildItem(item);
+                auto id = item->GetItemId();
+                groupItem->AddChildItem(id, std::move(item));
                 break;
             }
         }
@@ -30,12 +31,17 @@ void ContactsListWidget::InsertItem(ContactsItem* item) {
 
 void ContactsListWidget::UploadItems() {
     this->clear();
-    for (ContactsItem* item : m_items) {
+    for (auto w : findChildren<ContactsListViewGroup*>()) {
+        w->deleteLater();
+    }
+    for (auto w : findChildren<ContactsListViewChild*>()) {
+        w->deleteLater();
+    }
+
+    for (const auto& item : m_items) {
         if (item->GetItemType() == ContactsItemType::Group) {
-            ContactsListViewGroup *group = new ContactsListViewGroup;
+            ContactsListViewGroup *group = new ContactsListViewGroup(item, this);   // 分组列表项样式
             group->setGeometry(0, 0, 300, 30);
-            group->SetLabTitle(item);
-            group->SetGroupState(item);
             connect(group, &ContactsListViewGroup::SIG_GroupOpenStatusDidChanged, this, &ContactsListWidget::SlotGroupOpenDidChanged);
 
             QListWidgetItem *qitem = new QListWidgetItem("");
@@ -43,8 +49,8 @@ void ContactsListWidget::UploadItems() {
             this->setItemWidget(qitem, group);
             qitem->setSizeHint(group->geometry().size());
             if (item->GetIsOpen()) {
-                for (ContactsItem *childItem : item->GetChildItems()) {
-                    AddChildItem(childItem);
+                for (auto &childItem : item->GetChildItems()) {
+                    AddChildItem(childItem.second.get());
                 }
             }
         }
@@ -58,14 +64,23 @@ void ContactsListWidget::SlotGroupOpenDidChanged()
 }
 
 void ContactsListWidget::AddChildItem(ContactsItem* item) {
-    ContactsListViewChild *childItem = new ContactsListViewChild;
+    ContactsListViewChild *childItem = new ContactsListViewChild(item->GetItemId(), item->GetItemName(), item->GetHeadIcon(), this);
     childItem->setGeometry(0, 0, 300, 60);
-    childItem->SetItem(item);
-    connect(childItem, &ContactsListViewChild::SIG_ItemDidSelected, this, &ContactsListWidget::SIG_ItemDidSelected);
+    // childItem->SetItem(item);
+    connect(childItem, &ContactsListViewChild::SIG_ItemDidSelected, this, &ContactsListWidget::SlotItemDidSelected);
 
     QListWidgetItem *qitem = new QListWidgetItem("");
     this->addItem(qitem);
     this->setItemWidget(qitem, childItem);
     qitem->setSizeHint(childItem->geometry().size());
+}
 
+void  ContactsListWidget::SlotItemDidSelected(uint64_t id) {
+    for (const std::shared_ptr<ContactsItem> &groupItem : m_items) {
+        auto item = groupItem->GetChildItemById(id);
+        if (item) {
+            emit SIG_ItemDidSelected(item);
+            return;
+        }
+    }
 }

@@ -65,7 +65,7 @@ void MainWindow::InitContactsPaneWidget() {
     // 接收到好友发来的添加朋友请求，在 新的好友列表 中新增一项
     connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotReciveAddFriendReq);
     // 接收到好友发来的添加朋友通过请求，在 联系人列表 中新增一项
-    connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_contactsPaneWidget.get(), &ContactsPaneWidget::SIG_ReciveAddFriendAckAgree);
+    connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotReciveAddFriendAckAgree);
     // 发送添加好友请求
     connect(m_addFriendWindow.get(), &AddFriendWindow::SIG_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotAddFriendReq);
     // 联系人列表中的某一项被选中，则展示对应的内容
@@ -302,7 +302,7 @@ void MainWindow::SlotSendChatMsg(int id, const QString& message) {
     emit SIG_SendChatMsg(id, message);
 }
 
-void MainWindow::SlotContactsItemDidSelected(ContactsListViewChild *item) {
+void MainWindow::SlotContactsItemDidSelected(const std::shared_ptr<ContactsItem>& item) {
     m_contactsMainWidget->SetStackedWidgetCurrentIndex(item);
 }
 

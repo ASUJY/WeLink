@@ -2,7 +2,8 @@
 #define CONTACTSMAINWIDGET_H
 
 #include <QWidget>
-#include "contactslistviewchild.h"
+#include "contactsitem.h"
+#include "user.hpp"
 
 namespace Ui {
 class ContactsMainWidget;
@@ -16,14 +17,14 @@ signals:
 public:
     explicit ContactsMainWidget(QWidget *parent = nullptr);
     ~ContactsMainWidget();
-    void SetStackedWidgetCurrentIndex(ContactsListViewChild*);
+    void SetStackedWidgetCurrentIndex(const std::shared_ptr<ContactsItem>&);
 
 public slots:
     void SlotAddFriendAgree();
 
 private:
     Ui::ContactsMainWidget *ui;
-    ContactsListViewChild *m_item = nullptr;
+    std::shared_ptr<ContactsItem> m_item = nullptr;
 };
 
 #endif // CONTACTSMAINWIDGET_H

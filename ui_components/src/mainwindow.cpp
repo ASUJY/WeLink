@@ -19,7 +19,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::Init() {
-    InitAddFriendWindow();
+    // InitAddFriendWindow();
     InitChatMainWidget();
     InitChatPaneWidget();
     InitContactsPaneWidget();
@@ -33,12 +33,15 @@ void MainWindow::Init() {
 }
 
 void MainWindow::InitAddFriendWindow() {
-    m_addFriendWindow = std::make_unique<AddFriendWindow>();
-    connect(m_addFriendWindow.get(), &AddFriendWindow::SIG_GetFriendInfo, this, &MainWindow::SIG_GetFriendInfo);
-    connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow.get(), &AddFriendWindow::SlotGetFriendInfoSuccess);
-    connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow.get(), &AddFriendWindow::SlotGetFriendInfoFailed);
+    m_addFriendWindow = new AddFriendWindow(this);
+    m_addFriendWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_GetFriendInfo, this, &MainWindow::SIG_GetFriendInfo);
+    connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
+    connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoFailed);
     // 主动发送添加好友请求
-    connect(m_addFriendWindow.get(), &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
+    // 发送添加好友请求
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotAddFriendReq);
 }
 
 void MainWindow::InitChatMainWidget() {
@@ -66,8 +69,6 @@ void MainWindow::InitContactsPaneWidget() {
     connect(this, &MainWindow::SIG_ReciveAddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotReciveAddFriendReq);
     // 接收到好友发来的添加朋友通过请求，在 联系人列表 中新增一项
     connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotReciveAddFriendAckAgree);
-    // 发送添加好友请求
-    connect(m_addFriendWindow.get(), &AddFriendWindow::SIG_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotAddFriendReq);
     // 联系人列表中的某一项被选中，则展示对应的内容
     connect(m_contactsPaneWidget.get(), &ContactsPaneWidget::SIG_ItemDidSelected, this, &MainWindow::SlotContactsItemDidSelected);
 
@@ -230,6 +231,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void MainWindow::ShowAddFriendWindow() {
+    InitAddFriendWindow();
     m_addFriendWindow->show();
 }
 

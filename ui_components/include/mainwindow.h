@@ -99,7 +99,7 @@ private:
     std::unique_ptr<ChatMainWidget> m_chatMainWidget;
     std::unique_ptr<ContactsPaneWidget> m_contactsPaneWidget;
     std::unique_ptr<ContactsMainWidget> m_contactsMainWidget;
-    std::unique_ptr<AddFriendWindow> m_addFriendWindow;
+    AddFriendWindow* m_addFriendWindow;
 
 };
 #endif // MAINWINDOW_H

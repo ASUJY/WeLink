@@ -67,6 +67,10 @@ void MainWindow::InitChatPaneWidget() {
     for (int i = 0; i < friends.size(); ++i) {
         QList<Message> messages1;
         std::unique_ptr<Friend> fri = std::make_unique<Friend>(friends[i].GetUserId(), QString::fromStdString(friends[i].GetUserName()), ":/resource/head/man.svg", false, "2026", 0, messages1);
+        auto msgVec = m_msgModel->FindMsg(m_user->GetUserId(), friends[i].GetUserId());
+        for (int j = 0; j < msgVec.size(); ++j) {
+            fri->AddMessage(msgVec[j]);
+        }
         m_chatPaneWidget->AddFriendToPane(std::move(fri));
     }
 

@@ -3,6 +3,7 @@
 #include "common.h"
 
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QDebug>
 #include <QMessageBox>
 
@@ -164,6 +165,16 @@ void AppCore::LoginSuccess(const QByteArray& data) {
 
     m_loginWidget->hide();
     m_mainWindow->show();
+
+    // if (dataObj.contains("offlinemsg")) {
+    //     QJsonArray array = dataObj["offlinemsg"].toArray();
+    //     for (int i = 0; i < array.size(); ++i) {
+    //         QJsonValue val = array[i];
+    //         if (val.isObject()) {
+    //             emit SIG_ONECHAT(val.toJson());
+    //         }
+    //     }
+    // }
 }
 
 void AppCore::SlotGetFriendInfo(const QString& username) {
@@ -216,7 +227,27 @@ void AppCore::SlotReciveAddFriendReq(const QByteArray& data) {
 
 void AppCore::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     qDebug() << "对方已同意添加为朋友";
-    emit SIG_ReciveAddFriendAckAgree(data);
+    QJsonParseError jsonError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
+
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) return;
+    if (!jsonDoc.isObject()) return;
+
+    QJsonObject jsonObj = jsonDoc.object();
+    QJsonValue dataVal = jsonObj.value("data");
+    // if (jsontmp.isNull() || !jsontmp.isObject()) return;
+
+    QJsonObject dataObj = dataVal.toObject();
+    QString friendname = dataObj.value("sendername").toString();
+    int friendid = dataObj.value("senderid").toInt();
+    Friend fri;
+    fri.SetUserId(friendid);
+    fri.SetUserName(friendname.toStdString());
+
+    if (!m_friendModel.IsFriendExit(m_user.GetUserId(), fri)) {
+        m_friendModel.AddFriend(m_user.GetUserId(), fri);
+        emit SIG_ReciveAddFriendAckAgree(data);
+    }
 }
 
 void AppCore::SlotAddFriendReqAck(const User& frienduser) {
@@ -234,8 +265,15 @@ void AppCore::SlotAddFriendReqAck(const User& frienduser) {
 
     auto data = document.toJson(QJsonDocument::Compact);
     qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
-    // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
-    bool res = m_netMediator->SendData(data, data.size());
+
+    Friend fri;
+    fri.SetUserId(frienduser.GetUserId());
+    fri.SetUserName(frienduser.GetUserName());
+    if (!m_friendModel.IsFriendExit(m_user.GetUserId(), fri)) {
+        m_friendModel.AddFriend(m_user.GetUserId(), fri);
+        // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
+        bool res = m_netMediator->SendData(data, data.size());
+    }
 }
 
 void AppCore::SlotSendChatMsg(int id, const QString& content) {

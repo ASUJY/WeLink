@@ -9,6 +9,7 @@
 #include "communicationmediator.h"
 #include "user.hpp"
 #include "usermodel.h"
+#include "friendmodel.h"
 
 using MsgHandler = std::function<void(const QByteArray& data)>;
 
@@ -55,6 +56,7 @@ private:
     std::unordered_map<int, std::function<void(const QByteArray& data)>> m_msgHandlerMap;
     User m_user;
     UserModel m_userModel;
+    FriendModel m_friendModel;
 };
 
 #endif // APPCORE_H

@@ -5,6 +5,7 @@ add_library(ModelLib STATIC
   friend.hpp
   message.hpp
   usermodel.h usermodel.cpp
+  friendmodel.h friendmodel.cpp
 )
 
 target_include_directories(

@@ -4,7 +4,7 @@
 #include <QJsonDocument>
 #include "friend.hpp"
 
-MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, QWidget *parent)
+MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, std::shared_ptr<MsgModel> msgModel, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), m_page(ChatWidget)
 {
@@ -12,6 +12,7 @@ MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> 
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
     SetWidgetWinTitle();
     m_friendModel = friendModel;
+    m_msgModel = msgModel;
     m_user = user;
     // Init();
 }
@@ -355,6 +356,7 @@ void MainWindow::SlotOneChat(const QByteArray& data) {
     if (item) {
         Message message(content, createtime, Receive);
         item->UpdateContent(message);
+        m_msgModel->AddMsg(m_user->GetUserId(), id, message);
     } else {
         qDebug() << "MainWindow::SlotOneChat failed";
     }

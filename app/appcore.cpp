@@ -12,8 +12,9 @@ AppCore::AppCore() {
     m_registerWidget = new RegisterWidget;
     m_netMediator = new net::TcpClientMediator;
     m_friendModel = std::make_shared<FriendModel>();
+    m_msgModel = std::make_shared<MsgModel>();
     m_user = std::make_shared<User>();
-    m_mainWindow = new MainWindow(m_user, m_friendModel);
+    m_mainWindow = new MainWindow(m_user, m_friendModel, m_msgModel);
 
 
     // Login
@@ -297,6 +298,9 @@ void AppCore::SlotSendChatMsg(int id, const QString& content) {
     auto data = document.toJson(QJsonDocument::Compact);
     qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
     bool res = m_netMediator->SendData(data, data.size());
+
+    Message msg(content, currentTime, MsgType::Sender);
+    m_msgModel->AddMsg(m_user->GetUserId(), id, msg);
 }
 
 void AppCore::SlotOneChat(const QByteArray& data) {

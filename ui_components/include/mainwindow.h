@@ -9,6 +9,7 @@
 #include "contactsmainwidget.h"
 #include "addfriendwindow.h"
 #include "friendmodel.h"
+#include "msgmodel.h"
 
 enum Area {
     Top,
@@ -62,7 +63,7 @@ private slots:
     void SlotChatView(QVariant var, PageType type);
 
 public:
-    explicit MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, QWidget *parent = nullptr);
+    explicit MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, std::shared_ptr<MsgModel> msgModel, QWidget *parent = nullptr);
     ~MainWindow() override;
     void Init();
 
@@ -104,6 +105,7 @@ private:
     AddFriendWindow* m_addFriendWindow;
 
     std::shared_ptr<FriendModel> m_friendModel;
+    std::shared_ptr<MsgModel> m_msgModel;
     std::shared_ptr<User> m_user;
 
 };

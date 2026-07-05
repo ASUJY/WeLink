@@ -10,6 +10,7 @@
 #include "user.hpp"
 #include "usermodel.h"
 #include "friendmodel.h"
+#include "msgmodel.h"
 
 using MsgHandler = std::function<void(const QByteArray& data)>;
 
@@ -57,6 +58,7 @@ private:
     std::shared_ptr<User> m_user;
     UserModel m_userModel;
     std::shared_ptr<FriendModel> m_friendModel;
+    std::shared_ptr<MsgModel> m_msgModel;
 };
 
 #endif // APPCORE_H

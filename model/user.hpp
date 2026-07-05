@@ -2,6 +2,8 @@
 #define USER_H
 
 #include <string>
+#include <QObject>
+#include <QString>
 
 class User {
 public:
@@ -24,7 +26,7 @@ public:
     void SetPwd(const std::string pwd) {this->m_password = pwd;}
     void SetUserState(const std::string state) {this->m_userstate = state;}
 
-    long long GetUserId() const {return m_userid;}
+    int GetUserId() const {return m_userid;}
     std::string GetUserPhone() const {return m_userphone;}
     std::string GetUserAccount() const {return m_account;}
     std::string GetUserName() const {return m_username;}
@@ -33,7 +35,7 @@ public:
     std::string GetUserState() const {return m_userstate;}
 
 private:
-    long long m_userid;
+    int m_userid;
     std::string m_userphone;
     std::string m_account;
     std::string m_username;

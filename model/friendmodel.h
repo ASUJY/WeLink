@@ -12,6 +12,7 @@ public:
 
     bool AddFriend(const uint64_t id, const Friend &fri);
     bool IsFriendExit(const uint64_t id, const Friend &fri);
+    std::vector<Friend> FindFriends(const uint64_t id);
 
 private:
     bool IsTableExit();

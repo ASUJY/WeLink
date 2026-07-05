@@ -10,8 +10,8 @@ public:
     explicit UserModel(const QString &connName = "userConn");
     ~UserModel() = default;
 
-    bool AddUser(User &user);
-    bool IsUserExit(User &user);
+    bool AddUser(std::shared_ptr<User>user);
+    bool IsUserExit(std::shared_ptr<User>user);
 
 private:
     bool IsTableExit();

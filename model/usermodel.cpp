@@ -26,23 +26,23 @@ bool UserModel::IsTableExit() {
     return DBMagr::Instance()->ExecQuery(query, sql);
 }
 
-bool UserModel::AddUser(User &user) {
+bool UserModel::AddUser(std::shared_ptr<User> user) {
 
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery insertQuery(db);
     insertQuery.prepare("insert into im_user(userid, phone, nickname, avatar) values(?,?,?,?)");
-    insertQuery.addBindValue(user.GetUserId());
+    insertQuery.addBindValue(user->GetUserId());
     // insertQuery.addBindValue(QString::fromStdString(user.GetUserAccount()));
-    insertQuery.addBindValue(QString::fromStdString(user.GetUserPhone()));
-    insertQuery.addBindValue(QString::fromStdString(user.GetUserName()));
-    insertQuery.addBindValue(QString::fromStdString(user.GetUserAvatar()));
+    insertQuery.addBindValue(QString::fromStdString(user->GetUserPhone()));
+    insertQuery.addBindValue(QString::fromStdString(user->GetUserName()));
+    insertQuery.addBindValue(QString::fromStdString(user->GetUserAvatar()));
 
     return DBMagr::Instance()->ExecQuery(insertQuery);
 }
 
-bool UserModel::IsUserExit(User &user) {
+bool UserModel::IsUserExit(std::shared_ptr<User>user) {
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) {
         return false;
@@ -50,7 +50,7 @@ bool UserModel::IsUserExit(User &user) {
 
     QSqlQuery query(db);
     query.prepare("select * from im_user where userid = ?");
-    query.addBindValue(user.GetUserId());
+    query.addBindValue(user->GetUserId());
 
     if (DBMagr::Instance()->ExecQuery(query) && query.next()) {
         return true;

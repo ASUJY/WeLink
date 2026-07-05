@@ -10,8 +10,11 @@
 AppCore::AppCore() {
     m_loginWidget = new LoginWidget;
     m_registerWidget = new RegisterWidget;
-    m_mainWindow = new MainWindow;
     m_netMediator = new net::TcpClientMediator;
+    m_friendModel = std::make_shared<FriendModel>();
+    m_user = std::make_shared<User>();
+    m_mainWindow = new MainWindow(m_user, m_friendModel);
+
 
     // Login
     connect(m_loginWidget, &LoginWidget::SigLoginCommit, this, &AppCore::SlotLoginCommit);
@@ -154,17 +157,18 @@ void AppCore::LoginSuccess(const QByteArray& data) {
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
 
-    m_user.SetUserId(dataObj.value("userid").toInt());
-    m_user.SetUserName(dataObj.value("username").toString().toStdString());
-    m_user.SetUserPhone(dataObj.value("phone").toString().toStdString());
-    m_user.SetUserAvatar(dataObj.value("avator").toString().toStdString());
+    m_user->SetUserId(dataObj.value("userid").toInt());
+    m_user->SetUserName(dataObj.value("username").toString().toStdString());
+    m_user->SetUserPhone(dataObj.value("phone").toString().toStdString());
+    m_user->SetUserAvatar(dataObj.value("avator").toString().toStdString());
     if (!m_userModel.IsUserExit(m_user)) {
         m_userModel.AddUser(m_user);
     }
 
-
+    m_mainWindow->Init();
     m_loginWidget->hide();
     m_mainWindow->show();
+
 
     // if (dataObj.contains("offlinemsg")) {
     //     QJsonArray array = dataObj["offlinemsg"].toArray();
@@ -206,8 +210,8 @@ void  AppCore::SlotAddFriendReq(const User& frienduser) {
     QJsonObject dataJson;
     dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
     dataJson.insert("friendid", QString::number(frienduser.GetUserId()));
-    dataJson.insert("username", QString::fromStdString(m_user.GetUserName()));
-    dataJson.insert("userid", QString::number(m_user.GetUserId()));
+    dataJson.insert("username", QString::fromStdString(m_user->GetUserName()));
+    dataJson.insert("userid", QString::number(m_user->GetUserId()));
     QJsonObject json;
     json.insert("data", dataJson);
     json.insert("msgtype", ADD_FRIEND_REQ);
@@ -244,8 +248,8 @@ void AppCore::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     fri.SetUserId(friendid);
     fri.SetUserName(friendname.toStdString());
 
-    if (!m_friendModel.IsFriendExit(m_user.GetUserId(), fri)) {
-        m_friendModel.AddFriend(m_user.GetUserId(), fri);
+    if (!m_friendModel->IsFriendExit(m_user->GetUserId(), fri)) {
+        m_friendModel->AddFriend(m_user->GetUserId(), fri);
         emit SIG_ReciveAddFriendAckAgree(data);
     }
 }
@@ -255,8 +259,8 @@ void AppCore::SlotAddFriendReqAck(const User& frienduser) {
     QJsonObject dataJson;
     dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
     dataJson.insert("friendid", QString::number(frienduser.GetUserId()));
-    dataJson.insert("username", QString::fromStdString(m_user.GetUserName()));
-    dataJson.insert("userid", QString::number(m_user.GetUserId()));
+    dataJson.insert("username", QString::fromStdString(m_user->GetUserName()));
+    dataJson.insert("userid", QString::number(m_user->GetUserId()));
     QJsonObject json;
     json.insert("data", dataJson);
     json.insert("msgtype", ADD_FRIEND_ACK_AGREE);
@@ -269,8 +273,8 @@ void AppCore::SlotAddFriendReqAck(const User& frienduser) {
     Friend fri;
     fri.SetUserId(frienduser.GetUserId());
     fri.SetUserName(frienduser.GetUserName());
-    if (!m_friendModel.IsFriendExit(m_user.GetUserId(), fri)) {
-        m_friendModel.AddFriend(m_user.GetUserId(), fri);
+    if (!m_friendModel->IsFriendExit(m_user->GetUserId(), fri)) {
+        m_friendModel->AddFriend(m_user->GetUserId(), fri);
         // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
         bool res = m_netMediator->SendData(data, data.size());
     }
@@ -280,7 +284,7 @@ void AppCore::SlotSendChatMsg(int id, const QString& content) {
     qDebug() << "AppCore::SlotSendChatMsg userid: " << id;
     QJsonObject dataJson;
     QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-    dataJson.insert("senderId", QString::number(m_user.GetUserId()));
+    dataJson.insert("senderId", QString::number(m_user->GetUserId()));
     dataJson.insert("receiverId", QString::number(id));
     dataJson.insert("content", content);
     dataJson.insert("createtime", currentTime);

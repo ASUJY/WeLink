@@ -54,9 +54,9 @@ private:
     MainWindow* m_mainWindow = nullptr;
     net::CommunicationMediator *m_netMediator = nullptr;
     std::unordered_map<int, std::function<void(const QByteArray& data)>> m_msgHandlerMap;
-    User m_user;
+    std::shared_ptr<User> m_user;
     UserModel m_userModel;
-    FriendModel m_friendModel;
+    std::shared_ptr<FriendModel> m_friendModel;
 };
 
 #endif // APPCORE_H

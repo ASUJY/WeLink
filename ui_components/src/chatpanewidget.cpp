@@ -75,6 +75,25 @@ void ChatPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     }
 }
 
+void ChatPaneWidget::AddFriendToPane(std::unique_ptr<Friend> fri) {
+    // 创建列表单行载体对象，代表列表中的一行。
+    auto item = new QListWidgetItem;
+    // QVariant var = QVariant::fromValue(fri.get());
+    // item->setData(Qt::UserRole, var);
+    item->setSizeHint(QSize(250, 65));
+    // 在列表中新增一行
+    ui->listWidget->addItem(item);
+    auto widget = new ChatListItem(this);
+    uint64_t friendid = fri->GetUserId();
+    widget->SetItem(std::move(fri));
+    // 把列表中的这一行的显示效果替换为自定义控件的显示效果
+    ui->listWidget->setItemWidget(item, widget);
+
+    m_mapIdToChatItem[friendid] = widget;
+
+    connect(widget, &ChatListItem::SIG_Selected, this, &ChatPaneWidget::SlotItemSelected);
+}
+
 void ChatPaneWidget::SlotAddFriendReqAck(const User& user) {
 
     QString friendname = QString::fromStdString(user.GetUserName());

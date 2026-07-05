@@ -2,15 +2,18 @@
 #include "ui_mainwindow.h"
 #include <QJsonObject>
 #include <QJsonDocument>
+#include "friend.hpp"
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), m_page(ChatWidget)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
     SetWidgetWinTitle();
-    Init();
+    m_friendModel = friendModel;
+    m_user = user;
+    // Init();
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +61,13 @@ void MainWindow::InitChatPaneWidget() {
     connect(m_chatPaneWidget.get(), &ChatPaneWidget::SIG_ItemClicked, this, &MainWindow::SlotChatView);
     // 接收好友添加请求，在聊天列表中增加一项
     connect(this, &MainWindow::SIG_ReciveAddFriendAckAgree, m_chatPaneWidget.get(), &ChatPaneWidget::SlotReciveAddFriendAckAgree);
+
+    auto friends = m_friendModel->FindFriends(m_user->GetUserId());
+    for (int i = 0; i < friends.size(); ++i) {
+        QList<Message> messages1;
+        std::unique_ptr<Friend> fri = std::make_unique<Friend>(friends[i].GetUserId(), QString::fromStdString(friends[i].GetUserName()), ":/resource/head/man.svg", false, "2026", 0, messages1);
+        m_chatPaneWidget->AddFriendToPane(std::move(fri));
+    }
 
     ui->gridLayout_2->addWidget(m_chatPaneWidget.get());
     m_chatPaneWidget->show();

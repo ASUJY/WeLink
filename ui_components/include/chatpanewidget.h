@@ -26,6 +26,7 @@ public:
     ~ChatPaneWidget();
     static ChatListItem* GetItem() { return m_item; }
     ChatListItem* GetItemById(uint64_t id);
+    void AddFriendToPane(std::unique_ptr<Friend> fri);
 
 public slots:
     // 接收到对方发来的同意添加朋友信息，则在聊天列表中新增这个朋友的聊天项

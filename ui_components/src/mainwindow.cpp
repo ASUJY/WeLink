@@ -82,6 +82,11 @@ void MainWindow::InitContactsPaneWidget() {
     // 联系人列表中的某一项被选中，则展示对应的内容
     connect(m_contactsPaneWidget.get(), &ContactsPaneWidget::SIG_ItemDidSelected, this, &MainWindow::SlotContactsItemDidSelected);
 
+    auto friends = m_friendModel->FindFriends(m_user->GetUserId());
+    for (int i = 0; i < friends.size(); ++i) {
+        m_contactsPaneWidget->AddFriendToPane(friends[i]);
+    }
+
 }
 
 void MainWindow::InitContactsMainWidget() {

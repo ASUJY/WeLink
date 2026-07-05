@@ -83,8 +83,6 @@ std::vector<Friend> FriendModel::FindFriends(const uint64_t id) {
     QString sql = "select * from im_friend where userid = ?";
     query.prepare(sql);
     query.addBindValue(id);
-    qDebug() << "SQL模板:" << query.lastQuery();
-    qDebug() << "绑定参数:" << query.boundValues();
 
     if (!DBMagr::Instance()->ExecQuery(query)) {
         qDebug() << "查询失败：" << query.lastError().text();

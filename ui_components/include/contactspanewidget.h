@@ -5,6 +5,7 @@
 #include <memory>
 #include "user.hpp"
 #include "contactsitem.h"
+#include "friend.hpp"
 
 namespace Ui {
 class ContactsPaneWidget;
@@ -18,6 +19,7 @@ signals:
 public:
     explicit ContactsPaneWidget(QWidget *parent = nullptr);
     ~ContactsPaneWidget();
+    void AddFriendToPane(const Friend& fri);
 
 public slots:
     void SlotReciveAddFriendReq(const QByteArray& data);

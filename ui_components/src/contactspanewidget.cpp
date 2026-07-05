@@ -106,3 +106,14 @@ void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     newFriendItem->SetItemState(ContactsState::Done);
     ui->contactsListWidget->InsertItem(std::move(newFriendItem));
 }
+
+void ContactsPaneWidget::AddFriendToPane(const Friend& fri) {
+    std::unique_ptr<ContactsItem> newFriendItem = std::make_unique<ContactsItem>();
+    newFriendItem->SetGroupName(tr("联系人"));
+    newFriendItem->SetItemName(QString::fromStdString(fri.GetUserName()));
+    newFriendItem->SetItemId(fri.GetUserId());
+    newFriendItem->SetHeadIcon(":/resource/head/man.svg");
+    newFriendItem->SetItemType(ContactsItemType::Item);
+    newFriendItem->SetItemState(ContactsState::Done);
+    ui->contactsListWidget->InsertItem(std::move(newFriendItem));
+}

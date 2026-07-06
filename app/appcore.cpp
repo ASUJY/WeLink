@@ -166,20 +166,21 @@ void AppCore::LoginSuccess(const QByteArray& data) {
         m_userModel.AddUser(m_user);
     }
 
+
     m_mainWindow->Init();
+
+    if (jsonObj.contains("offlinemsg")) {
+        QJsonArray array = jsonObj["offlinemsg"].toArray();
+        for (int i = 0; i < array.size(); ++i) {
+            QString jsonStr = array[i].toString();
+            QJsonDocument jsonDoc1 = QJsonDocument::fromJson(jsonStr.toUtf8());
+            emit SIG_ONECHAT(jsonDoc1.toJson());
+        }
+    }
+
     m_loginWidget->hide();
     m_mainWindow->show();
 
-
-    // if (dataObj.contains("offlinemsg")) {
-    //     QJsonArray array = dataObj["offlinemsg"].toArray();
-    //     for (int i = 0; i < array.size(); ++i) {
-    //         QJsonValue val = array[i];
-    //         if (val.isObject()) {
-    //             emit SIG_ONECHAT(val.toJson());
-    //         }
-    //     }
-    // }
 }
 
 void AppCore::SlotGetFriendInfo(const QString& username) {

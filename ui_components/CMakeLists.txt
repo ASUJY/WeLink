@@ -4,7 +4,7 @@ aux_source_directory(./src/register REGISTER_SRC_LIST)
 
 
 add_library(UiLib STATIC
-    ../app/resource.qrc
+    #../app/resource.qrc
     )
 
 target_sources(UiLib PRIVATE

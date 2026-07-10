@@ -8,7 +8,7 @@ project(WeLink LANGUAGES CXX)
 # Widgets模块(界面控件)
 # Svg模块(Svg图形支持)
 # Network模块
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Svg Network Sql)
+find_package(Qt6 6.9 REQUIRED COMPONENTS Core Widgets Svg Network Sql)
 
 # 开启自动处理 Qt 资源文件（.qrc）
 set(CMAKE_AUTORCC ON)

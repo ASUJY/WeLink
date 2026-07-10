@@ -6,7 +6,6 @@ qt_add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE
     appcore.h
     appcore.cpp
     resource.qrc
-    resource.qrc
 )
 
 set(CONFIG_FILE_PATH ${CMAKE_SOURCE_DIR}/net/init.conf)

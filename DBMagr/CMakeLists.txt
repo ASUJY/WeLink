@@ -8,6 +8,6 @@ target_link_libraries(DBMagr PUBLIC Qt::Core Qt::Sql)
 
 
 target_include_directories(
-    ModelLib PUBLIC
+    DBMagr PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )

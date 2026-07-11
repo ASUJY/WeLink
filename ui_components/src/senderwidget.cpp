@@ -7,6 +7,7 @@ SenderWidget::SenderWidget(QWidget *parent,  QString imageUrl)
     , ui(new Ui::SenderWidget)
 {
     ui->setupUi(this);
+    this->setStyleSheet("background:transparent;");
     Init(imageUrl);
 }
 
@@ -23,6 +24,7 @@ void SenderWidget::Init(QString imageUrl) {
 void SenderWidget::SetMessage(QString message) {
     ui->labMsg->SetText(message);
     ui->labMsg->setStyleSheet("color: black;");
+    this->adjustSize();
 }
 
 void SenderWidget::SlotLabelSizeChanged(QRect rect) {

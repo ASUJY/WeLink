@@ -4,6 +4,8 @@
 #include "chatpanewidget.h"
 #include "senderwidget.h"
 #include "receiverwidget.h"
+#include "ReceiverMsgItem.h"
+#include "SenderMsgItem.h"
 #include <QDebug>
 
 ChatMainWidget::ChatMainWidget(QWidget *parent)
@@ -38,19 +40,25 @@ void ChatMainWidget::SetData(Friend *data) {
         auto item = new QListWidgetItem;
         ui->listWidget->addItem(item);
         if (message.GetMsgType() == MsgType::Sender) {
-            auto widget = new SenderWidget(nullptr, ":/resource/head/man.svg");
+            auto widget = new SenderMsgItem(nullptr, ":/resource/head/man.svg");
             ui->listWidget->setItemWidget(item, widget);
-            connect(widget, &SenderWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
-                item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));
-            });
+            // connect(widget, &SenderWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
+            //     item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));
+            // });
             widget->SetMessage(message.GetContent());
+            item->setSizeHint(widget->sizeHint());
+            // 取消item可选中，彻底杜绝焦点框
+            item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
         } else if (message.GetMsgType() == MsgType::Receive) {
-            auto widget = new ReceiverWidget(nullptr, ":/resource/icon/app.png");
+            auto widget = new ReceiverMsgItem(nullptr, ":/resource/icon/app.png");
             ui->listWidget->setItemWidget(item, widget);
-            connect(widget, &ReceiverWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
-                item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));
-            });
+            // connect(widget, &ReceiverWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
+            //     item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));
+            // });
             widget->SetMessage(message.GetContent());
+            item->setSizeHint(widget->sizeHint());
+            // 取消item可选中，彻底杜绝焦点框
+            item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
         }
         ui->listWidget->scrollToBottom();
     }

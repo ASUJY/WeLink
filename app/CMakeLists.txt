@@ -42,3 +42,7 @@ qt_generate_deploy_app_script(
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
 install(SCRIPT ${deploy_script})
+
+install(FILES ${CONFIG_FILE_PATH}
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

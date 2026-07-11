@@ -35,7 +35,7 @@
    <item>
     <widget class="QStackedWidget" name="ChatMainStackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -139,7 +139,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../../app/resource.qrc">
+             <iconset>
               <normaloff>:/resource/icon/menu/info.svg</normaloff>:/resource/icon/menu/info.svg</iconset>
             </property>
            </widget>
@@ -178,7 +178,7 @@
            <number>0</number>
           </property>
           <property name="bottomMargin">
-           <number>100</number>
+           <number>0</number>
           </property>
           <property name="horizontalSpacing">
            <number>0</number>
@@ -199,6 +199,31 @@
               <width>16777215</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QListWidget{
+            background:white;
+            border:none;
+            outline:none;
+        }
+        QListWidget::item{
+            background:transparent;
+            border:none;
+            outline:none;
+        }
+        QListWidget::item:hover{
+            background:transparent;
+            border:none;
+            outline:none;
+        }
+        QListWidget::item:selected{
+            background:transparent;
+            border:none;
+            outline:none;
+        }
+        QListWidget::item:focus{
+            outline:none;
+        }</string>
             </property>
            </widget>
           </item>
@@ -460,7 +485,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset resource="../../app/resource.qrc">
+                   <iconset>
                     <normaloff>:/resource/icon/menu/smile.svg</normaloff>:/resource/icon/menu/smile.svg</iconset>
                   </property>
                   <property name="iconSize">
@@ -483,7 +508,7 @@
                    <string/>
                   </property>
                   <property name="icon">
-                   <iconset resource="../../app/resource.qrc">
+                   <iconset>
                     <normaloff>:/resource/icon/menu/folder2.svg</normaloff>:/resource/icon/menu/folder2.svg</iconset>
                   </property>
                   <property name="iconSize">
@@ -540,8 +565,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../../app/resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

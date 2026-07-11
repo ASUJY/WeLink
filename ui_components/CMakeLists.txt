@@ -24,6 +24,9 @@ target_sources(UiLib PRIVATE
     include/senderwidget.h
     include/label.h
     include/receiverwidget.h
+    include/BubbleLabel.h
+    include/SenderMsgItem.h
+    include/ReceiverMsgItem.h
     
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}

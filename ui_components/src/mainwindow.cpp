@@ -351,7 +351,7 @@ void MainWindow::SlotOneChat(const QByteArray& data) {
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
     qDebug() << "MainWindow::SlotOneChat" << dataObj.value("senderId");
-    uint64_t id = dataObj.value("senderId").toString().toULongLong();
+    uint64_t id = dataObj.value("senderId").toString().toLongLong();
     QString content = dataObj.value("content").toString();
     QString createtime = dataObj.value("createtime").toString();
     qDebug() << "MainWindow::SlotOneChat";

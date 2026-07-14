@@ -52,8 +52,8 @@ private:
 private:
     LoginWidget *m_loginWidget = nullptr;
     RegisterWidget* m_registerWidget = nullptr;
-    MainWindow* m_mainWindow = nullptr;
-    net::CommunicationMediator *m_netMediator = nullptr;
+    std::unique_ptr<MainWindow> m_mainWindow = nullptr;
+    std::unique_ptr<net::CommunicationMediator> m_netMediator = nullptr;
     std::unordered_map<int, std::function<void(const QByteArray& data)>> m_msgHandlerMap;
     std::shared_ptr<User> m_user;
     UserModel m_userModel;

@@ -10,11 +10,11 @@
 AppCore::AppCore() {
     m_loginWidget = new LoginWidget;
     m_registerWidget = new RegisterWidget;
-    m_netMediator = new net::TcpClientMediator;
+    m_netMediator = std::make_unique<net::TcpClientMediator>();
     m_friendModel = std::make_shared<FriendModel>();
     m_msgModel = std::make_shared<MsgModel>();
     m_user = std::make_shared<User>();
-    m_mainWindow = new MainWindow(m_user, m_friendModel, m_msgModel);
+    m_mainWindow = std::make_unique<MainWindow>(m_user, m_friendModel, m_msgModel);
 
 
     // Login
@@ -23,22 +23,22 @@ AppCore::AppCore() {
     // Register
     connect(m_loginWidget, &LoginWidget::SigRegister, m_registerWidget, &RegisterWidget::SlotShow);
     connect(m_registerWidget, &RegisterWidget::SigRegisterCommit, this, &AppCore::SlotRegisterCommit);
-    connect(m_netMediator, &net::CommunicationMediator::SIG_ReadyData, this, &AppCore::SlotReadyRead);
+    connect(m_netMediator.get(), &net::CommunicationMediator::SIG_ReadyData, this, &AppCore::SlotReadyRead);
 
     // Add Friend
-    connect(m_mainWindow, &MainWindow::SIG_GetFriendInfo, this, &AppCore::SlotGetFriendInfo);
-    connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow, &MainWindow::SlotGetFriendInfoSuccess);
-    connect(this, &AppCore::SIG_GetFriendInfoFailed, m_mainWindow, &MainWindow::SlotGetFriendInfoFailed);
-    connect(m_mainWindow, &MainWindow::SIG_AddFriendReq, this, &AppCore::SlotAddFriendReq);
-    connect(this, &AppCore::SIG_ReciveAddFriendAckAgree, m_mainWindow, &MainWindow::SlotReciveAddFriendAckAgree);
+    connect(m_mainWindow.get(), &MainWindow::SIG_GetFriendInfo, this, &AppCore::SlotGetFriendInfo);
+    connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoSuccess);
+    connect(this, &AppCore::SIG_GetFriendInfoFailed, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoFailed);
+    connect(m_mainWindow.get(), &MainWindow::SIG_AddFriendReq, this, &AppCore::SlotAddFriendReq);
+    connect(this, &AppCore::SIG_ReciveAddFriendAckAgree, m_mainWindow.get(), &MainWindow::SlotReciveAddFriendAckAgree);
 
     // Added Friend
-    connect(this, &AppCore::SIG_ReciveAddFriendReq, m_mainWindow, &MainWindow::SlotReciveAddFriendReq);
-    connect(m_mainWindow, &MainWindow::SIG_AddFriendReqAck, this, &AppCore::SlotAddFriendReqAck);
+    connect(this, &AppCore::SIG_ReciveAddFriendReq, m_mainWindow.get(), &MainWindow::SlotReciveAddFriendReq);
+    connect(m_mainWindow.get(), &MainWindow::SIG_AddFriendReqAck, this, &AppCore::SlotAddFriendReqAck);
 
     // Send Message
-    connect(m_mainWindow, &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
-    connect(this, &AppCore::SIG_ONECHAT, m_mainWindow, &MainWindow::SlotOneChat);
+    connect(m_mainWindow.get(), &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
+    connect(this, &AppCore::SIG_ONECHAT, m_mainWindow.get(), &MainWindow::SlotOneChat);
 
     m_msgHandlerMap.insert({REG_MSG_ACK_SUCCESS, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});

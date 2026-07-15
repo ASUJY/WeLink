@@ -32,7 +32,7 @@ public:
 
 public slots:
     void SlotRegisterCommit(QString username, QString phone, QString password);
-    void SlotLoginCommit(QString username, QString password);
+    void SlotLoginCommit(const QByteArray& data);
     void SlotReadyRead(const QByteArray& data, int len);
     void SlotGetFriendInfo(const QString& username);
     void SlotAddFriendReq(const User& user);

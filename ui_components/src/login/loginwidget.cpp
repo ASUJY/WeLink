@@ -1,11 +1,13 @@
 #include "loginwidget.h"
 #include "ui_loginwidget.h"
 #include "clicklabel.h"
-
+#include "common.h"
 #include <QGraphicsDropShadowEffect>
 #include <QFile>
 #include <QStyle>
 #include <QIcon>
+#include <QJsonObject>
+#include <QRegularExpression>
 
 LoginWidget::LoginWidget(QWidget *parent)
     : QWidget(parent)
@@ -61,7 +63,7 @@ void LoginWidget::SetWidgetHeadIcon() {
 
 void LoginWidget::SetWidgetWinBody() {
     // 输入框默认提示文字
-    ui->lineEditUser->setPlaceholderText("QQ号码/手机/邮箱");
+    ui->lineEditUser->setPlaceholderText("手机号/用户名");
     ui->lineEditPwd->setPlaceholderText("请输入密码");
     ui->lineEditPwd->setEchoMode(QLineEdit::Password); // 密码隐藏
 
@@ -87,7 +89,6 @@ void LoginWidget::SetWidgetWinBottom() {
     labReg->setText("注册帐号");
 
     connect(labReg, &ClickLabel::clicked, this, [=](){
-        // m_regWidget->show();
         emit SIG_Register();
     });
 
@@ -134,8 +135,46 @@ void LoginWidget::OnBtnLoginClicked() {
     QString username = ui->lineEditUser->text().trimmed();
     QString passwd = ui->lineEditPwd->text().trimmed();
 
-    // 可以补充校验逻辑和用户提示，现在暂不补充
-    emit SigLoginCommit(username, passwd);
+    if (username.isEmpty() || passwd.isEmpty()) {
+        return;
+    }
+
+
+    emit SIG_LoginCommit(MakeLoginJSON());
 }
 
+QByteArray LoginWidget::MakeLoginJSON() {
+    // 登录的时候，可以用手机号，用户名来进行登录
+    QJsonObject dataJson;
+    dataJson.insert("username", ui->lineEditUser->text().trimmed());
+    dataJson.insert("password", ui->lineEditPwd->text().trimmed());
+    dataJson.insert("accountType", QString::number(static_cast<int>(CheckAccountType())));
+
+    QJsonObject json;
+    json.insert("data", dataJson);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::LOGIN_MSG));
+
+    QJsonDocument document;
+    document.setObject(json);
+
+    auto data = document.toJson(QJsonDocument::Compact);
+    return data;
+}
+
+E_ACCOUNT_TYPE LoginWidget::CheckAccountType() {
+    // 去除首尾空格
+    QString text = ui->lineEditUser->text().trimmed();
+
+    // 手机号正则表达式（大陆 11 位，1 开头）
+    QRegularExpression phoneReg("^1[3-9]\\d{9}$");
+    QRegularExpressionMatch match = phoneReg.match(text);
+
+    // 手机号
+    if (match.hasMatch()) {
+        return E_ACCOUNT_TYPE::PHONE;
+    }
+
+    // 用户名
+    return E_ACCOUNT_TYPE::NICKNAME;
+}
 

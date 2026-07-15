@@ -22,4 +22,9 @@ enum class E_ERR_TYPE : int {
     USER_EXIT
 };
 
+enum class E_ACCOUNT_TYPE : int {
+    NICKNAME = 0,
+    PHONE
+};
+
 #endif // COMMON_H

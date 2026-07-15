@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QPoint>
+#include "common.h"
 
 namespace Ui {
 class LoginWidget;
@@ -24,7 +25,7 @@ protected:
 
 signals:
     void SIG_Register();
-    void SigLoginCommit(QString username, QString password);
+    void SIG_LoginCommit(const QByteArray& data);
 
 private slots:
     void OnBtnLoginClicked();
@@ -34,6 +35,8 @@ private:
     void SetWidgetHeadIcon();
     void SetWidgetWinBody();
     void SetWidgetWinBottom();
+    QByteArray MakeLoginJSON();
+    E_ACCOUNT_TYPE CheckAccountType();
 
 private:
     Ui::LoginWidget *ui;

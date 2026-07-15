@@ -17,7 +17,7 @@ AppCore::AppCore() {
 
 
     // Login
-    connect(m_loginWidget, &LoginWidget::SigLoginCommit, this, &AppCore::SlotLoginCommit);
+    connect(m_loginWidget, &LoginWidget::SIG_LoginCommit, this, &AppCore::SlotLoginCommit);
 
     // Register
     connect(m_loginWidget, &LoginWidget::SIG_Register, this, &AppCore::SlotShowRegisterWidget);
@@ -104,22 +104,7 @@ void AppCore::SlotRegisterCommit(QString username, QString phone, QString passwo
     bool res = m_netMediator->SendData(data, data.size());
 }
 
-void AppCore::SlotLoginCommit(QString username, QString password) {
-    // 登录的时候，应该可以用账号，手机号，用户名来进行登录，现在先简单用用户名进行登录，先跑通流程
-    QJsonObject dataJson;
-    dataJson.insert("username", username);
-    dataJson.insert("password", password);
-
-    QJsonObject json;
-    json.insert("data", dataJson);
-    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::LOGIN_MSG));
-
-    QJsonDocument document;
-    document.setObject(json);
-
-    auto data = document.toJson(QJsonDocument::Compact);
-    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
-
+void AppCore::SlotLoginCommit(const QByteArray& data) {
     // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
     bool res = m_netMediator->SendData(data, data.size());
 

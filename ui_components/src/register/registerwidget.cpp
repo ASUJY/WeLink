@@ -140,5 +140,5 @@ void RegisterWidget::OnBtnRegClicked() {
         m_leditPasswd->setFocus();
         return;
     }
-    emit SIG_RegisterCommit(phone, username, passwd);
+    emit SIG_RegisterCommit(username, phone, passwd);
 }

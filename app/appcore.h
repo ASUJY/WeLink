@@ -11,6 +11,7 @@
 #include "usermodel.h"
 #include "friendmodel.h"
 #include "msgmodel.h"
+#include "common.h"
 
 using MsgHandler = std::function<void(const QByteArray& data)>;
 
@@ -54,7 +55,7 @@ private:
     RegisterWidget* m_registerWidget = nullptr;
     std::unique_ptr<MainWindow> m_mainWindow = nullptr;
     std::unique_ptr<net::CommunicationMediator> m_netMediator = nullptr;
-    std::unordered_map<int, std::function<void(const QByteArray& data)>> m_msgHandlerMap;
+    std::unordered_map<E_MSG_TYPE, std::function<void(const QByteArray& data)>> m_msgHandlerMap;
     std::shared_ptr<User> m_user;
     UserModel m_userModel;
     std::shared_ptr<FriendModel> m_friendModel;

@@ -18,13 +18,14 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 signals:
-   void SigRegisterCommit(QString username, QString phone, QString password);
+   void SIG_RegisterCommit(QString username, QString phone, QString password);
 
 public slots:
     void SlotShow();
 
 private slots:
    void OnBtnRegClicked();
+   void SlotCheckPhone(const QString& text);
 
 private:
     QLabel *m_labInfo = nullptr;

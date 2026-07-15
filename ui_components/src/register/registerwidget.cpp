@@ -2,6 +2,15 @@
 #include <QVBoxLayout>
 #include <QFont>
 #include <QDebug>
+#include <QRegularExpression>
+
+namespace {
+bool IsPhoneNumberValid(const QString& phone) {
+    QRegularExpression reg("^1[3-9]\\d{9}$");
+    QRegularExpressionMatch match = reg.match(phone);
+    return match.hasMatch();
+}
+}
 
 RegisterWidget::RegisterWidget(QWidget *parent)
     : QWidget{parent}
@@ -50,6 +59,17 @@ RegisterWidget::RegisterWidget(QWidget *parent)
     m_rbtnPolicy->setFixedWidth(320);
     m_rbtnPolicy->setChecked(true);
 
+    connect(m_leditPhone, &QLineEdit::textChanged, this, &RegisterWidget::SlotCheckPhone);
+    connect(m_leditName, &QLineEdit::editingFinished, this, [this](){
+        if (!m_leditName->text().trimmed().isEmpty()) {
+            m_labNameTips->setText("");
+        }
+    });
+    connect(m_leditPasswd, &QLineEdit::editingFinished, this, [this](){
+        if (!m_leditPasswd->text().trimmed().isEmpty()) {
+            m_labPasswdTips->setText("");
+        }
+    });
     connect(m_btnReg, &QPushButton::clicked, this, &RegisterWidget::OnBtnRegClicked);
 
 
@@ -86,6 +106,14 @@ void RegisterWidget::SlotShow() {
     this->show();
 }
 
+void RegisterWidget::SlotCheckPhone(const QString& text) {
+    if (!IsPhoneNumberValid(text)){
+        m_labPhoneTips->setText("<font color='red'>请输入正确的手机号码</font>");
+    } else {
+        m_labPhoneTips->setText("");
+    }
+}
+
 /**
  * 可以优化得更美观，可以加上校验逻辑(正则表达式)
  */
@@ -97,10 +125,15 @@ void RegisterWidget::OnBtnRegClicked() {
     m_labNameTips->setText("");
     m_labPasswdTips->setText("");
     if (phone.isEmpty()) {
-        m_labPhoneTips->setText("<font color='red'>电话号码不能为空</font>");
+        m_labPhoneTips->setText("<font color='red'>手机号码不能为空</font>");
+        m_leditPhone->setFocus();
+        return;
+    } else if (!IsPhoneNumberValid(phone)){
+        m_labPhoneTips->setText("<font color='red'>请输入正确的手机号码</font>");
         m_leditPhone->setFocus();
         return;
     }
+
     if (username.isEmpty()) {
         m_labNameTips->setText("<font color='red'>用户名不能为空</font>");
         m_leditName->setFocus();
@@ -111,7 +144,5 @@ void RegisterWidget::OnBtnRegClicked() {
         m_leditPasswd->setFocus();
         return;
     }
-    qDebug() << "phone: " << phone;
-    qDebug() << "username: " << username;
-    emit SigRegisterCommit(phone, username, passwd);
+    emit SIG_RegisterCommit(phone, username, passwd);
 }

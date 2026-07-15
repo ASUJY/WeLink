@@ -22,7 +22,7 @@ AppCore::AppCore() {
 
     // Register
     connect(m_loginWidget, &LoginWidget::SigRegister, m_registerWidget, &RegisterWidget::SlotShow);
-    connect(m_registerWidget, &RegisterWidget::SigRegisterCommit, this, &AppCore::SlotRegisterCommit);
+    connect(m_registerWidget, &RegisterWidget::SIG_RegisterCommit, this, &AppCore::SlotRegisterCommit);
     connect(m_netMediator.get(), &net::CommunicationMediator::SIG_ReadyData, this, &AppCore::SlotReadyRead);
 
     // Add Friend
@@ -40,13 +40,13 @@ AppCore::AppCore() {
     connect(m_mainWindow.get(), &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
     connect(this, &AppCore::SIG_ONECHAT, m_mainWindow.get(), &MainWindow::SlotOneChat);
 
-    m_msgHandlerMap.insert({REG_MSG_ACK_SUCCESS, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({ADD_FRIEND_ACK_AGREE, std::bind(&AppCore::SlotReciveAddFriendAckAgree, this, std::placeholders::_1)});
-     m_msgHandlerMap.insert({ONE_CHAT_MSG, std::bind(&AppCore::SlotOneChat, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::REG_MSG_ACK, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_ACK_AGREE, std::bind(&AppCore::SlotReciveAddFriendAckAgree, this, std::placeholders::_1)});
+     m_msgHandlerMap.insert({E_MSG_TYPE::ONE_CHAT_MSG, std::bind(&AppCore::SlotOneChat, this, std::placeholders::_1)});
 
     m_loginWidget->show();
 }
@@ -81,7 +81,7 @@ void AppCore::SlotRegisterCommit(QString username, QString phone, QString passwo
     QJsonObject json;
     json.insert("from", fromJson);
     json.insert("data", dataJson);
-    json.insert("msgtype", REG_MSG);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::REG_MSG));
 
     QJsonDocument document;
     document.setObject(json);
@@ -101,7 +101,7 @@ void AppCore::SlotLoginCommit(QString username, QString password) {
 
     QJsonObject json;
     json.insert("data", dataJson);
-    json.insert("msgtype", LOGIN_MSG);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::LOGIN_MSG));
 
     QJsonDocument document;
     document.setObject(json);
@@ -130,7 +130,7 @@ void AppCore::SlotReadyRead(const QByteArray& data, int len) {
 }
 
 MsgHandler  AppCore::GetHandler(int msgtype) {
-    auto it = m_msgHandlerMap.find(msgtype);
+    auto it = m_msgHandlerMap.find(static_cast<E_MSG_TYPE>(msgtype));
     if (it == m_msgHandlerMap.end()) {
         // 返回一个默认的处理器，空操作
         return [=](const QByteArray& data){
@@ -141,8 +141,25 @@ MsgHandler  AppCore::GetHandler(int msgtype) {
 }
 
 void AppCore::RegisterSuccess(const QByteArray& data) {
-    // 临时弹窗告诉用户注册成功，后面有时间再优化UI界面
-    QMessageBox::about(this->m_registerWidget, "提示", "注册成功");
+    QJsonParseError jsonError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) {
+        return;
+    }
+    if (!jsonDoc.isObject()) return;
+
+    QJsonObject jsonObj = jsonDoc.object();
+    QJsonValue dataVal = jsonObj.value("data");
+    QJsonObject dataObj = dataVal.toObject();
+
+    E_ERR_TYPE errtype = static_cast<E_ERR_TYPE>(dataObj.value("errtype").toInt());
+    if (errtype == E_ERR_TYPE::REG_MSG_ACK_SUCCESS) {
+        // 临时弹窗告诉用户注册成功，后面有时间再优化UI界面
+        QMessageBox::about(this->m_registerWidget, "提示", "注册成功");
+    } else if (errtype == E_ERR_TYPE::USER_EXIT){
+        QMessageBox::about(this->m_registerWidget, "提示", "用户已存在");
+    }
+
 }
 
 void AppCore::LoginSuccess(const QByteArray& data) {
@@ -188,7 +205,7 @@ void AppCore::SlotGetFriendInfo(const QString& username) {
     dataJson.insert("username", username);
     QJsonObject json;
     json.insert("data", dataJson);
-    json.insert("msgtype", GET_FRIEND_INFO_REQ);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::GET_FRIEND_INFO_REQ));
     QJsonDocument document;
     document.setObject(json);
 
@@ -216,7 +233,7 @@ void  AppCore::SlotAddFriendReq(const User& frienduser) {
     dataJson.insert("userid", QString::number(m_user->GetUserId()));
     QJsonObject json;
     json.insert("data", dataJson);
-    json.insert("msgtype", ADD_FRIEND_REQ);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::ADD_FRIEND_REQ));
     QJsonDocument document;
     document.setObject(json);
 
@@ -265,7 +282,7 @@ void AppCore::SlotAddFriendReqAck(const User& frienduser) {
     dataJson.insert("userid", QString::number(m_user->GetUserId()));
     QJsonObject json;
     json.insert("data", dataJson);
-    json.insert("msgtype", ADD_FRIEND_ACK_AGREE);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::ADD_FRIEND_ACK_AGREE));
     QJsonDocument document;
     document.setObject(json);
 
@@ -292,7 +309,7 @@ void AppCore::SlotSendChatMsg(int id, const QString& content) {
     dataJson.insert("createtime", currentTime);
     QJsonObject json;
     json.insert("data", dataJson);
-    json.insert("msgtype", ONE_CHAT_MSG);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::ONE_CHAT_MSG));
     QJsonDocument document;
     document.setObject(json);
 

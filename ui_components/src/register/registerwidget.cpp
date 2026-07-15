@@ -102,10 +102,6 @@ void RegisterWidget::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-void RegisterWidget::SlotShow() {
-    this->show();
-}
-
 void RegisterWidget::SlotCheckPhone(const QString& text) {
     if (!IsPhoneNumberValid(text)){
         m_labPhoneTips->setText("<font color='red'>请输入正确的手机号码</font>");

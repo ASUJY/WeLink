@@ -42,6 +42,8 @@ public slots:
     void SlotSendChatMsg(int id, const QString& content);
     void SlotOneChat(const QByteArray& data);
 
+private slots:
+    void SlotShowRegisterWidget();
 
 private:
     MsgHandler GetHandler(int msgtype);

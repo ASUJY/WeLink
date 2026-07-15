@@ -20,8 +20,6 @@ protected:
 signals:
    void SIG_RegisterCommit(QString username, QString phone, QString password);
 
-public slots:
-    void SlotShow();
 
 private slots:
    void OnBtnRegClicked();

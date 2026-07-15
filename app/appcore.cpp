@@ -9,7 +9,6 @@
 
 AppCore::AppCore() {
     m_loginWidget = new LoginWidget;
-    m_registerWidget = new RegisterWidget;
     m_netMediator = std::make_unique<net::TcpClientMediator>();
     m_friendModel = std::make_shared<FriendModel>();
     m_msgModel = std::make_shared<MsgModel>();
@@ -21,8 +20,8 @@ AppCore::AppCore() {
     connect(m_loginWidget, &LoginWidget::SigLoginCommit, this, &AppCore::SlotLoginCommit);
 
     // Register
-    connect(m_loginWidget, &LoginWidget::SigRegister, m_registerWidget, &RegisterWidget::SlotShow);
-    connect(m_registerWidget, &RegisterWidget::SIG_RegisterCommit, this, &AppCore::SlotRegisterCommit);
+    connect(m_loginWidget, &LoginWidget::SIG_Register, this, &AppCore::SlotShowRegisterWidget);
+
     connect(m_netMediator.get(), &net::CommunicationMediator::SIG_ReadyData, this, &AppCore::SlotReadyRead);
 
     // Add Friend
@@ -61,6 +60,18 @@ AppCore::~AppCore() {
         m_registerWidget->hide();
         delete m_registerWidget;
         m_registerWidget = nullptr;
+    }
+}
+
+void AppCore::SlotShowRegisterWidget() {
+    if (m_registerWidget == nullptr) {
+        m_registerWidget = new RegisterWidget;
+        m_registerWidget->setAttribute(Qt::WA_DeleteOnClose);
+        connect(m_registerWidget, &RegisterWidget::SIG_RegisterCommit, this, &AppCore::SlotRegisterCommit);
+        connect(m_registerWidget, &RegisterWidget::destroyed, this, [this](){
+            m_registerWidget = nullptr;
+        });
+        m_registerWidget->show();
     }
 }
 
@@ -154,9 +165,15 @@ void AppCore::RegisterSuccess(const QByteArray& data) {
 
     E_ERR_TYPE errtype = static_cast<E_ERR_TYPE>(dataObj.value("errtype").toInt());
     if (errtype == E_ERR_TYPE::REG_MSG_ACK_SUCCESS) {
+        if (this->m_registerWidget == nullptr) {
+            return;
+        }
         // 临时弹窗告诉用户注册成功，后面有时间再优化UI界面
         QMessageBox::about(this->m_registerWidget, "提示", "注册成功");
     } else if (errtype == E_ERR_TYPE::USER_EXIT){
+        if (this->m_registerWidget == nullptr) {
+            return;
+        }
         QMessageBox::about(this->m_registerWidget, "提示", "用户已存在");
     }
 

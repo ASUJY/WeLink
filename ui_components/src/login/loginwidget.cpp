@@ -88,7 +88,7 @@ void LoginWidget::SetWidgetWinBottom() {
 
     connect(labReg, &ClickLabel::clicked, this, [=](){
         // m_regWidget->show();
-        emit SigRegister();
+        emit SIG_Register();
     });
 
 

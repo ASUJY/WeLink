@@ -23,7 +23,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 signals:
-    void SigRegister();
+    void SIG_Register();
     void SigLoginCommit(QString username, QString password);
 
 private slots:

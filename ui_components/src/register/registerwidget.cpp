@@ -1,8 +1,10 @@
 #include "registerwidget.h"
+#include "common.h"
 #include <QVBoxLayout>
 #include <QFont>
 #include <QDebug>
 #include <QRegularExpression>
+#include <QJsonObject>
 
 namespace {
 bool IsPhoneNumberValid(const QString& phone) {
@@ -140,5 +142,26 @@ void RegisterWidget::OnBtnRegClicked() {
         m_leditPasswd->setFocus();
         return;
     }
-    emit SIG_RegisterCommit(username, phone, passwd);
+    emit SIG_RegisterCommit(MakeRegisterJSON());
+}
+
+QByteArray RegisterWidget::MakeRegisterJSON() {
+    QJsonObject fromJson;
+    fromJson.insert("userid", -1);
+    QJsonObject dataJson;
+    dataJson.insert("username", m_leditName->text().trimmed());
+    dataJson.insert("phone", m_leditPhone->text().trimmed());
+    dataJson.insert("password", m_leditPasswd->text().trimmed());
+    dataJson.insert("avatar", "");
+
+    QJsonObject json;
+    json.insert("from", fromJson);
+    json.insert("data", dataJson);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::REG_MSG));
+
+    QJsonDocument document;
+    document.setObject(json);
+
+    auto data = document.toJson(QJsonDocument::Compact);
+    return data;
 }

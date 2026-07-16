@@ -31,7 +31,7 @@ public:
     ~AppCore();
 
 public slots:
-    void SlotRegisterCommit(QString username, QString phone, QString password);
+    void SlotRegisterCommit(const QByteArray& data);
     void SlotLoginCommit(const QByteArray& data);
     void SlotReadyRead(const QByteArray& data, int len);
     void SlotGetFriendInfo(const QString& username);

@@ -9,12 +9,16 @@
 
 AppCore::AppCore() {
     m_loginWidget = new LoginWidget;
+    m_loginWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(m_loginWidget, &LoginWidget::destroyed, this, [this](){
+        m_loginWidget = nullptr;
+    });
+
     m_netMediator = std::make_unique<net::TcpClientMediator>();
     m_friendModel = std::make_shared<FriendModel>();
     m_msgModel = std::make_shared<MsgModel>();
     m_user = std::make_shared<User>();
     m_mainWindow = std::make_unique<MainWindow>(m_user, m_friendModel, m_msgModel);
-
 
     // Login
     connect(m_loginWidget, &LoginWidget::SIG_LoginCommit, this, &AppCore::SlotLoginCommit);
@@ -40,7 +44,7 @@ AppCore::AppCore() {
     connect(this, &AppCore::SIG_ONECHAT, m_mainWindow.get(), &MainWindow::SlotOneChat);
 
     m_msgHandlerMap.insert({E_MSG_TYPE::REG_MSG_ACK, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({E_MSG_TYPE::LOGIN_MSG_ACK, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::LOGIN_MSG_ACK, std::bind(&AppCore::ReceiveLoginACK, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
@@ -75,31 +79,7 @@ void AppCore::SlotShowRegisterWidget() {
     }
 }
 
-void AppCore::SlotRegisterCommit(QString username, QString phone, QString password) {
-    // if (!ConnectServer()) {
-    //     qDebug() << "连接服务器失败";
-    //     return;
-    // }
-
-    QJsonObject fromJson;
-    fromJson.insert("userid", -1);
-    QJsonObject dataJson;
-    dataJson.insert("username", username);
-    dataJson.insert("phone", phone);
-    dataJson.insert("password", password);
-    dataJson.insert("avatar", "");
-
-    QJsonObject json;
-    json.insert("from", fromJson);
-    json.insert("data", dataJson);
-    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::REG_MSG));
-
-    QJsonDocument document;
-    document.setObject(json);
-
-    auto data = document.toJson(QJsonDocument::Compact);
-    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
-
+void AppCore::SlotRegisterCommit(const QByteArray& data) {
     // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
     bool res = m_netMediator->SendData(data, data.size());
 }
@@ -164,7 +144,7 @@ void AppCore::RegisterSuccess(const QByteArray& data) {
 
 }
 
-void AppCore::LoginSuccess(const QByteArray& data) {
+void AppCore::ReceiveLoginACK(const QByteArray& data) {
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
     if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) {
@@ -210,8 +190,8 @@ void AppCore::LoginSuccess(const QByteArray& data) {
 
         m_loginWidget->hide();
         m_mainWindow->show();
+        m_loginWidget->close();
     }
-
 }
 
 void AppCore::SlotGetFriendInfo(const QString& username) {

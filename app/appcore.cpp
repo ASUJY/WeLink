@@ -40,7 +40,7 @@ AppCore::AppCore() {
     connect(this, &AppCore::SIG_ONECHAT, m_mainWindow.get(), &MainWindow::SlotOneChat);
 
     m_msgHandlerMap.insert({E_MSG_TYPE::REG_MSG_ACK, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({E_MSG_TYPE::LOGIN_MSG_ACK_SUCCESS, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::LOGIN_MSG_ACK, std::bind(&AppCore::LoginSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
@@ -177,28 +177,40 @@ void AppCore::LoginSuccess(const QByteArray& data) {
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
 
-    m_user->SetUserId(dataObj.value("userid").toInt());
-    m_user->SetUserName(dataObj.value("username").toString().toStdString());
-    m_user->SetUserPhone(dataObj.value("phone").toString().toStdString());
-    m_user->SetUserAvatar(dataObj.value("avator").toString().toStdString());
-    if (!m_userModel.IsUserExit(m_user)) {
-        m_userModel.AddUser(m_user);
-    }
+    E_ERR_TYPE errtype = static_cast<E_ERR_TYPE>(dataObj.value("errtype").toInt());
+    if (errtype == E_ERR_TYPE::ACCOUNT_ERROR) {
+        QMessageBox::about(this->m_loginWidget, "提示", "用户名密码错误");
+        return;
+    } else if (errtype == E_ERR_TYPE::USER_NO_REGISTER) {
+        QMessageBox::about(this->m_loginWidget, "提示", "用户未注册");
+        return;
+    } else if (errtype == E_ERR_TYPE::USER_ONLINE) {
+        QMessageBox::about(this->m_loginWidget, "提示", "用户已登录");
+        return;
+    } else if (errtype == E_ERR_TYPE::LOGIN_MSG_ACK_SUCCESS) {
 
-
-    m_mainWindow->Init();
-
-    if (jsonObj.contains("offlinemsg")) {
-        QJsonArray array = jsonObj["offlinemsg"].toArray();
-        for (int i = 0; i < array.size(); ++i) {
-            QString jsonStr = array[i].toString();
-            QJsonDocument jsonDoc1 = QJsonDocument::fromJson(jsonStr.toUtf8());
-            emit SIG_ONECHAT(jsonDoc1.toJson());
+        m_user->SetUserId(dataObj.value("userid").toInt());
+        m_user->SetUserName(dataObj.value("username").toString().toStdString());
+        m_user->SetUserPhone(dataObj.value("phone").toString().toStdString());
+        m_user->SetUserAvatar(dataObj.value("avator").toString().toStdString());
+        if (!m_userModel.IsUserExit(m_user)) {
+            m_userModel.AddUser(m_user);
         }
-    }
 
-    m_loginWidget->hide();
-    m_mainWindow->show();
+        m_mainWindow->Init();
+
+        if (jsonObj.contains("offlinemsg")) {
+            QJsonArray array = jsonObj["offlinemsg"].toArray();
+            for (int i = 0; i < array.size(); ++i) {
+                QString jsonStr = array[i].toString();
+                QJsonDocument jsonDoc1 = QJsonDocument::fromJson(jsonStr.toUtf8());
+                emit SIG_ONECHAT(jsonDoc1.toJson());
+            }
+        }
+
+        m_loginWidget->hide();
+        m_mainWindow->show();
+    }
 
 }
 

@@ -4,8 +4,7 @@
 enum class E_MSG_TYPE : int {
     UNKNOWN = 0,
     LOGIN_MSG,
-    LOGIN_MSG_ACK_SUCCESS,
-    LOGIN_MSG_ACK_FAIL,
+    LOGIN_MSG_ACK,
     REG_MSG,
     REG_MSG_ACK,
     GET_FRIEND_INFO_REQ,
@@ -19,7 +18,11 @@ enum class E_MSG_TYPE : int {
 enum class E_ERR_TYPE : int {
     UNKNOWN = 0,
     REG_MSG_ACK_SUCCESS,
-    USER_EXIT
+    USER_EXIT,
+    LOGIN_MSG_ACK_SUCCESS,
+    USER_NO_REGISTER,
+    USER_ONLINE,
+    ACCOUNT_ERROR
 };
 
 enum class E_ACCOUNT_TYPE : int {

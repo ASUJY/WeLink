@@ -20,6 +20,23 @@ AddFriendWindow::~AddFriendWindow()
     delete ui;
 }
 
+E_ACCOUNT_TYPE AddFriendWindow::CheckAccountType() {
+    // 去除首尾空格
+    QString text = ui->leditSearch->text().trimmed();
+
+    // 手机号正则表达式（大陆 11 位，1 开头）
+    QRegularExpression phoneReg("^1[3-9]\\d{9}$");
+    QRegularExpressionMatch match = phoneReg.match(text);
+
+    // 手机号
+    if (match.hasMatch()) {
+        return E_ACCOUNT_TYPE::PHONE;
+    }
+
+    // 用户名
+    return E_ACCOUNT_TYPE::NICKNAME;
+}
+
 void AddFriendWindow::SlotSearchFriend() {
     // 后面可以优化成根据用户名，手机号，账号等进行搜索
     QString username = ui->leditSearch->text();
@@ -30,6 +47,7 @@ void AddFriendWindow::SlotSearchFriend() {
 
     QJsonObject dataJson;
     dataJson.insert("username", username);
+    dataJson.insert("accountType", QString::number(static_cast<int>(CheckAccountType())));
     QJsonObject json;
     json.insert("data", dataJson);
     json.insert("msgtype", static_cast<int>(E_MSG_TYPE::GET_FRIEND_INFO_REQ));

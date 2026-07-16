@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "user.hpp"
+#include "common.h"
 
 namespace Ui {
 class AddFriendWindow;
@@ -28,6 +29,9 @@ private slots:
     void SlotSearchFriend();
     void SlotAddFriendReq();
     // void SlotGetFriendInfo();
+
+private:
+    E_ACCOUNT_TYPE CheckAccountType();
 
 private:
     Ui::AddFriendWindow *ui;

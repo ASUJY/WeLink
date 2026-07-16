@@ -21,8 +21,7 @@ signals:
     void SIG_AddFriendReq(const User& user);
 
 public slots:
-    void SlotGetFriendInfoSuccess(const QByteArray& data);
-    void SlotGetFriendInfoFailed(const QByteArray& data);
+    void ReceiveSlotGetFriendInfoACK(const QByteArray& data);
     void SlotChangedStackWidget();
 
 private slots:

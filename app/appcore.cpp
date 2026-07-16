@@ -30,7 +30,7 @@ AppCore::AppCore() {
 
     // Add Friend
     connect(m_mainWindow.get(), &MainWindow::SIG_SEND_GetFriendInfo, this, &AppCore::SendSlotGetFriendInfo);
-    connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoSuccess);
+    connect(this, &AppCore::SIG_RECEIVE_GetFriendInfoACK, m_mainWindow.get(), &MainWindow::ReceiveSlotGetFriendInfoACK);
     connect(this, &AppCore::SIG_GetFriendInfoFailed, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoFailed);
     connect(m_mainWindow.get(), &MainWindow::SIG_AddFriendReq, this, &AppCore::SlotAddFriendReq);
     connect(this, &AppCore::SIG_ReciveAddFriendAckAgree, m_mainWindow.get(), &MainWindow::SlotReciveAddFriendAckAgree);
@@ -45,8 +45,8 @@ AppCore::AppCore() {
 
     m_msgHandlerMap.insert({E_MSG_TYPE::REG_MSG_ACK, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::LOGIN_MSG_ACK, std::bind(&AppCore::ReceiveLoginACK, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_SUCCESS, std::bind(&AppCore::GetFriendInfoSuccess, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_ACK, std::bind(&AppCore::ReceiveGetFriendInfoACK, this, std::placeholders::_1)});
+    // m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_ACK_AGREE, std::bind(&AppCore::SlotReciveAddFriendAckAgree, this, std::placeholders::_1)});
      m_msgHandlerMap.insert({E_MSG_TYPE::ONE_CHAT_MSG, std::bind(&AppCore::SlotOneChat, this, std::placeholders::_1)});
@@ -201,8 +201,8 @@ void AppCore::SendSlotGetFriendInfo(const QByteArray& data) {
 
 }
 
-void AppCore::GetFriendInfoSuccess(const QByteArray& data) {
-    emit SIG_GetFriendInfoSuccess(data);
+void AppCore::ReceiveGetFriendInfoACK(const QByteArray& data) {
+    emit SIG_RECEIVE_GetFriendInfoACK(data);
 }
 
 void  AppCore::GetFriendInfoFailed(const QByteArray& data) {

@@ -40,8 +40,8 @@ void MainWindow::InitAddFriendWindow() {
     m_addFriendWindow = new AddFriendWindow(this);
     m_addFriendWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_GetFriendInfo, this, &MainWindow::SIG_SEND_GetFriendInfo);
-    connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
-    connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoFailed);
+    connect(this, &MainWindow::SIG_RECEIVE_GetFriendInfoACK, m_addFriendWindow, &AddFriendWindow::ReceiveSlotGetFriendInfoACK);
+    // connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoFailed);
     // 主动发送添加好友请求
     connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
     // 发送添加好友请求
@@ -255,8 +255,8 @@ void MainWindow::ShowAddFriendWindow() {
     m_addFriendWindow->show();
 }
 
-void MainWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {
-    emit SIG_GetFriendInfoSuccess(data);
+void MainWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {
+    emit SIG_RECEIVE_GetFriendInfoACK(data);
 }
 
 void MainWindow::SlotGetFriendInfoFailed(const QByteArray& data) {

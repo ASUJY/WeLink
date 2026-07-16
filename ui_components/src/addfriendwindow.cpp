@@ -41,8 +41,7 @@ void AddFriendWindow::SlotSearchFriend() {
     emit SIG_SEND_GetFriendInfo(data);
 }
 
-void AddFriendWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {
-    ui->stackedWidget->setCurrentIndex(2);
+void AddFriendWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
     if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) return;
@@ -52,14 +51,17 @@ void AddFriendWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
 
-    m_user.SetUserId(dataObj.value("userid").toString().toInt());
-    m_user.SetUserName(dataObj.value("username").toString().toStdString());
-    ui->labHeadIcon->setPixmap(QPixmap(":/resource/head/man.svg"));
-    ui->labName->setText(QString::fromStdString(m_user.GetUserName()));
-}
-
-void AddFriendWindow::SlotGetFriendInfoFailed(const QByteArray& data) {
-    ui->stackedWidget->setCurrentIndex(1);
+    E_ERR_TYPE errtype = static_cast<E_ERR_TYPE>(dataObj.value("errtype").toInt());
+    if (errtype == E_ERR_TYPE::GET_FRIEND_INFO_FAILED) {
+        ui->stackedWidget->setCurrentIndex(1);
+        return;
+    } else if (errtype == E_ERR_TYPE::GET_FRIEND_INFO_SUCCESS) {
+        ui->stackedWidget->setCurrentIndex(2);
+        m_user.SetUserId(dataObj.value("userid").toString().toInt());
+        m_user.SetUserName(dataObj.value("username").toString().toStdString());
+        ui->labHeadIcon->setPixmap(QPixmap(":/resource/head/man.svg"));
+        ui->labName->setText(QString::fromStdString(m_user.GetUserName()));
+    }
 }
 
 void AddFriendWindow::SlotChangedStackWidget() {

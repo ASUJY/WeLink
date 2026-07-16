@@ -40,7 +40,7 @@ class MainWindow : public QMainWindow
 
 signals:
     void SIG_SEND_GetFriendInfo(const QByteArray& data);
-    void SIG_GetFriendInfoSuccess(const QByteArray& data);
+    void SIG_RECEIVE_GetFriendInfoACK(const QByteArray& data);
     void SIG_GetFriendInfoFailed(const QByteArray& data);
     void SIG_AddFriendReq(const User& user);
     void SIG_AddFriendReqAck(const User& user);
@@ -49,7 +49,7 @@ signals:
     void SIG_SendChatMsg(int id, const QString &message);
 
 public slots:
-    void SlotGetFriendInfoSuccess(const QByteArray& data);
+    void ReceiveSlotGetFriendInfoACK(const QByteArray& data);
     void SlotGetFriendInfoFailed(const QByteArray& data);
     void SlotReciveAddFriendReq(const QByteArray& data);
     void SlotAddFriendReqAck(const User& user);

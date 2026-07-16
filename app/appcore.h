@@ -20,7 +20,7 @@ class AppCore : public QObject
     Q_OBJECT
 
 signals:
-    void SIG_GetFriendInfoSuccess(const QByteArray& data);
+    void SIG_RECEIVE_GetFriendInfoACK(const QByteArray& data);
     void SIG_GetFriendInfoFailed(const QByteArray& data);
     void SIG_ReciveAddFriendReq(const QByteArray& data);
     void SIG_ReciveAddFriendAckAgree(const QByteArray& data);
@@ -49,7 +49,7 @@ private:
     MsgHandler GetHandler(int msgtype);
     void RegisterSuccess(const QByteArray& data);
     void ReceiveLoginACK(const QByteArray& data);
-    void GetFriendInfoSuccess(const QByteArray& data);
+    void ReceiveGetFriendInfoACK(const QByteArray& data);
     void GetFriendInfoFailed(const QByteArray& data);
 
 private:

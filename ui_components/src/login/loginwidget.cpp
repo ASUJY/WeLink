@@ -17,6 +17,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 
     this->setWindowTitle("");
     this->setFixedSize(320, 460);
+    this->setAttribute(Qt::WA_TranslucentBackground);
     this->setWindowIcon(QIcon(":/resource/icon/app.png")); // 设置默认图标
 
     // 无边框窗口(去掉系统自带标题栏)

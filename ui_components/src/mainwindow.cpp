@@ -39,7 +39,7 @@ void MainWindow::Init() {
 void MainWindow::InitAddFriendWindow() {
     m_addFriendWindow = new AddFriendWindow(this);
     m_addFriendWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(m_addFriendWindow, &AddFriendWindow::SIG_GetFriendInfo, this, &MainWindow::SIG_GetFriendInfo);
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_GetFriendInfo, this, &MainWindow::SIG_SEND_GetFriendInfo);
     connect(this, &MainWindow::SIG_GetFriendInfoSuccess, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoSuccess);
     connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoFailed);
     // 主动发送添加好友请求

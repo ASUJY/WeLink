@@ -17,7 +17,7 @@ public:
     ~AddFriendWindow();
 
 signals:
-    void SIG_GetFriendInfo(const QString& username);
+    void SIG_SEND_GetFriendInfo(const QByteArray& data);
     void SIG_AddFriendReq(const User& user);
 
 public slots:

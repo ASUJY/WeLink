@@ -29,7 +29,7 @@ AppCore::AppCore() {
     connect(m_netMediator.get(), &net::CommunicationMediator::SIG_ReadyData, this, &AppCore::SlotReadyRead);
 
     // Add Friend
-    connect(m_mainWindow.get(), &MainWindow::SIG_GetFriendInfo, this, &AppCore::SlotGetFriendInfo);
+    connect(m_mainWindow.get(), &MainWindow::SIG_SEND_GetFriendInfo, this, &AppCore::SendSlotGetFriendInfo);
     connect(this, &AppCore::SIG_GetFriendInfoSuccess, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoSuccess);
     connect(this, &AppCore::SIG_GetFriendInfoFailed, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoFailed);
     connect(m_mainWindow.get(), &MainWindow::SIG_AddFriendReq, this, &AppCore::SlotAddFriendReq);
@@ -194,17 +194,8 @@ void AppCore::ReceiveLoginACK(const QByteArray& data) {
     }
 }
 
-void AppCore::SlotGetFriendInfo(const QString& username) {
-    QJsonObject dataJson;
-    dataJson.insert("username", username);
-    QJsonObject json;
-    json.insert("data", dataJson);
-    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::GET_FRIEND_INFO_REQ));
-    QJsonDocument document;
-    document.setObject(json);
+void AppCore::SendSlotGetFriendInfo(const QByteArray& data) {
 
-    auto data = document.toJson(QJsonDocument::Compact);
-    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
     // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
     bool res = m_netMediator->SendData(data, data.size());
 

@@ -34,7 +34,7 @@ public slots:
     void SlotRegisterCommit(const QByteArray& data);
     void SlotLoginCommit(const QByteArray& data);
     void SlotReadyRead(const QByteArray& data, int len);
-    void SlotGetFriendInfo(const QString& username);
+    void SendSlotGetFriendInfo(const QByteArray& data);
     void SlotAddFriendReq(const User& user);
     void SlotReciveAddFriendReq(const QByteArray& data);
     void SlotReciveAddFriendAckAgree(const QByteArray& data);

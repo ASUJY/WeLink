@@ -2,6 +2,7 @@
 #include "ui_addfriendwindow.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include "common.h"
 
 AddFriendWindow::AddFriendWindow(QWidget *parent)
     : QDialog(parent)
@@ -26,7 +27,18 @@ void AddFriendWindow::SlotSearchFriend() {
         ui->stackedWidget->setCurrentIndex(1);
         return;
     }
-    emit SIG_GetFriendInfo(username);
+
+    QJsonObject dataJson;
+    dataJson.insert("username", username);
+    QJsonObject json;
+    json.insert("data", dataJson);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::GET_FRIEND_INFO_REQ));
+    QJsonDocument document;
+    document.setObject(json);
+
+    auto data = document.toJson(QJsonDocument::Compact);
+
+    emit SIG_SEND_GetFriendInfo(data);
 }
 
 void AddFriendWindow::SlotGetFriendInfoSuccess(const QByteArray& data) {

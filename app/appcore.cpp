@@ -31,8 +31,8 @@ AppCore::AppCore() {
     // Add Friend
     connect(m_mainWindow.get(), &MainWindow::SIG_SEND_GetFriendInfo, this, &AppCore::SendSlotGetFriendInfo);
     connect(this, &AppCore::SIG_RECEIVE_GetFriendInfoACK, m_mainWindow.get(), &MainWindow::ReceiveSlotGetFriendInfoACK);
-    connect(this, &AppCore::SIG_GetFriendInfoFailed, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoFailed);
-    connect(m_mainWindow.get(), &MainWindow::SIG_AddFriendReq, this, &AppCore::SlotAddFriendReq);
+    // connect(this, &::AppCore::GetFriendInfoFailed, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoFailed);
+    connect(m_mainWindow.get(), &MainWindow::SIG_SEND_AddFriendReq, this, &AppCore::SendSlotAddFriendReq);
     connect(this, &AppCore::SIG_ReciveAddFriendAckAgree, m_mainWindow.get(), &MainWindow::SlotReciveAddFriendAckAgree);
 
     // Added Friend
@@ -205,25 +205,8 @@ void AppCore::ReceiveGetFriendInfoACK(const QByteArray& data) {
     emit SIG_RECEIVE_GetFriendInfoACK(data);
 }
 
-void  AppCore::GetFriendInfoFailed(const QByteArray& data) {
-    emit SIG_GetFriendInfoFailed(data);
-}
+void  AppCore::SendSlotAddFriendReq(const QByteArray& data) {
 
-void  AppCore::SlotAddFriendReq(const User& frienduser) {
-    qDebug() << frienduser.GetUserName() << "AppCore SlotAddFriendReq " << frienduser.GetUserId();
-    QJsonObject dataJson;
-    dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
-    dataJson.insert("friendid", QString::number(frienduser.GetUserId()));
-    dataJson.insert("username", QString::fromStdString(m_user->GetUserName()));
-    dataJson.insert("userid", QString::number(m_user->GetUserId()));
-    QJsonObject json;
-    json.insert("data", dataJson);
-    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::ADD_FRIEND_REQ));
-    QJsonDocument document;
-    document.setObject(json);
-
-    auto data = document.toJson(QJsonDocument::Compact);
-    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
     // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
     bool res = m_netMediator->SendData(data, data.size());
 }

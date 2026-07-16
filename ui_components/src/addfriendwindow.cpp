@@ -93,7 +93,7 @@ void AddFriendWindow::SlotAddFriendReq() {
         ui->stackedWidget->setCurrentIndex(1);
         return;
     }
-    emit SIG_AddFriendReq(m_user);
+    emit SIG_SEND_AddFriendReq(m_user);
     // this->hide();
     // this->close();
 }

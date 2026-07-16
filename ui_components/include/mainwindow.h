@@ -41,8 +41,8 @@ class MainWindow : public QMainWindow
 signals:
     void SIG_SEND_GetFriendInfo(const QByteArray& data);
     void SIG_RECEIVE_GetFriendInfoACK(const QByteArray& data);
-    void SIG_GetFriendInfoFailed(const QByteArray& data);
-    void SIG_AddFriendReq(const User& user);
+    // void SIG_GetFriendInfoFailed(const QByteArray& data);
+    void SIG_SEND_AddFriendReq(const QByteArray& data);
     void SIG_AddFriendReqAck(const User& user);
     void SIG_ReciveAddFriendReq(const QByteArray& data);
     void SIG_ReciveAddFriendAckAgree(const QByteArray& data);
@@ -57,6 +57,7 @@ public slots:
     void SlotSendChatMsg(int id, const QString &message);
     void SlotContactsItemDidSelected(const std::shared_ptr<ContactsItem>&);
     void SlotOneChat(const QByteArray& data);
+    void SendSlotAddFriendReq(const User& frienduser);
 
 private slots:
     void SlotSelectEvent();

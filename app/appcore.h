@@ -21,7 +21,6 @@ class AppCore : public QObject
 
 signals:
     void SIG_RECEIVE_GetFriendInfoACK(const QByteArray& data);
-    void SIG_GetFriendInfoFailed(const QByteArray& data);
     void SIG_ReciveAddFriendReq(const QByteArray& data);
     void SIG_ReciveAddFriendAckAgree(const QByteArray& data);
     void SIG_ONECHAT(const QByteArray& data);
@@ -35,7 +34,7 @@ public slots:
     void SlotLoginCommit(const QByteArray& data);
     void SlotReadyRead(const QByteArray& data, int len);
     void SendSlotGetFriendInfo(const QByteArray& data);
-    void SlotAddFriendReq(const User& user);
+    void SendSlotAddFriendReq(const QByteArray& data);
     void SlotReciveAddFriendReq(const QByteArray& data);
     void SlotReciveAddFriendAckAgree(const QByteArray& data);
     void SlotAddFriendReqAck(const User& user);
@@ -50,7 +49,6 @@ private:
     void RegisterSuccess(const QByteArray& data);
     void ReceiveLoginACK(const QByteArray& data);
     void ReceiveGetFriendInfoACK(const QByteArray& data);
-    void GetFriendInfoFailed(const QByteArray& data);
 
 private:
     LoginWidget *m_loginWidget = nullptr;

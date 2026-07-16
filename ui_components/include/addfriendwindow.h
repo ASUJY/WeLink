@@ -19,7 +19,7 @@ public:
 
 signals:
     void SIG_SEND_GetFriendInfo(const QByteArray& data);
-    void SIG_AddFriendReq(const User& user);
+    void SIG_SEND_AddFriendReq(const User& user);
 
 public slots:
     void ReceiveSlotGetFriendInfoACK(const QByteArray& data);

@@ -41,11 +41,11 @@ void MainWindow::InitAddFriendWindow() {
     m_addFriendWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_GetFriendInfo, this, &MainWindow::SIG_SEND_GetFriendInfo);
     connect(this, &MainWindow::SIG_RECEIVE_GetFriendInfoACK, m_addFriendWindow, &AddFriendWindow::ReceiveSlotGetFriendInfoACK);
-    // connect(this, &MainWindow::SIG_GetFriendInfoFailed, m_addFriendWindow, &AddFriendWindow::SlotGetFriendInfoFailed);
+
     // 主动发送添加好友请求
-    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, this, &MainWindow::SIG_AddFriendReq);
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_AddFriendReq, this, &MainWindow::SendSlotAddFriendReq);
     // 发送添加好友请求
-    connect(m_addFriendWindow, &AddFriendWindow::SIG_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotAddFriendReq);
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotAddFriendReq);
 }
 
 void MainWindow::InitChatMainWidget() {
@@ -260,7 +260,7 @@ void MainWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {
 }
 
 void MainWindow::SlotGetFriendInfoFailed(const QByteArray& data) {
-    emit SIG_GetFriendInfoFailed(data);
+    // emit SIG_GetFriendInfoFailed(data);
 }
 
 void MainWindow::SlotReciveAddFriendReq(const QByteArray& data) {
@@ -364,4 +364,21 @@ void MainWindow::SlotOneChat(const QByteArray& data) {
     } else {
         qDebug() << "MainWindow::SlotOneChat failed";
     }
+}
+
+void MainWindow::SendSlotAddFriendReq(const User& frienduser) {
+    qDebug() << frienduser.GetUserName() << "AppCore SlotAddFriendReq " << frienduser.GetUserId();
+    QJsonObject dataJson;
+    dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
+    dataJson.insert("friendid", QString::number(frienduser.GetUserId()));
+    dataJson.insert("username", QString::fromStdString(m_user->GetUserName()));
+    dataJson.insert("userid", QString::number(m_user->GetUserId()));
+    QJsonObject json;
+    json.insert("data", dataJson);
+    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::ADD_FRIEND_REQ));
+    QJsonDocument document;
+    document.setObject(json);
+
+    auto data = document.toJson(QJsonDocument::Compact);
+    emit SIG_SEND_AddFriendReq(data);
 }

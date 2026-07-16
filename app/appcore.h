@@ -48,7 +48,7 @@ private slots:
 private:
     MsgHandler GetHandler(int msgtype);
     void RegisterSuccess(const QByteArray& data);
-    void LoginSuccess(const QByteArray& data);
+    void ReceiveLoginACK(const QByteArray& data);
     void GetFriendInfoSuccess(const QByteArray& data);
     void GetFriendInfoFailed(const QByteArray& data);
 

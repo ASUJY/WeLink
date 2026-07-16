@@ -33,11 +33,11 @@ AppCore::AppCore() {
     connect(this, &AppCore::SIG_RECEIVE_GetFriendInfoACK, m_mainWindow.get(), &MainWindow::ReceiveSlotGetFriendInfoACK);
     // connect(this, &::AppCore::GetFriendInfoFailed, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoFailed);
     connect(m_mainWindow.get(), &MainWindow::SIG_SEND_AddFriendReq, this, &AppCore::SendSlotAddFriendReq);
-    connect(this, &AppCore::SIG_ReciveAddFriendAckAgree, m_mainWindow.get(), &MainWindow::SlotReciveAddFriendAckAgree);
+    connect(this, &AppCore::SIG_RECEIVE_AddFriendAck, m_mainWindow.get(), &MainWindow::ReceiveSlotAddFriendAck);
 
     // Added Friend
-    connect(this, &AppCore::SIG_ReciveAddFriendReq, m_mainWindow.get(), &MainWindow::SlotReciveAddFriendReq);
-    connect(m_mainWindow.get(), &MainWindow::SIG_AddFriendReqAck, this, &AppCore::SlotAddFriendReqAck);
+    connect(this, &AppCore::SIG_RECEIVE_AddFriendReq, m_mainWindow.get(), &MainWindow::ReceiveSlotAddFriendReq);
+    connect(m_mainWindow.get(), &MainWindow::SIG_SEND_AddFriendReqAck, this, &AppCore::SendSlotAddFriendReqAck);
 
     // Send Message
     connect(m_mainWindow.get(), &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
@@ -47,8 +47,8 @@ AppCore::AppCore() {
     m_msgHandlerMap.insert({E_MSG_TYPE::LOGIN_MSG_ACK, std::bind(&AppCore::ReceiveLoginACK, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_ACK, std::bind(&AppCore::ReceiveGetFriendInfoACK, this, std::placeholders::_1)});
     // m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_REQ, std::bind(&AppCore::SlotReciveAddFriendReq, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_ACK_AGREE, std::bind(&AppCore::SlotReciveAddFriendAckAgree, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_REQ, std::bind(&AppCore::ReceiveSlotAddFriendReq, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_ACK, std::bind(&AppCore::ReceiveSlotAddFriendAck, this, std::placeholders::_1)});
      m_msgHandlerMap.insert({E_MSG_TYPE::ONE_CHAT_MSG, std::bind(&AppCore::SlotOneChat, this, std::placeholders::_1)});
 
     m_loginWidget->show();
@@ -211,13 +211,12 @@ void  AppCore::SendSlotAddFriendReq(const QByteArray& data) {
     bool res = m_netMediator->SendData(data, data.size());
 }
 
-void AppCore::SlotReciveAddFriendReq(const QByteArray& data) {
+void AppCore::ReceiveSlotAddFriendReq(const QByteArray& data) {
     qDebug() << "申请添加朋友";
-    emit SIG_ReciveAddFriendReq(data);
+    emit SIG_RECEIVE_AddFriendReq(data);
 }
 
-void AppCore::SlotReciveAddFriendAckAgree(const QByteArray& data) {
-    qDebug() << "对方已同意添加为朋友";
+void AppCore::ReceiveSlotAddFriendAck(const QByteArray& data) {
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
 
@@ -229,6 +228,12 @@ void AppCore::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     // if (jsontmp.isNull() || !jsontmp.isObject()) return;
 
     QJsonObject dataObj = dataVal.toObject();
+
+    E_ACK_TYPE type = static_cast<E_ACK_TYPE>(dataObj.value("ackType").toInt());
+    if (type == E_ACK_TYPE::FAILED) {
+        return;
+    }
+
     QString friendname = dataObj.value("sendername").toString();
     int friendid = dataObj.value("senderid").toInt();
     Friend fri;
@@ -237,26 +242,11 @@ void AppCore::SlotReciveAddFriendAckAgree(const QByteArray& data) {
 
     if (!m_friendModel->IsFriendExit(m_user->GetUserId(), fri)) {
         m_friendModel->AddFriend(m_user->GetUserId(), fri);
-        emit SIG_ReciveAddFriendAckAgree(data);
+        emit SIG_RECEIVE_AddFriendAck(data);
     }
 }
 
-void AppCore::SlotAddFriendReqAck(const User& frienduser) {
-    qDebug() << frienduser.GetUserName() << "AppCore SlotAddFriendReqAck " << frienduser.GetUserId();
-    QJsonObject dataJson;
-    dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
-    dataJson.insert("friendid", QString::number(frienduser.GetUserId()));
-    dataJson.insert("username", QString::fromStdString(m_user->GetUserName()));
-    dataJson.insert("userid", QString::number(m_user->GetUserId()));
-    QJsonObject json;
-    json.insert("data", dataJson);
-    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::ADD_FRIEND_ACK_AGREE));
-    QJsonDocument document;
-    document.setObject(json);
-
-    auto data = document.toJson(QJsonDocument::Compact);
-    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
-
+void AppCore::SendSlotAddFriendReqAck(const QByteArray& data, const User& frienduser) {
     Friend fri;
     fri.SetUserId(frienduser.GetUserId());
     fri.SetUserName(frienduser.GetUserName());

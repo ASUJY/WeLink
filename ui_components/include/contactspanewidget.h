@@ -22,7 +22,7 @@ public:
     void AddFriendToPane(const Friend& fri);
 
 public slots:
-    void SlotReciveAddFriendReq(const QByteArray& data);
+    void ReceiveSlotAddFriendReq(const QByteArray& data);
     void SlotReciveAddFriendAckAgree(const QByteArray& data);
     void SlotAddFriendReq(const User& user);
     void SlotAddFriendReqAck(const User& user);

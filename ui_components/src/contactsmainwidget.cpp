@@ -1,5 +1,6 @@
 #include "contactsmainwidget.h"
 #include "ui_contactsmainwidget.h"
+#include <QButtonGroup>
 
 ContactsMainWidget::ContactsMainWidget(QWidget *parent)
     : QWidget(parent)
@@ -7,7 +8,22 @@ ContactsMainWidget::ContactsMainWidget(QWidget *parent)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(3);
-    connect(ui->btnAddFriend, &QPushButton::clicked, this, &ContactsMainWidget::SlotAddFriendAgree);
+
+    QButtonGroup* btnGroup = new QButtonGroup(this);
+    btnGroup->setExclusive(true);
+
+    btnGroup->addButton(ui->btnAddFriend, 1);
+    btnGroup->addButton(ui->btnRejectFriend, 2);
+
+    connect(btnGroup, &QButtonGroup::buttonClicked, this, [=](QAbstractButton* btn){
+        if (btn == ui->btnAddFriend) {
+            SendSlotAddFriendACK(E_ACK_TYPE::SUCCESS);
+        } else {
+            SendSlotAddFriendACK(E_ACK_TYPE::FAILED);
+        }
+    });
+
+    // connect(ui->btnAddFriend, &QPushButton::clicked, this, &ContactsMainWidget::SlotAddFriendAgree);
 }
 
 ContactsMainWidget::~ContactsMainWidget()
@@ -37,10 +53,10 @@ void ContactsMainWidget::SetStackedWidgetCurrentIndex(const std::shared_ptr<Cont
     }
 }
 
-void ContactsMainWidget::SlotAddFriendAgree() {
+void ContactsMainWidget::SendSlotAddFriendACK(E_ACK_TYPE type) {
     qDebug() << "ContactsMainWidget::SlotAddFriendAgree";
     User user;
     user.SetUserName(m_item->GetItemName().toStdString());
     user.SetUserId(m_item->GetItemId());
-    emit SIG_AddFriendReqAck(user);
+    emit SIG_SEND_AddFriendReqAck(user, type);
 }

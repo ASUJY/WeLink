@@ -21,8 +21,8 @@ class AppCore : public QObject
 
 signals:
     void SIG_RECEIVE_GetFriendInfoACK(const QByteArray& data);
-    void SIG_ReciveAddFriendReq(const QByteArray& data);
-    void SIG_ReciveAddFriendAckAgree(const QByteArray& data);
+    void SIG_RECEIVE_AddFriendReq(const QByteArray& data);
+    void SIG_RECEIVE_AddFriendAck(const QByteArray& data);
     void SIG_ONECHAT(const QByteArray& data);
 
 public:
@@ -35,9 +35,9 @@ public slots:
     void SlotReadyRead(const QByteArray& data, int len);
     void SendSlotGetFriendInfo(const QByteArray& data);
     void SendSlotAddFriendReq(const QByteArray& data);
-    void SlotReciveAddFriendReq(const QByteArray& data);
-    void SlotReciveAddFriendAckAgree(const QByteArray& data);
-    void SlotAddFriendReqAck(const User& user);
+    void ReceiveSlotAddFriendReq(const QByteArray& data);
+    void ReceiveSlotAddFriendAck(const QByteArray& data);
+    void SendSlotAddFriendReqAck(const QByteArray& data, const User& user);
     void SlotSendChatMsg(int id, const QString& content);
     void SlotOneChat(const QByteArray& data);
 

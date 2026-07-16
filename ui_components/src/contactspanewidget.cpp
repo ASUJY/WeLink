@@ -55,7 +55,7 @@ void ContactsPaneWidget::SlotAddFriendReqAck(const User& user) {
     ui->contactsListWidget->InsertItem(std::move(newFriendItem));
 }
 
-void ContactsPaneWidget::SlotReciveAddFriendReq(const QByteArray& data) {
+void ContactsPaneWidget::ReceiveSlotAddFriendReq(const QByteArray& data) {
     qDebug() << "ContactsPaneWidget::SlotReciveAddFriendReq";
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);

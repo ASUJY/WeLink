@@ -1,9 +1,12 @@
-add_library(CommonLib STATIC)
+add_library(CommonLib STATIC
+)
 
 target_sources(CommonLib PRIVATE
     include/common.h
     include/clicklabel.h
+    include/logger.h
     src/clicklabel.cpp
+    src/logger.cpp
 )
 
 target_include_directories(CommonLib PUBLIC

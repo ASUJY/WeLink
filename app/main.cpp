@@ -1,6 +1,6 @@
 #include "loginwidget.h"
 #include "mainwindow.h"
-
+#include "logger.h"
 #include <QApplication>
 #include <QStyleFactory>
 #include <QFile>
@@ -10,6 +10,7 @@
 
 int main(int argc, char *argv[])
 {
+    Logger::initLog("run.log");
     QApplication a(argc, argv);
     // a.setStyle(QStyleFactory::create("macOS"));
 
@@ -38,5 +39,9 @@ int main(int argc, char *argv[])
     // MainWindow w;
     // w.show();
 
-    return QCoreApplication::exec();
+    auto ret = QCoreApplication::exec();
+
+    Logger::unInitLog(); // 退出关闭日志
+
+    return ret;
 }

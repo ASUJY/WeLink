@@ -36,4 +36,11 @@ enum class E_ACK_TYPE : int {
     FAILED
 };
 
+enum class FrinedState : int {
+    ACCEPT = 0,
+    REJECT,
+    DONE,
+    PendingVerification
+};
+
 #endif // COMMON_H

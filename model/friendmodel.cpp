@@ -28,15 +28,17 @@ bool FriendModel::IsTableExit() {
     return DBMagr::Instance()->ExecQuery(query, sql);
 }
 
-bool FriendModel::AddFriend(const uint64_t id, const Friend &fri) {
+bool FriendModel::AddFriend(const uint64_t id, const User &fri, FrinedState state) {
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery insertQuery(db);
-    insertQuery.prepare("insert into im_friend(userid, friendid, friendname) values(?,?,?)");
+    insertQuery.prepare("insert into im_friend(userid, friendid, friendname, phone, state) values(?,?,?,?,?)");
     insertQuery.addBindValue(id);
     insertQuery.addBindValue(fri.GetUserId());
     insertQuery.addBindValue(QString::fromStdString(fri.GetUserName()));
+    insertQuery.addBindValue(QString::fromStdString(fri.GetUserPhone()));
+    insertQuery.addBindValue(static_cast<int>(state));
     qDebug() << "SQL模板:" << insertQuery.lastQuery();
     qDebug() << "绑定参数:" << insertQuery.boundValues();
     if (DBMagr::Instance()->ExecQuery(insertQuery)) {

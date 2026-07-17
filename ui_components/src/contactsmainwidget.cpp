@@ -54,7 +54,6 @@ void ContactsMainWidget::SetStackedWidgetCurrentIndex(const std::shared_ptr<Cont
 }
 
 void ContactsMainWidget::SendSlotAddFriendACK(E_ACK_TYPE type) {
-    qDebug() << "ContactsMainWidget::SlotAddFriendAgree";
     User user;
     user.SetUserName(m_item->GetItemName().toStdString());
     user.SetUserId(m_item->GetItemId());

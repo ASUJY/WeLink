@@ -103,6 +103,7 @@ void AddFriendWindow::SlotAddFriendReq() {
         return;
     }
     emit SIG_SEND_AddFriendReq(m_user);
+    this->close();
     // this->hide();
     // this->close();
 }

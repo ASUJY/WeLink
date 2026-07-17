@@ -45,7 +45,6 @@ void MainWindow::InitAddFriendWindow() {
 
     // 主动发送添加好友请求
     connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_AddFriendReq, this, &MainWindow::SendSlotAddFriendReq);
-    // 发送添加好友请求
     connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::SlotAddFriendReq);
 }
 
@@ -399,4 +398,5 @@ void MainWindow::SendSlotAddFriendReq(const User& frienduser) {
 
     auto data = document.toJson(QJsonDocument::Compact);
     emit SIG_SEND_AddFriendReq(data);
+    m_friendModel->AddFriend(m_user->GetUserId(), frienduser, FrinedState::PendingVerification);
 }

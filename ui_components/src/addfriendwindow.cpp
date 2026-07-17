@@ -2,6 +2,8 @@
 #include "ui_addfriendwindow.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <memory>
+#include "user.hpp"
 #include "common.h"
 
 AddFriendWindow::AddFriendWindow(QWidget *parent)
@@ -44,10 +46,10 @@ void AddFriendWindow::SlotSearchFriend() {
         ui->stackedWidget->setCurrentIndex(1);
         return;
     }
-
+    E_ACCOUNT_TYPE accountType = CheckAccountType();
     QJsonObject dataJson;
     dataJson.insert("username", username);
-    dataJson.insert("accountType", QString::number(static_cast<int>(CheckAccountType())));
+    dataJson.insert("accountType", QString::number(static_cast<int>(accountType)));
     QJsonObject json;
     json.insert("data", dataJson);
     json.insert("msgtype", static_cast<int>(E_MSG_TYPE::GET_FRIEND_INFO_REQ));
@@ -56,7 +58,7 @@ void AddFriendWindow::SlotSearchFriend() {
 
     auto data = document.toJson(QJsonDocument::Compact);
 
-    emit SIG_SEND_GetFriendInfo(data);
+    emit SIG_SEND_GetFriendInfo(data, username, accountType);
 }
 
 void AddFriendWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {
@@ -80,6 +82,13 @@ void AddFriendWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {
         ui->labHeadIcon->setPixmap(QPixmap(":/resource/head/man.svg"));
         ui->labName->setText(QString::fromStdString(m_user.GetUserName()));
     }
+}
+
+void AddFriendWindow::ReceiveSlotGetFriendInfoACK(const User& user) {
+    ui->stackedWidget->setCurrentIndex(3);
+    ui->labHeadIcon_2->setPixmap(QPixmap(":/resource/head/man.svg"));
+    ui->labName_2->setText(QString::fromStdString(user.GetUserName()));
+    return;
 }
 
 void AddFriendWindow::SlotChangedStackWidget() {

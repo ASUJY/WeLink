@@ -40,7 +40,8 @@ void MainWindow::InitAddFriendWindow() {
     m_addFriendWindow = new AddFriendWindow(this);
     m_addFriendWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_GetFriendInfo, this, &MainWindow::SIG_SEND_GetFriendInfo);
-    connect(this, &MainWindow::SIG_RECEIVE_GetFriendInfoACK, m_addFriendWindow, &AddFriendWindow::ReceiveSlotGetFriendInfoACK);
+    connect(this, static_cast<void (MainWindow::*)(const QByteArray&)>(&MainWindow::SIG_RECEIVE_GetFriendInfoACK), m_addFriendWindow, static_cast<void(AddFriendWindow::*)(const QByteArray&)>(&AddFriendWindow::ReceiveSlotGetFriendInfoACK));
+    connect(this, static_cast<void (MainWindow::*)(const User& user)>(&MainWindow::SIG_RECEIVE_GetFriendInfoACK), m_addFriendWindow, static_cast<void(AddFriendWindow::*)(const User&)>(&AddFriendWindow::ReceiveSlotGetFriendInfoACK));
 
     // 主动发送添加好友请求
     connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_AddFriendReq, this, &MainWindow::SendSlotAddFriendReq);

@@ -56,7 +56,7 @@ bool FriendModel::IsFriendExit(const uint64_t id, const Friend &fri) {
     }
 
     QSqlQuery query(db);
-    QString sql = "select 1 from im_friend where userid = ? and friendid = ? limit 1";
+    QString sql = R"(select 1 from im_friend where userid = ? and friendid = ? limit 1)";
     query.prepare(sql);
     query.addBindValue(id);
     query.addBindValue(fri.GetUserId());
@@ -69,6 +69,40 @@ bool FriendModel::IsFriendExit(const uint64_t id, const Friend &fri) {
 
     qDebug() << "查询好友SQL失败";
     return false;
+}
+
+User FriendModel::IsFriendExit(const uint64_t id, const QString &name, E_ACCOUNT_TYPE type) {
+    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    if (!db.isOpen()) {
+        qDebug() << "数据库连接未打开";
+        return User{};
+    }
+
+    QSqlQuery query(db);
+    QString sql = "";
+    if (type == E_ACCOUNT_TYPE::NICKNAME) {
+        sql = R"(select * from im_friend where userid = ? and friendname = ? limit 1)";
+    } else if (type == E_ACCOUNT_TYPE::PHONE) {
+        sql = R"(select * from im_friend where userid = ? and phone = ? limit 1)";
+    }
+    query.prepare(sql);
+    query.addBindValue(id);
+    query.addBindValue(name);
+
+    if (!DBMagr::Instance()->ExecQuery(query)) {
+        qDebug() << "查询好友SQL失败: " << query.lastQuery() << ", 查询参数: " << query.boundValues();
+        return User{};
+    }
+
+    if (query.next()) {
+        User user;
+        user.SetUserId(query.value("friendid").toULongLong());
+        user.SetUserName(query.value("friendname").toString().toStdString());
+        user.SetUserPhone(query.value("friendname").toString().toStdString());
+        return user;
+    }
+
+    return User{};
 }
 
 std::vector<Friend> FriendModel::FindFriends(const uint64_t id) {

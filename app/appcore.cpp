@@ -30,7 +30,9 @@ AppCore::AppCore() {
 
     // Add Friend
     connect(m_mainWindow.get(), &MainWindow::SIG_SEND_GetFriendInfo, this, &AppCore::SendSlotGetFriendInfo);
-    connect(this, &AppCore::SIG_RECEIVE_GetFriendInfoACK, m_mainWindow.get(), &MainWindow::ReceiveSlotGetFriendInfoACK);
+    connect(this, static_cast<void (AppCore::*)(const QByteArray&)>(&AppCore::SIG_RECEIVE_GetFriendInfoACK), m_mainWindow.get(), &MainWindow::ReceiveSlotGetFriendInfoACK);
+    connect(this, static_cast<void (AppCore::*)(const User&)>(&AppCore::SIG_RECEIVE_GetFriendInfoACK), m_mainWindow.get(), static_cast<void (MainWindow::*)(const User&)>(&MainWindow::SIG_RECEIVE_GetFriendInfoACK));
+
     // connect(this, &::AppCore::GetFriendInfoFailed, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoFailed);
     connect(m_mainWindow.get(), &MainWindow::SIG_SEND_AddFriendReq, this, &AppCore::SendSlotAddFriendReq);
     connect(this, &AppCore::SIG_RECEIVE_AddFriendAck, m_mainWindow.get(), &MainWindow::ReceiveSlotAddFriendAck);
@@ -194,11 +196,13 @@ void AppCore::ReceiveLoginACK(const QByteArray& data) {
     }
 }
 
-void AppCore::SendSlotGetFriendInfo(const QByteArray& data) {
-
-    // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
-    bool res = m_netMediator->SendData(data, data.size());
-
+void AppCore::SendSlotGetFriendInfo(const QByteArray& data, const QString& name, E_ACCOUNT_TYPE type) {
+    User user = m_friendModel->IsFriendExit(m_user->GetUserId(), name, type);
+    if (user.GetUserId() == -1) {
+        bool res = m_netMediator->SendData(data, data.size());
+    } else {
+        emit SIG_RECEIVE_GetFriendInfoACK(user);
+    }
 }
 
 void AppCore::ReceiveGetFriendInfoACK(const QByteArray& data) {

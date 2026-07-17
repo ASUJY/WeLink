@@ -39,8 +39,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 signals:
-    void SIG_SEND_GetFriendInfo(const QByteArray& data);
+    void SIG_SEND_GetFriendInfo(const QByteArray& data, const QString& name, E_ACCOUNT_TYPE type);
     void SIG_RECEIVE_GetFriendInfoACK(const QByteArray& data);
+    void SIG_RECEIVE_GetFriendInfoACK(const User& user);
     // void SIG_GetFriendInfoFailed(const QByteArray& data);
     void SIG_SEND_AddFriendReq(const QByteArray& data);
     void SIG_SEND_AddFriendReqAck(const QByteArray& data, const User& user);

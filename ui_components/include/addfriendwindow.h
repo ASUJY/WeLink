@@ -18,11 +18,12 @@ public:
     ~AddFriendWindow();
 
 signals:
-    void SIG_SEND_GetFriendInfo(const QByteArray& data);
+    void SIG_SEND_GetFriendInfo(const QByteArray& data, const QString& name, E_ACCOUNT_TYPE type);
     void SIG_SEND_AddFriendReq(const User& user);
 
 public slots:
     void ReceiveSlotGetFriendInfoACK(const QByteArray& data);
+    void ReceiveSlotGetFriendInfoACK(const User& user);
     void SlotChangedStackWidget();
 
 private slots:

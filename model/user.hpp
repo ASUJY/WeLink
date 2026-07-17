@@ -17,6 +17,7 @@ public:
         this->m_password = pwd;
         this->m_userstate = state;
     }
+    ~User() = default;
 
     void SetUserId(int id) {this->m_userid = id;}
     void SetUserPhone(const std::string phone) {this->m_userphone = phone;}

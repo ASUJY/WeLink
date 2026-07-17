@@ -216,7 +216,6 @@ void  AppCore::SendSlotAddFriendReq(const QByteArray& data) {
 }
 
 void AppCore::ReceiveSlotAddFriendReq(const QByteArray& data) {
-    qDebug() << "申请添加朋友";
     emit SIG_RECEIVE_AddFriendReq(data);
 }
 

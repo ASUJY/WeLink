@@ -20,6 +20,7 @@ bool FriendModel::IsTableExit() {
             account TEXT UNIQUE,
             phone TEXT UNIQUE,
             avatar TEXT,
+            state INTEGER NOT NULL,
             PRIMARY KEY (userid, friendid)
         )
     )";

@@ -1,16 +1,16 @@
 #include "contactspanewidget.h"
 #include "ui_contactspanewidget.h"
 #include "contactsitem.h"
-
+#include "common.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 
-ContactsPaneWidget::ContactsPaneWidget(QWidget *parent)
+ContactsPaneWidget::ContactsPaneWidget(std::shared_ptr<FriendModel> friendModel, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ContactsPaneWidget)
 {
     ui->setupUi(this);
-
+    m_friendModel = friendModel;
     std::unique_ptr<ContactsItem> newFriendsItem = std::make_unique<ContactsItem>();
     newFriendsItem->SetGroupName(tr("新的朋友"));
     newFriendsItem->SetIsOpen(false);
@@ -70,6 +70,11 @@ void ContactsPaneWidget::ReceiveSlotAddFriendReq(const QByteArray& data) {
     QJsonObject dataObj = dataVal.toObject();
     QString friendname = dataObj.value("sendername").toString();
     int friendid = dataObj.value("senderid").toInt();
+    int myid = dataObj.value("receiverid").toInt();
+
+    User fri;
+    fri.SetUserName(friendname.toStdString());
+    fri.SetUserId(friendid);
 
     std::unique_ptr<ContactsItem> newFriendItem = std::make_unique<ContactsItem>();
     newFriendItem->SetGroupName(tr("新的朋友"));
@@ -79,6 +84,8 @@ void ContactsPaneWidget::ReceiveSlotAddFriendReq(const QByteArray& data) {
     newFriendItem->SetItemType(ContactsItemType::Item);
     newFriendItem->SetItemState(ContactsState::Recevie);
     ui->contactsListWidget->InsertItem(std::move(newFriendItem));
+
+    m_friendModel->AddFriend(myid, fri, FrinedState::PendingApproval);
 }
 
 void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {

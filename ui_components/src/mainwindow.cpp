@@ -79,7 +79,7 @@ void MainWindow::InitChatPaneWidget() {
 }
 
 void MainWindow::InitContactsPaneWidget() {
-    m_contactsPaneWidget = std::make_unique<ContactsPaneWidget>();
+    m_contactsPaneWidget = std::make_unique<ContactsPaneWidget>(m_friendModel);
     // 接收到好友发来的添加朋友请求，在 新的好友列表 中新增一项
     connect(this, &MainWindow::SIG_RECEIVE_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::ReceiveSlotAddFriendReq);
     // 接收到好友发来的添加朋友通过请求，在 联系人列表 中新增一项

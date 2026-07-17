@@ -6,6 +6,7 @@
 #include "user.hpp"
 #include "contactsitem.h"
 #include "friend.hpp"
+#include "friendmodel.h"
 
 namespace Ui {
 class ContactsPaneWidget;
@@ -17,7 +18,7 @@ class ContactsPaneWidget : public QWidget
 signals:
     void SIG_ItemDidSelected(std::shared_ptr<ContactsItem>);
 public:
-    explicit ContactsPaneWidget(QWidget *parent = nullptr);
+    explicit ContactsPaneWidget(std::shared_ptr<FriendModel> friendModel, QWidget *parent = nullptr);
     ~ContactsPaneWidget();
     void AddFriendToPane(const Friend& fri);
 
@@ -30,6 +31,7 @@ public slots:
 
 private:
     Ui::ContactsPaneWidget *ui;
+    std::shared_ptr<FriendModel> m_friendModel;
 };
 
 #endif // CONTACTSPANEWIDGET_H

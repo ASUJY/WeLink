@@ -40,7 +40,8 @@ enum class FrinedState : int {
     ACCEPT = 0,
     REJECT,
     DONE,
-    PendingVerification
+    PendingVerification,
+    PendingApproval
 };
 
 #endif // COMMON_H

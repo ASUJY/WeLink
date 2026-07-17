@@ -133,3 +133,30 @@ std::vector<Friend> FriendModel::FindFriends(const uint64_t id) {
     }
     return friendsVec;
 }
+
+
+bool FriendModel::UpdateFriendState(const uint64_t id, const uint64_t friendid, E_ACK_TYPE type) {
+    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    if (!db.isOpen()) return false;
+
+    QSqlQuery updateQuery(db);
+    const QString sql = R"(
+        UPDATE im_friend
+        SET state = :state
+        WHERE userid = :uid AND friendid = :fid
+    )";
+
+    updateQuery.prepare(sql);
+    // 绑定参数
+    updateQuery.bindValue(":state", static_cast<int>(type));
+    updateQuery.bindValue(":uid", id);
+    updateQuery.bindValue(":fid", friendid);
+
+    if (DBMagr::Instance()->ExecQuery(updateQuery)) {
+        db.commit();
+        return true;
+    } else {
+        db.rollback();
+        return false;
+    }
+}

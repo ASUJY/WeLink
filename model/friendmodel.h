@@ -15,6 +15,7 @@ public:
     bool IsFriendExit(const uint64_t id, const Friend &fri);
     User IsFriendExit(const uint64_t id, const QString &name, E_ACCOUNT_TYPE type);
     std::vector<Friend> FindFriends(const uint64_t id);
+    bool UpdateFriendState(const uint64_t id, const uint64_t friendid, E_ACK_TYPE type);
 
 private:
     bool IsTableExit();

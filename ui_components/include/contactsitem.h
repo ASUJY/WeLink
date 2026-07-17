@@ -13,7 +13,9 @@ enum ContactsItemType : int {
 enum ContactsState : int {
     Done = 0,
     Send,
-    Recevie
+    Recevie,
+    Accept,
+    Reject
 };
 
 class ContactsItem

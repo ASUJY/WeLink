@@ -30,7 +30,7 @@ bool FriendRequestModel::IsTableExit() {
     return DBMagr::Instance()->ExecQuery(query, sql);
 }
 
-bool FriendRequestModel::AddItem(const uint64_t id, const User &fri, FrinedState status) {
+bool FriendRequestModel::AddItem(const uint64_t id, const User &fri, FriendState status) {
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
@@ -52,7 +52,7 @@ bool FriendRequestModel::AddItem(const uint64_t id, const User &fri, FrinedState
     }
 }
 
-bool FriendRequestModel::UpdateItemStatus(const uint64_t id, const uint64_t friendid, FrinedState status) {
+bool FriendRequestModel::UpdateItemStatus(const uint64_t id, const uint64_t friendid, FriendState status) {
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) return false;
 

@@ -4,18 +4,11 @@
 #include <QString>
 #include <QMap>
 #include <memory>
+#include "common.h"
 
 enum ContactsItemType : int {
     Group = 0,
     Item,
-};
-
-enum ContactsState : int {
-    Done = 0,
-    Send,
-    Recevie,
-    Accept,
-    Reject
 };
 
 class ContactsItem
@@ -34,7 +27,7 @@ public:
     void SetItemId(uint64_t id) {m_id = id;}
     void SetHeadIcon(const QString& headIcon) {m_headIcon = headIcon;}
     void SetItemType(int type) {m_type = type;}
-    void SetItemState(int state) {m_state = state;}
+    void SetItemState(FriendState state) {m_state = state;}
     void AddChildItem(uint64_t id, std::unique_ptr<ContactsItem> item) {
         m_childItems[id] = std::move(item);
     }
@@ -43,7 +36,7 @@ public:
     QString GetItemName() const {return m_name;}
     uint64_t GetItemId() const {return m_id;}
     int GetItemType() const {return m_type;}
-    int GetItemState() const {return m_state;}
+    FriendState GetItemState() const {return m_state;}
     QString GetHeadIcon() const {return m_headIcon;}
     const std::map<uint64_t, std::shared_ptr<ContactsItem>>& GetChildItems() const {return m_childItems;}
     std::shared_ptr<ContactsItem> GetChildItemById(uint64_t id) const {
@@ -58,7 +51,7 @@ private:
     QString m_name;
     uint64_t m_id;
     QString m_headIcon;
-    int m_state = Done;
+    FriendState m_state = FriendState::DONE;
     int m_type = ContactsItemType::Group;
 
     // 用于列表中的分组，例如联系人列表，新的好友列表

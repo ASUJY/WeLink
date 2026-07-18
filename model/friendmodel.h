@@ -11,7 +11,7 @@ public:
     explicit FriendModel(const QString &connName = "userConn");
     ~FriendModel() = default;
 
-    bool AddFriend(const uint64_t id, const User &fri, FrinedState state);
+    bool AddFriend(const uint64_t id, const User &fri, FriendState state);
     bool IsFriendExit(const uint64_t id, const Friend &fri);
     User IsFriendExit(const uint64_t id, const QString &name, E_ACCOUNT_TYPE type);
     std::vector<Friend> FindFriends(const uint64_t id);

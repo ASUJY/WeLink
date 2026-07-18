@@ -36,7 +36,7 @@ enum class E_ACK_TYPE : int {
     FAILED
 };
 
-enum class FrinedState : int {
+enum class FriendState : int {
     ACCEPT = 0,
     REJECT,
     DONE,

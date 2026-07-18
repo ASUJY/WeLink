@@ -29,12 +29,12 @@ void ContactsListWidget::InsertItem(std::unique_ptr<ContactsItem> item) {
     m_updateTimer->start(50);
 }
 
-void ContactsListWidget::UpdateItemStatus(const QString& groupname, uint64_t id, FrinedState status) {
+void ContactsListWidget::UpdateItemStatus(const QString& groupname, uint64_t id, FriendState state) {
     for (auto it = m_items.begin(); it != m_items.end(); ++it) {
         if (!(*it)->GetGroupName().compare(groupname)) {
             auto item = (*it)->GetChildItemById(id);
             if (item) {
-                item->SetItemState(static_cast<int>(status));
+                item->SetItemState(state);
             }
         }
     }

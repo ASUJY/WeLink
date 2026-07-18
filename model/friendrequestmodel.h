@@ -11,8 +11,8 @@ public:
     explicit FriendRequestModel(const QString &connName = "userConn");
     ~FriendRequestModel() = default;
 
-    bool AddItem(const uint64_t id, const User &fri, FrinedState status);
-    bool UpdateItemStatus(const uint64_t id, const uint64_t friendid, FrinedState status);
+    bool AddItem(const uint64_t id, const User &fri, FriendState status);
+    bool UpdateItemStatus(const uint64_t id, const uint64_t friendid, FriendState status);
 private:
     bool IsTableExit();
 

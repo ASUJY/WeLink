@@ -337,7 +337,7 @@ void MainWindow::SendSlotAddFriendReqAck(const User& frienduser, E_ACK_TYPE type
         // 在聊天列表中添加朋友项
         m_chatPaneWidget->SlotAddFriendReqAck(frienduser);
     }
-    m_friendRequestModel->UpdateItemStatus(m_user->GetUserId(), frienduser.GetUserId(), static_cast<FrinedState>(type));
+    m_friendRequestModel->UpdateItemStatus(m_user->GetUserId(), frienduser.GetUserId(), static_cast<FriendState>(type));
 
     QJsonObject dataJson;
     dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
@@ -400,5 +400,5 @@ void MainWindow::SendSlotAddFriendReq(const User& frienduser) {
 
     auto data = document.toJson(QJsonDocument::Compact);
     emit SIG_SEND_AddFriendReq(data);
-    m_friendRequestModel->AddItem(m_user->GetUserId(), frienduser, FrinedState::PendingVerification);
+    m_friendRequestModel->AddItem(m_user->GetUserId(), frienduser, FriendState::PendingVerification);
 }

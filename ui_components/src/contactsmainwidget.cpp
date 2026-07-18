@@ -1,5 +1,6 @@
 #include "contactsmainwidget.h"
 #include "ui_contactsmainwidget.h"
+#include "common.h"
 #include <QButtonGroup>
 
 ContactsMainWidget::ContactsMainWidget(QWidget *parent)
@@ -18,10 +19,10 @@ ContactsMainWidget::ContactsMainWidget(QWidget *parent)
     connect(btnGroup, &QButtonGroup::buttonClicked, this, [=](QAbstractButton* btn){
         if (btn == ui->btnAddFriend) {
             SendSlotAddFriendACK(E_ACK_TYPE::SUCCESS);
-            m_item->SetItemState(ContactsState::Accept);
+            m_item->SetItemState(FriendState::ACCEPT);
         } else {
             SendSlotAddFriendACK(E_ACK_TYPE::FAILED);
-            m_item->SetItemState(ContactsState::Reject);
+            m_item->SetItemState(FriendState::REJECT);
         }
         SetStackedWidgetCurrentIndex(m_item);
     });
@@ -36,27 +37,27 @@ ContactsMainWidget::~ContactsMainWidget()
 
 void ContactsMainWidget::SetStackedWidgetCurrentIndex(const std::shared_ptr<ContactsItem>& item) {
     m_item = item;
-    if (item->GetItemState() == ContactsState::Send) {
+    if (item->GetItemState() == FriendState::PendingVerification) {
         ui->labName_3->setText(item->GetItemName());
         ui->btnHeadIcon_3->setIcon(QIcon(":/resource/head/man.svg"));
         ui->labName_3->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(1);
-    } else if (item->GetItemState() == ContactsState::Recevie) {
+    } else if (item->GetItemState() == FriendState::PendingApproval) {
         ui->labName->setText(item->GetItemName());
         ui->btnHeadIcon->setIcon(QIcon(":/resource/head/man.svg"));
         ui->labName->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(0);
-    } else if (item->GetItemState() == ContactsState::Done) {
+    } else if (item->GetItemState() == FriendState::DONE) {
         ui->labName_2->setText(item->GetItemName());
         ui->btnHeadIcon_2->setIcon(QIcon(":/resource/head/man.svg"));
         ui->labName_2->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(2);
-    } else if (item->GetItemState() == ContactsState::Accept) {
+    } else if (item->GetItemState() == FriendState::ACCEPT) {
         ui->labName_4->setText(item->GetItemName());
         ui->btnHeadIcon_4->setIcon(QIcon(":/resource/head/man.svg"));
         ui->labName_4->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(4);
-    } else if (item->GetItemState() == ContactsState::Reject) {
+    } else if (item->GetItemState() == FriendState::REJECT) {
         ui->labName_5->setText(item->GetItemName());
         ui->btnHeadIcon_5->setIcon(QIcon(":/resource/head/man.svg"));
         ui->labName_5->setStyleSheet("color: black;");

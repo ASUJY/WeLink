@@ -29,7 +29,7 @@ bool FriendModel::IsTableExit() {
     return DBMagr::Instance()->ExecQuery(query, sql);
 }
 
-bool FriendModel::AddFriend(const uint64_t id, const User &fri, FrinedState state) {
+bool FriendModel::AddFriend(const uint64_t id, const User &fri, FriendState state) {
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) return false;
 

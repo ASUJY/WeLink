@@ -41,7 +41,7 @@ void ContactsPaneWidget::SlotAddFriendReq(const User& user) {
     newFriendItem->SetItemName(QString::fromStdString(user.GetUserName()));
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
-    newFriendItem->SetItemState(ContactsState::Send);
+    newFriendItem->SetItemState(FriendState::PendingVerification);
     ui->contactsListWidget->InsertItem(std::move(newFriendItem));
     qDebug() << "ContactsPaneWidget::SlotAddFriendReq end";
 }
@@ -52,7 +52,7 @@ void ContactsPaneWidget::SlotAddFriendReqAck(const User& user) {
     newFriendItem->SetItemName(QString::fromStdString(user.GetUserName()));
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
-    newFriendItem->SetItemState(ContactsState::Done);
+    newFriendItem->SetItemState(FriendState::DONE);
     ui->contactsListWidget->InsertItem(std::move(newFriendItem));
 }
 
@@ -83,10 +83,10 @@ void ContactsPaneWidget::ReceiveSlotAddFriendReq(const QByteArray& data) {
     newFriendItem->SetItemId(friendid);
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
-    newFriendItem->SetItemState(ContactsState::Recevie);
+    newFriendItem->SetItemState(FriendState::PendingApproval);
     ui->contactsListWidget->InsertItem(std::move(newFriendItem));
 
-    m_friendRequestModel->AddItem(myid, fri, FrinedState::PendingApproval);
+    m_friendRequestModel->AddItem(myid, fri, FriendState::PendingApproval);
 }
 
 void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
@@ -107,8 +107,8 @@ void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     int myid = dataObj.value("receiverid").toInt();
     int acktype = dataObj.value("ackType").toString().toInt();
 
-    ui->contactsListWidget->UpdateItemStatus(tr("新的朋友"), friendid, static_cast<FrinedState>(3));
-    // m_friendRequestModel->UpdateItemStatus(myid, friendid,  FrinedState::ACCEPT);
+    // ui->contactsListWidget->UpdateItemStatus(tr("新的朋友"), friendid, static_cast<FriendState>(3));
+    // m_friendRequestModel->UpdateItemStatus(myid, friendid,  FriendState::ACCEPT);
 
     std::unique_ptr<ContactsItem> newFriendItem = std::make_unique<ContactsItem>();
     newFriendItem->SetGroupName(tr("联系人"));
@@ -116,7 +116,7 @@ void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     newFriendItem->SetItemId(friendid);
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
-    newFriendItem->SetItemState(ContactsState::Done);
+    newFriendItem->SetItemState(FriendState::DONE);
     ui->contactsListWidget->InsertItem(std::move(newFriendItem));
 }
 
@@ -127,6 +127,6 @@ void ContactsPaneWidget::AddFriendToPane(const Friend& fri) {
     newFriendItem->SetItemId(fri.GetUserId());
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
-    newFriendItem->SetItemState(ContactsState::Done);
+    newFriendItem->SetItemState(FriendState::DONE);
     ui->contactsListWidget->InsertItem(std::move(newFriendItem));
 }

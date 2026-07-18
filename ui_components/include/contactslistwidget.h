@@ -20,7 +20,7 @@ public:
     ContactsListWidget& operator=(const ContactsListWidget&) = delete;
 
     void InsertItem(std::unique_ptr<ContactsItem> item);
-    void UpdateItemStatus(const QString& groupname, uint64_t id, FrinedState status);
+    void UpdateItemStatus(const QString& groupname, uint64_t id, FriendState status);
 
 public slots:
     void SlotGroupOpenDidChanged();

@@ -18,10 +18,10 @@ ContactsMainWidget::ContactsMainWidget(QWidget *parent)
 
     connect(btnGroup, &QButtonGroup::buttonClicked, this, [=](QAbstractButton* btn){
         if (btn == ui->btnAddFriend) {
-            SendSlotAddFriendACK(E_ACK_TYPE::SUCCESS);
+            SendSlotAddFriendACK(FriendState::ACCEPT);
             m_item->SetItemState(FriendState::ACCEPT);
         } else {
-            SendSlotAddFriendACK(E_ACK_TYPE::FAILED);
+            SendSlotAddFriendACK(FriendState::REJECT);
             m_item->SetItemState(FriendState::REJECT);
         }
         SetStackedWidgetCurrentIndex(m_item);
@@ -67,7 +67,7 @@ void ContactsMainWidget::SetStackedWidgetCurrentIndex(const std::shared_ptr<Cont
     }
 }
 
-void ContactsMainWidget::SendSlotAddFriendACK(E_ACK_TYPE type) {
+void ContactsMainWidget::SendSlotAddFriendACK(FriendState type) {
     User user;
     user.SetUserName(m_item->GetItemName().toStdString());
     user.SetUserId(m_item->GetItemId());

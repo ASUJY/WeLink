@@ -45,7 +45,7 @@ signals:
     void SIG_RECEIVE_GetFriendInfoACK(const User& user);
     // void SIG_GetFriendInfoFailed(const QByteArray& data);
     void SIG_SEND_AddFriendReq(const QByteArray& data);
-    void SIG_SEND_AddFriendReqAck(const QByteArray& data, const User& user, E_ACK_TYPE type);
+    void SIG_SEND_AddFriendReqAck(const QByteArray& data, const User& user, FriendState type);
     void SIG_RECEIVE_AddFriendReq(const QByteArray& data);
     void SIG_RECEIVE_AddFriendAck(const QByteArray& data);
     void SIG_SendChatMsg(int id, const QString &message);
@@ -54,7 +54,7 @@ public slots:
     void ReceiveSlotGetFriendInfoACK(const QByteArray& data);
     void SlotGetFriendInfoFailed(const QByteArray& data);
     void ReceiveSlotAddFriendReq(const QByteArray& data);
-    void SendSlotAddFriendReqAck(const User& user, E_ACK_TYPE type);
+    void SendSlotAddFriendReqAck(const User& user, FriendState type);
     void ReceiveSlotAddFriendAck(const QByteArray& data);
     void SlotSendChatMsg(int id, const QString &message);
     void SlotContactsItemDidSelected(const std::shared_ptr<ContactsItem>&);

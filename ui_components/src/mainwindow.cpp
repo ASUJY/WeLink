@@ -329,9 +329,9 @@ void MainWindow::SlotContactsItemDidSelected(const std::shared_ptr<ContactsItem>
     m_contactsMainWidget->SetStackedWidgetCurrentIndex(item);
 }
 
-void MainWindow::SendSlotAddFriendReqAck(const User& frienduser, E_ACK_TYPE type) {
+void MainWindow::SendSlotAddFriendReqAck(const User& frienduser, FriendState type) {
     qDebug() << "MainWindow::SlotAddFriendReqAck";
-    if (type == E_ACK_TYPE::SUCCESS) {
+    if (type == FriendState::ACCEPT) {
         // 在联系人列表中添加朋友项
         m_contactsPaneWidget->SlotAddFriendReqAck(frienduser);
         // 在聊天列表中添加朋友项

@@ -39,7 +39,7 @@ public slots:
     void SendSlotAddFriendReq(const QByteArray& data);
     void ReceiveSlotAddFriendReq(const QByteArray& data);
     void ReceiveSlotAddFriendAck(const QByteArray& data);
-    void SendSlotAddFriendReqAck(const QByteArray& data, const User& user, E_ACK_TYPE type);
+    void SendSlotAddFriendReqAck(const QByteArray& data, const User& user, FriendState type);
     void SlotSendChatMsg(int id, const QString& content);
     void SlotOneChat(const QByteArray& data);
 

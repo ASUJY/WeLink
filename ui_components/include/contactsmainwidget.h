@@ -14,14 +14,14 @@ class ContactsMainWidget : public QWidget
 {
     Q_OBJECT
 signals:
-    void SIG_SEND_AddFriendReqAck(const User& user, E_ACK_TYPE type);
+    void SIG_SEND_AddFriendReqAck(const User& user, FriendState type);
 public:
     explicit ContactsMainWidget(QWidget *parent = nullptr);
     ~ContactsMainWidget();
     void SetStackedWidgetCurrentIndex(const std::shared_ptr<ContactsItem>&);
 
 public slots:
-    void SendSlotAddFriendACK(E_ACK_TYPE type);
+    void SendSlotAddFriendACK(FriendState type);
 
 private:
     Ui::ContactsMainWidget *ui;

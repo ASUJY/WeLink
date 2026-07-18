@@ -134,7 +134,7 @@ std::vector<Friend> FriendModel::FindFriends(const uint64_t id) {
 }
 
 
-bool FriendModel::UpdateFriendState(const uint64_t id, const uint64_t friendid, E_ACK_TYPE type) {
+bool FriendModel::UpdateFriendState(const uint64_t id, const uint64_t friendid, FriendState type) {
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) return false;
 

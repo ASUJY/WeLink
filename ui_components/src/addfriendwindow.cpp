@@ -40,7 +40,7 @@ E_ACCOUNT_TYPE AddFriendWindow::CheckAccountType() {
 }
 
 void AddFriendWindow::SlotSearchFriend() {
-    // 后面可以优化成根据用户名，手机号，账号等进行搜索
+    // 根据用户名，手机号进行搜索
     QString username = ui->leditSearch->text();
     if (username.isEmpty()) {
         ui->stackedWidget->setCurrentIndex(1);

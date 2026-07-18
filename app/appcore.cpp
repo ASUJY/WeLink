@@ -16,9 +16,10 @@ AppCore::AppCore() {
 
     m_netMediator = std::make_unique<net::TcpClientMediator>();
     m_friendModel = std::make_shared<FriendModel>();
+    m_friendRequestModel = std::make_shared<FriendRequestModel>();
     m_msgModel = std::make_shared<MsgModel>();
     m_user = std::make_shared<User>();
-    m_mainWindow = std::make_unique<MainWindow>(m_user, m_friendModel, m_msgModel);
+    m_mainWindow = std::make_unique<MainWindow>(m_user, m_friendModel, m_msgModel, m_friendRequestModel);
 
     // Login
     connect(m_loginWidget, &LoginWidget::SIG_LoginCommit, this, &AppCore::SlotLoginCommit);
@@ -232,7 +233,7 @@ void AppCore::ReceiveSlotAddFriendAck(const QByteArray& data) {
 
     QJsonObject dataObj = dataVal.toObject();
 
-    E_ACK_TYPE type = static_cast<E_ACK_TYPE>(dataObj.value("ackType").toInt());
+    E_ACK_TYPE type = static_cast<E_ACK_TYPE>(dataObj.value("ackType").toString().toInt());
     if (type == E_ACK_TYPE::FAILED) {
         return;
     }
@@ -249,15 +250,15 @@ void AppCore::ReceiveSlotAddFriendAck(const QByteArray& data) {
     }
 }
 
-void AppCore::SendSlotAddFriendReqAck(const QByteArray& data, const User& frienduser) {
+void AppCore::SendSlotAddFriendReqAck(const QByteArray& data, const User& frienduser, E_ACK_TYPE type) {
     Friend fri;
     fri.SetUserId(frienduser.GetUserId());
     fri.SetUserName(frienduser.GetUserName());
-    if (!m_friendModel->IsFriendExit(m_user->GetUserId(), fri)) {
+    if (type == E_ACK_TYPE::SUCCESS) {
         m_friendModel->AddFriend(m_user->GetUserId(), fri, FrinedState::ACCEPT);
-        // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
-        bool res = m_netMediator->SendData(data, data.size());
     }
+    // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
+    bool res = m_netMediator->SendData(data, data.size());
 }
 
 void AppCore::SlotSendChatMsg(int id, const QString& content) {

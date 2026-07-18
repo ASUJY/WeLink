@@ -12,6 +12,7 @@
 #include "friendmodel.h"
 #include "msgmodel.h"
 #include "common.h"
+#include "friendrequestmodel.h"
 
 using MsgHandler = std::function<void(const QByteArray& data)>;
 
@@ -38,7 +39,7 @@ public slots:
     void SendSlotAddFriendReq(const QByteArray& data);
     void ReceiveSlotAddFriendReq(const QByteArray& data);
     void ReceiveSlotAddFriendAck(const QByteArray& data);
-    void SendSlotAddFriendReqAck(const QByteArray& data, const User& user);
+    void SendSlotAddFriendReqAck(const QByteArray& data, const User& user, E_ACK_TYPE type);
     void SlotSendChatMsg(int id, const QString& content);
     void SlotOneChat(const QByteArray& data);
 
@@ -61,6 +62,7 @@ private:
     UserModel m_userModel;
     std::shared_ptr<FriendModel> m_friendModel;
     std::shared_ptr<MsgModel> m_msgModel;
+    std::shared_ptr<FriendRequestModel> m_friendRequestModel;
 };
 
 #endif // APPCORE_H

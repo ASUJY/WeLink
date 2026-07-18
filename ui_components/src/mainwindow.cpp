@@ -4,7 +4,7 @@
 #include <QJsonDocument>
 #include "friend.hpp"
 
-MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, std::shared_ptr<MsgModel> msgModel, QWidget *parent)
+MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, std::shared_ptr<MsgModel> msgModel, std::shared_ptr<FriendRequestModel> friendRequestModel, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), m_page(ChatWidget)
 {
@@ -12,6 +12,7 @@ MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> 
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
     SetWidgetWinTitle();
     m_friendModel = friendModel;
+    m_friendRequestModel = friendRequestModel;
     m_msgModel = msgModel;
     m_user = user;
     // Init();
@@ -79,7 +80,7 @@ void MainWindow::InitChatPaneWidget() {
 }
 
 void MainWindow::InitContactsPaneWidget() {
-    m_contactsPaneWidget = std::make_unique<ContactsPaneWidget>(m_friendModel);
+    m_contactsPaneWidget = std::make_unique<ContactsPaneWidget>(m_friendModel, m_friendRequestModel);
     // 接收到好友发来的添加朋友请求，在 新的好友列表 中新增一项
     connect(this, &MainWindow::SIG_RECEIVE_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::ReceiveSlotAddFriendReq);
     // 接收到好友发来的添加朋友通过请求，在 联系人列表 中新增一项
@@ -336,7 +337,7 @@ void MainWindow::SendSlotAddFriendReqAck(const User& frienduser, E_ACK_TYPE type
         // 在聊天列表中添加朋友项
         m_chatPaneWidget->SlotAddFriendReqAck(frienduser);
     }
-    m_friendModel->UpdateFriendState(m_user->GetUserId(), frienduser.GetUserId(), type);
+    m_friendRequestModel->UpdateItemStatus(m_user->GetUserId(), frienduser.GetUserId(), static_cast<FrinedState>(type));
 
     QJsonObject dataJson;
     dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
@@ -352,7 +353,7 @@ void MainWindow::SendSlotAddFriendReqAck(const User& frienduser, E_ACK_TYPE type
 
     auto data = document.toJson(QJsonDocument::Compact);
 
-    emit SIG_SEND_AddFriendReqAck(data, frienduser);
+    emit SIG_SEND_AddFriendReqAck(data, frienduser, type);
 }
 
 void MainWindow::SlotOneChat(const QByteArray& data) {
@@ -399,5 +400,5 @@ void MainWindow::SendSlotAddFriendReq(const User& frienduser) {
 
     auto data = document.toJson(QJsonDocument::Compact);
     emit SIG_SEND_AddFriendReq(data);
-    m_friendModel->AddFriend(m_user->GetUserId(), frienduser, FrinedState::PendingVerification);
+    m_friendRequestModel->AddItem(m_user->GetUserId(), frienduser, FrinedState::PendingVerification);
 }

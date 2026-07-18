@@ -10,6 +10,7 @@
 #include "addfriendwindow.h"
 #include "friendmodel.h"
 #include "msgmodel.h"
+#include "friendrequestmodel.h"
 
 enum Area {
     Top,
@@ -44,7 +45,7 @@ signals:
     void SIG_RECEIVE_GetFriendInfoACK(const User& user);
     // void SIG_GetFriendInfoFailed(const QByteArray& data);
     void SIG_SEND_AddFriendReq(const QByteArray& data);
-    void SIG_SEND_AddFriendReqAck(const QByteArray& data, const User& user);
+    void SIG_SEND_AddFriendReqAck(const QByteArray& data, const User& user, E_ACK_TYPE type);
     void SIG_RECEIVE_AddFriendReq(const QByteArray& data);
     void SIG_RECEIVE_AddFriendAck(const QByteArray& data);
     void SIG_SendChatMsg(int id, const QString &message);
@@ -65,7 +66,7 @@ private slots:
     void SlotChatView(QVariant var, PageType type);
 
 public:
-    explicit MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, std::shared_ptr<MsgModel> msgModel, QWidget *parent = nullptr);
+    explicit MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, std::shared_ptr<MsgModel> msgModel, std::shared_ptr<FriendRequestModel> friendRequestModel, QWidget *parent = nullptr);
     ~MainWindow() override;
     void Init();
 
@@ -107,6 +108,7 @@ private:
     AddFriendWindow* m_addFriendWindow;
 
     std::shared_ptr<FriendModel> m_friendModel;
+    std::shared_ptr<FriendRequestModel> m_friendRequestModel;
     std::shared_ptr<MsgModel> m_msgModel;
     std::shared_ptr<User> m_user;
 

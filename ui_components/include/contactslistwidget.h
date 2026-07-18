@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include "contactsitem.h"
+#include "common.h"
 
 class ContactsListWidget : public QListWidget
 {
@@ -19,6 +20,7 @@ public:
     ContactsListWidget& operator=(const ContactsListWidget&) = delete;
 
     void InsertItem(std::unique_ptr<ContactsItem> item);
+    void UpdateItemStatus(const QString& groupname, uint64_t id, FrinedState status);
 
 public slots:
     void SlotGroupOpenDidChanged();

@@ -29,6 +29,18 @@ void ContactsListWidget::InsertItem(std::unique_ptr<ContactsItem> item) {
     m_updateTimer->start(50);
 }
 
+void ContactsListWidget::UpdateItemStatus(const QString& groupname, uint64_t id, FrinedState status) {
+    for (auto it = m_items.begin(); it != m_items.end(); ++it) {
+        if (!(*it)->GetGroupName().compare(groupname)) {
+            auto item = (*it)->GetChildItemById(id);
+            if (item) {
+                item->SetItemState(static_cast<int>(status));
+            }
+        }
+    }
+    m_updateTimer->start(50);
+}
+
 void ContactsListWidget::UploadItems() {
     this->clear();
     for (auto w : findChildren<ContactsListViewGroup*>()) {

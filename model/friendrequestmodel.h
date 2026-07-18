@@ -1,0 +1,24 @@
+#ifndef FRIENDREQUESTMODEL_H
+#define FRIENDREQUESTMODEL_H
+
+#include "friend.hpp"
+#include "common.h"
+#include <QString>
+
+class FriendRequestModel
+{
+public:
+    explicit FriendRequestModel(const QString &connName = "userConn");
+    ~FriendRequestModel() = default;
+
+    bool AddItem(const uint64_t id, const User &fri, FrinedState status);
+    bool UpdateItemStatus(const uint64_t id, const uint64_t friendid, FrinedState status);
+private:
+    bool IsTableExit();
+
+private:
+    QString m_connName;
+
+};
+
+#endif // FRIENDREQUESTMODEL_H

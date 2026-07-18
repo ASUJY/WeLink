@@ -34,12 +34,11 @@ bool FriendModel::AddFriend(const uint64_t id, const User &fri, FrinedState stat
     if (!db.isOpen()) return false;
 
     QSqlQuery insertQuery(db);
-    insertQuery.prepare("insert into im_friend(userid, friendid, friendname, phone, state) values(?,?,?,?,?)");
+    insertQuery.prepare("insert into im_friend(userid, friendid, friendname, phone) values(?,?,?,?)");
     insertQuery.addBindValue(id);
     insertQuery.addBindValue(fri.GetUserId());
     insertQuery.addBindValue(QString::fromStdString(fri.GetUserName()));
     insertQuery.addBindValue(QString::fromStdString(fri.GetUserPhone()));
-    insertQuery.addBindValue(static_cast<int>(state));
     qDebug() << "SQL模板:" << insertQuery.lastQuery();
     qDebug() << "绑定参数:" << insertQuery.boundValues();
     if (DBMagr::Instance()->ExecQuery(insertQuery)) {
@@ -101,7 +100,7 @@ User FriendModel::IsFriendExit(const uint64_t id, const QString &name, E_ACCOUNT
         User user;
         user.SetUserId(query.value("friendid").toULongLong());
         user.SetUserName(query.value("friendname").toString().toStdString());
-        user.SetUserPhone(query.value("friendname").toString().toStdString());
+        user.SetUserPhone(query.value("phone").toString().toStdString());
         return user;
     }
 

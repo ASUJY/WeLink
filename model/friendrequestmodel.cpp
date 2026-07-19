@@ -30,7 +30,7 @@ bool FriendRequestModel::IsTableExit() {
     return DBMagr::Instance()->ExecQuery(query, sql);
 }
 
-bool FriendRequestModel::AddItem(const uint64_t id, const User &fri, FriendState status) {
+bool FriendRequestModel::AddItem(const int64_t id, const User &fri, FriendState status) {
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
@@ -52,7 +52,7 @@ bool FriendRequestModel::AddItem(const uint64_t id, const User &fri, FriendState
     }
 }
 
-bool FriendRequestModel::UpdateItemStatus(const uint64_t id, const uint64_t friendid, FriendState status) {
+bool FriendRequestModel::UpdateItemStatus(const int64_t id, const int64_t friendid, FriendState status) {
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
@@ -68,7 +68,8 @@ bool FriendRequestModel::UpdateItemStatus(const uint64_t id, const uint64_t frie
     updateQuery.bindValue(":status", static_cast<int>(status));
     updateQuery.bindValue(":uid", id);
     updateQuery.bindValue(":fid", friendid);
-
+    qDebug() << "SQL模板:" << updateQuery.lastQuery();
+    qDebug() << "绑定参数:" << updateQuery.boundValues();
     if (DBMagr::Instance()->ExecQuery(updateQuery)) {
         db.commit();
         return true;

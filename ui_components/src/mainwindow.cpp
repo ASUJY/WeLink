@@ -320,7 +320,7 @@ void MainWindow::SlotChatView(QVariant var, PageType type) {
     }
 }
 
-void MainWindow::SlotSendChatMsg(int id, const QString& message) {
+void MainWindow::SlotSendChatMsg(int64_t id, const QString& message) {
     qDebug() << "MainWindow::SlotSendChatMsg: userid" << id;
     emit SIG_SendChatMsg(id, message);
 }
@@ -370,7 +370,7 @@ void MainWindow::SlotOneChat(const QByteArray& data) {
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
     qDebug() << "MainWindow::SlotOneChat" << dataObj.value("senderId");
-    uint64_t id = dataObj.value("senderId").toString().toLongLong();
+    int64_t id = dataObj.value("senderId").toString().toLongLong();
     QString content = dataObj.value("content").toString();
     QString createtime = dataObj.value("createtime").toString();
     qDebug() << "MainWindow::SlotOneChat";

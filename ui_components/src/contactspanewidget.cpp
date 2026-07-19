@@ -39,6 +39,7 @@ void ContactsPaneWidget::SlotAddFriendReq(const User& user) {
     std::unique_ptr<ContactsItem> newFriendItem = std::make_unique<ContactsItem>();
     newFriendItem->SetGroupName(tr("新的朋友"));
     newFriendItem->SetItemName(QString::fromStdString(user.GetUserName()));
+    newFriendItem->SetItemId(user.GetUserId());
     newFriendItem->SetHeadIcon(":/resource/head/man.svg");
     newFriendItem->SetItemType(ContactsItemType::Item);
     newFriendItem->SetItemState(FriendState::PendingVerification);
@@ -70,8 +71,8 @@ void ContactsPaneWidget::ReceiveSlotAddFriendReq(const QByteArray& data) {
 
     QJsonObject dataObj = dataVal.toObject();
     QString friendname = dataObj.value("sendername").toString();
-    int friendid = dataObj.value("senderid").toInt();
-    int myid = dataObj.value("receiverid").toInt();
+    int friendid = dataObj.value("senderid").toInteger();
+    int myid = dataObj.value("receiverid").toInteger();
 
     User fri;
     fri.SetUserName(friendname.toStdString());
@@ -103,12 +104,12 @@ void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
 
     QJsonObject dataObj = dataVal.toObject();
     QString friendname = dataObj.value("sendername").toString();
-    int friendid = dataObj.value("senderid").toInt();
-    int myid = dataObj.value("receiverid").toInt();
+    int64_t friendid = dataObj.value("senderid").toInt();
+    int64_t myid = dataObj.value("receiverid").toInt();
     int acktype = dataObj.value("ackType").toString().toInt();
 
-    // ui->contactsListWidget->UpdateItemStatus(tr("新的朋友"), friendid, static_cast<FriendState>(3));
-    // m_friendRequestModel->UpdateItemStatus(myid, friendid,  FriendState::ACCEPT);
+    ui->contactsListWidget->UpdateItemStatus(tr("新的朋友"), friendid, FriendState::ACCEPT);
+    m_friendRequestModel->UpdateItemStatus(myid, friendid,  FriendState::ACCEPT);
 
     std::unique_ptr<ContactsItem> newFriendItem = std::make_unique<ContactsItem>();
     newFriendItem->SetGroupName(tr("联系人"));

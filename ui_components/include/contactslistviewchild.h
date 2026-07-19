@@ -9,10 +9,10 @@ class ContactsListViewChild : public QWidget
     Q_OBJECT
 
 signals:
-    void SIG_ItemDidSelected(uint64_t id);
+    void SIG_ItemDidSelected(int64_t id, const QString& groupname);
 
 public:
-    explicit ContactsListViewChild(uint64_t id, const QString& name, const QString& headIcon, QWidget* parent = nullptr);
+    explicit ContactsListViewChild(int64_t id, const QString& name, const QString& headIcon, const QString& groupname, QWidget* parent = nullptr);
     ~ContactsListViewChild();
 
     // void SetItem(ContactsItem* item) {m_item = item;}
@@ -23,9 +23,10 @@ protected:
     void mousePressEvent(QMouseEvent *);
 
 private:
-    uint64_t m_userid;
+    int64_t m_userid;
     QString m_username;
     QString m_headIcon;
+    QString m_groupname;
 //     ContactsItem *m_item = nullptr;
 };
 

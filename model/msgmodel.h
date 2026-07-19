@@ -10,8 +10,8 @@ public:
     explicit MsgModel(const QString &connName = "userConn");
     ~MsgModel() = default;
 
-    bool AddMsg(const uint64_t id, const uint64_t friId, const Message& msg);
-    std::vector<Message> FindMsg(const uint64_t id, const uint64_t friId);
+    bool AddMsg(const int64_t id, const int64_t friId, const Message& msg);
+    std::vector<Message> FindMsg(const int64_t id, const int64_t friId);
 
 private:
     bool IsTableExit();

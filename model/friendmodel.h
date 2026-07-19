@@ -11,11 +11,11 @@ public:
     explicit FriendModel(const QString &connName = "userConn");
     ~FriendModel() = default;
 
-    bool AddFriend(const uint64_t id, const User &fri, FriendState state);
-    bool IsFriendExit(const uint64_t id, const Friend &fri);
-    User IsFriendExit(const uint64_t id, const QString &name, E_ACCOUNT_TYPE type);
-    std::vector<Friend> FindFriends(const uint64_t id);
-    bool UpdateFriendState(const uint64_t id, const uint64_t friendid, FriendState type);
+    bool AddFriend(const int64_t id, const User &fri, FriendState state);
+    bool IsFriendExit(const int64_t id, const Friend &fri);
+    User IsFriendExit(const int64_t id, const QString &name, E_ACCOUNT_TYPE type);
+    std::vector<Friend> FindFriends(const int64_t id);
+    bool UpdateFriendState(const int64_t id, const int64_t friendid, FriendState type);
 
 private:
     bool IsTableExit();

@@ -11,7 +11,7 @@ class Friend : public User
 {
 public:
     explicit Friend() = default;
-    explicit Friend(uint64_t wxid, QString name, QString image, bool mute, QString time, int count, QList<Message> messages):
+    explicit Friend(int64_t wxid, QString name, QString image, bool mute, QString time, int count, QList<Message> messages):
         User(wxid, name.toStdString(), image.toStdString()), m_mute(mute), m_time(time), m_count(count), m_messages(messages){}
 
 

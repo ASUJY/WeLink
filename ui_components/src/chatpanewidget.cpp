@@ -97,7 +97,7 @@ void ChatPaneWidget::AddFriendToPane(std::unique_ptr<Friend> fri) {
 void ChatPaneWidget::SlotAddFriendReqAck(const User& user) {
 
     QString friendname = QString::fromStdString(user.GetUserName());
-    int friendid = user.GetUserId();
+    int64_t friendid = user.GetUserId();
 
     if (m_mapIdToChatItem.find(friendid) == m_mapIdToChatItem.end()) {
         QList<Message> messages1;
@@ -134,7 +134,7 @@ void ChatPaneWidget::SlotItemSelected(ChatListItem *item) {
     emit SIG_ItemClicked(var, PageType::AllChatView);
 }
 
-ChatListItem* ChatPaneWidget::GetItemById(uint64_t id) {
+ChatListItem* ChatPaneWidget::GetItemById(int64_t id) {
     if (m_mapIdToChatItem.find(id) == m_mapIdToChatItem.end()) {
         return nullptr;
     }

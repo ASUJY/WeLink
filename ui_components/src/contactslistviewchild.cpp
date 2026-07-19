@@ -2,8 +2,8 @@
 
 #include <QPainter>
 
-ContactsListViewChild::ContactsListViewChild(uint64_t id, const QString& name, const QString& headIcon, QWidget *parent)
-    : m_userid(id), m_username(name), m_headIcon(headIcon) {}
+ContactsListViewChild::ContactsListViewChild(int64_t id, const QString& name, const QString& headIcon, const QString& groupname, QWidget *parent)
+    : m_userid(id), m_username(name), m_headIcon(headIcon), m_groupname(groupname) {}
 
 ContactsListViewChild::~ContactsListViewChild() {
     // if (m_item) {
@@ -39,6 +39,6 @@ void ContactsListViewChild::mousePressEvent(QMouseEvent *event) {
     {
         // User user;
         // user.SetUserName(m_item->GetItemName().toStdString());
-        emit SIG_ItemDidSelected(m_userid);
+        emit SIG_ItemDidSelected(m_userid, m_groupname);
     }
 }

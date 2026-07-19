@@ -26,7 +26,7 @@ bool MsgModel::IsTableExit() {
     return DBMagr::Instance()->ExecQuery(query, sql);
 }
 
-bool MsgModel::AddMsg(const uint64_t id, const uint64_t friId, const Message& msg) {
+bool MsgModel::AddMsg(const int64_t id, const int64_t friId, const Message& msg) {
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
@@ -47,7 +47,7 @@ bool MsgModel::AddMsg(const uint64_t id, const uint64_t friId, const Message& ms
     }
 }
 
-std::vector<Message> MsgModel::FindMsg(const uint64_t id, const uint64_t friId) {
+std::vector<Message> MsgModel::FindMsg(const int64_t id, const int64_t friId) {
     std::vector<Message> msgVec;
     QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
     if (!db.isOpen()) {

@@ -20,6 +20,7 @@ void ContactsListWidget::InsertItem(std::unique_ptr<ContactsItem> item) {
             if (!groupItem->GetGroupName().compare(item->GetGroupName())) {
                 // 往指定分组中添加联系人条目
                 auto id = item->GetItemId();
+                qDebug() << "ContactsListWidget::InsertItem: " << groupItem->GetGroupName() << " " << item->GetItemId() << " " << item->GetGroupName() << "" <<item->GetItemName() << " " << static_cast<int>(item->GetItemState());
                 groupItem->AddChildItem(id, std::move(item));
                 break;
             }
@@ -29,12 +30,13 @@ void ContactsListWidget::InsertItem(std::unique_ptr<ContactsItem> item) {
     m_updateTimer->start(50);
 }
 
-void ContactsListWidget::UpdateItemStatus(const QString& groupname, uint64_t id, FriendState state) {
+void ContactsListWidget::UpdateItemStatus(const QString& groupname, int64_t id, FriendState state) {
     for (auto it = m_items.begin(); it != m_items.end(); ++it) {
-        if (!(*it)->GetGroupName().compare(groupname)) {
+        if (!((*it)->GetGroupName().compare(groupname))) {
             auto item = (*it)->GetChildItemById(id);
             if (item) {
                 item->SetItemState(state);
+                break;
             }
         }
     }
@@ -76,7 +78,7 @@ void ContactsListWidget::SlotGroupOpenDidChanged()
 }
 
 void ContactsListWidget::AddChildItem(ContactsItem* item) {
-    ContactsListViewChild *childItem = new ContactsListViewChild(item->GetItemId(), item->GetItemName(), item->GetHeadIcon(), this);
+    ContactsListViewChild *childItem = new ContactsListViewChild(item->GetItemId(), item->GetItemName(), item->GetHeadIcon(),item->GetGroupName(), this);
     childItem->setGeometry(0, 0, 300, 60);
     // childItem->SetItem(item);
     connect(childItem, &ContactsListViewChild::SIG_ItemDidSelected, this, &ContactsListWidget::SlotItemDidSelected);
@@ -87,12 +89,14 @@ void ContactsListWidget::AddChildItem(ContactsItem* item) {
     qitem->setSizeHint(childItem->geometry().size());
 }
 
-void  ContactsListWidget::SlotItemDidSelected(uint64_t id) {
-    for (const std::shared_ptr<ContactsItem> &groupItem : m_items) {
-        auto item = groupItem->GetChildItemById(id);
-        if (item) {
-            emit SIG_ItemDidSelected(item);
-            return;
+void  ContactsListWidget::SlotItemDidSelected(int64_t id, const QString& groupname) {
+    for (auto it = m_items.cbegin(); it != m_items.end(); ++it) {
+        if (!((*it)->GetGroupName().compare(groupname))) {
+            auto item = (*it)->GetChildItemById(id);
+            if (item) {
+                emit SIG_ItemDidSelected(item);
+                return;
+            }
         }
     }
 }

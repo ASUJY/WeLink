@@ -77,7 +77,7 @@ void AddFriendWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {
         return;
     } else if (errtype == E_ERR_TYPE::GET_FRIEND_INFO_SUCCESS) {
         ui->stackedWidget->setCurrentIndex(2);
-        m_user.SetUserId(dataObj.value("userid").toString().toInt());
+        m_user.SetUserId(dataObj.value("userid").toString().toLongLong());
         m_user.SetUserName(dataObj.value("username").toString().toStdString());
         ui->labHeadIcon->setPixmap(QPixmap(":/resource/head/man.svg"));
         ui->labName->setText(QString::fromStdString(m_user.GetUserName()));

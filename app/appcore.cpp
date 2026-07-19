@@ -172,7 +172,7 @@ void AppCore::ReceiveLoginACK(const QByteArray& data) {
         return;
     } else if (errtype == E_ERR_TYPE::LOGIN_MSG_ACK_SUCCESS) {
 
-        m_user->SetUserId(dataObj.value("userid").toInt());
+        m_user->SetUserId(dataObj.value("userid").toInteger());
         m_user->SetUserName(dataObj.value("username").toString().toStdString());
         m_user->SetUserPhone(dataObj.value("phone").toString().toStdString());
         m_user->SetUserAvatar(dataObj.value("avator").toString().toStdString());
@@ -239,7 +239,7 @@ void AppCore::ReceiveSlotAddFriendAck(const QByteArray& data) {
     }
 
     QString friendname = dataObj.value("sendername").toString();
-    int friendid = dataObj.value("senderid").toInt();
+    int64_t friendid = dataObj.value("senderid").toInteger();
     Friend fri;
     fri.SetUserId(friendid);
     fri.SetUserName(friendname.toStdString());
@@ -261,7 +261,7 @@ void AppCore::SendSlotAddFriendReqAck(const QByteArray& data, const User& friend
     bool res = m_netMediator->SendData(data, data.size());
 }
 
-void AppCore::SlotSendChatMsg(int id, const QString& content) {
+void AppCore::SlotSendChatMsg(int64_t id, const QString& content) {
     qDebug() << "AppCore::SlotSendChatMsg userid: " << id;
     QJsonObject dataJson;
     QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");

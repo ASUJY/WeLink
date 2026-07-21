@@ -2,7 +2,6 @@
 #include "ui_addfriendwindow.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <memory>
 #include "user.hpp"
 #include "common.h"
 
@@ -22,7 +21,7 @@ AddFriendWindow::~AddFriendWindow()
     delete ui;
 }
 
-E_ACCOUNT_TYPE AddFriendWindow::CheckAccountType() {
+E_ACCOUNT_TYPE AddFriendWindow::CheckAccountType() const {
     // 去除首尾空格
     QString text = ui->leditSearch->text().trimmed();
 
@@ -48,27 +47,29 @@ void AddFriendWindow::SlotSearchFriend() {
     }
     E_ACCOUNT_TYPE accountType = CheckAccountType();
     QJsonObject dataJson;
-    dataJson.insert("username", username);
-    dataJson.insert("accountType", QString::number(static_cast<int>(accountType)));
-    QJsonObject json;
-    json.insert("data", dataJson);
-    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::GET_FRIEND_INFO_REQ));
-    QJsonDocument document;
-    document.setObject(json);
+    dataJson["username"] = username;
+    dataJson["accountType"] = QString::number(static_cast<int>(accountType));
+    QJsonObject rootJson;
+    rootJson["data"] = dataJson;
+    rootJson["msgtype"] = static_cast<int>(E_MSG_TYPE::GET_FRIEND_INFO_REQ);
 
-    auto data = document.toJson(QJsonDocument::Compact);
+    QJsonDocument document(rootJson);
+    auto sendData  = document.toJson(QJsonDocument::Compact);
 
-    emit SIG_SEND_GetFriendInfo(data, username, accountType);
+    emit SIG_SEND_GetFriendInfo(sendData , username, accountType);
 }
 
 void AddFriendWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
-    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) return;
-    if (!jsonDoc.isObject()) return;
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError) || !jsonDoc.isObject()) {
+        qWarning() << "解析好友信息JSON失败:" << jsonError.errorString();
+        ui->stackedWidget->setCurrentIndex(1);
+        return;
+    }
 
-    QJsonObject jsonObj = jsonDoc.object();
-    QJsonValue dataVal = jsonObj.value("data");
+    QJsonObject rootObj  = jsonDoc.object();
+    QJsonValue dataVal = rootObj["data"];
     QJsonObject dataObj = dataVal.toObject();
 
     E_ERR_TYPE errtype = static_cast<E_ERR_TYPE>(dataObj.value("errtype").toInt());
@@ -78,9 +79,11 @@ void AddFriendWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {
     } else if (errtype == E_ERR_TYPE::GET_FRIEND_INFO_SUCCESS) {
         ui->stackedWidget->setCurrentIndex(2);
         m_user.SetUserId(dataObj.value("userid").toString().toLongLong());
-        m_user.SetUserName(dataObj.value("username").toString().toStdString());
+
+        std::string nameStr = dataObj["username"].toString().toStdString();
+        m_user.SetUserName(nameStr);
         ui->labHeadIcon->setPixmap(QPixmap(":/resource/head/man.svg"));
-        ui->labName->setText(QString::fromStdString(m_user.GetUserName()));
+        ui->labName->setText(QString::fromStdString(nameStr));
     }
 }
 
@@ -97,13 +100,11 @@ void AddFriendWindow::SlotChangedStackWidget() {
 
 
 void AddFriendWindow::SlotAddFriendReq() {
-    QString username = ui->leditSearch->text();
+    QString username = ui->leditSearch->text().trimmed();
     if (username.isEmpty()) {
         ui->stackedWidget->setCurrentIndex(1);
         return;
     }
     emit SIG_SEND_AddFriendReq(m_user);
     this->close();
-    // this->hide();
-    // this->close();
 }

@@ -12,11 +12,6 @@ class AddFriendWindow;
 class AddFriendWindow : public QDialog
 {
     Q_OBJECT
-
-public:
-    explicit AddFriendWindow(QWidget *parent = nullptr);
-    ~AddFriendWindow();
-
 signals:
     void SIG_SEND_GetFriendInfo(const QByteArray& data, const QString& name, E_ACCOUNT_TYPE type);
     void SIG_SEND_AddFriendReq(const User& user);
@@ -29,10 +24,13 @@ public slots:
 private slots:
     void SlotSearchFriend();
     void SlotAddFriendReq();
-    // void SlotGetFriendInfo();
+
+public:
+    explicit AddFriendWindow(QWidget *parent = nullptr);
+    ~AddFriendWindow() override;
 
 private:
-    E_ACCOUNT_TYPE CheckAccountType();
+    E_ACCOUNT_TYPE CheckAccountType() const;
 
 private:
     Ui::AddFriendWindow *ui;

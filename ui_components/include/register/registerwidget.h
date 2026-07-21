@@ -11,19 +11,19 @@
 class RegisterWidget : public QWidget
 {
     Q_OBJECT
+
+signals:
+    void SIG_RegisterCommit(const QByteArray& data);
+
+private slots:
+    void OnBtnRegClicked();
+    void SlotCheckPhone(const QString& text);
+
 public:
     explicit RegisterWidget(QWidget *parent = nullptr);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
-
-signals:
-   void SIG_RegisterCommit(const QByteArray& data);
-
-
-private slots:
-   void OnBtnRegClicked();
-   void SlotCheckPhone(const QString& text);
 
 private:
    QByteArray MakeRegisterJSON();

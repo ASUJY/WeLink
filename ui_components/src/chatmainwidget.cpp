@@ -68,7 +68,7 @@ void ChatMainWidget::SlotBtnSendMsgClicked() {
     QString content = ui->textEdit->toPlainText();
     if (content.isEmpty()) return;
 
-    ChatListItem* chatitem = ChatPaneWidget::GetItem();
+    ChatListItem* chatitem = ChatPaneWidget::GetCurrentSelectedItem();
     Message message(content, QTime::currentTime().toString("hh:mm:ss"), Sender);
     chatitem->UpdateFriend(message);
 

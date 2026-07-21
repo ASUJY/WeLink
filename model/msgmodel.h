@@ -11,10 +11,10 @@ public:
     ~MsgModel() = default;
 
     bool AddMsg(const int64_t id, const int64_t friId, const Message& msg);
-    std::vector<Message> FindMsg(const int64_t id, const int64_t friId);
+    std::vector<Message> FindMsg(const int64_t id, const int64_t friId) const;
 
 private:
-    bool IsTableExit();
+    bool IsTableExit() const;
 
 private:
     QString m_connName;

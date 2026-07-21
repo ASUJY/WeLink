@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[])
 {
-    Logger::initLog("run.log");
+    // Logger::initLog("run.log");
     QApplication a(argc, argv);
     // a.setStyle(QStyleFactory::create("macOS"));
 
@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
     }
     qDebug() << "当前工作目录:" << QDir::currentPath();
     qDebug() << "数据库路径:" << QFileInfo(dbPath).absoluteFilePath();
-    auto dbManager = DBMagr::Instance();
-    dbManager->OpenConnection("userConn", "./data/welink.db");
+    DBMagr::Instance().Init();
+    DBMagr::Instance().OpenConnection("userConn", "./data/welink.db");
 
     // LoginWidget w;
     // w.show();
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
     auto ret = QCoreApplication::exec();
 
-    Logger::unInitLog(); // 退出关闭日志
+    // Logger::unInitLog(); // 退出关闭日志
 
     return ret;
 }

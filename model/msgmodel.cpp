@@ -7,7 +7,7 @@ MsgModel::MsgModel(const QString &connName) : m_connName(connName) {
 }
 
 bool MsgModel::IsTableExit() {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery query(db);
@@ -23,11 +23,11 @@ bool MsgModel::IsTableExit() {
     )";
 
 
-    return DBMagr::Instance()->ExecQuery(query, sql);
+    return DBMagr::Instance().ExecQuery(query, sql);
 }
 
 bool MsgModel::AddMsg(const int64_t id, const int64_t friId, const Message& msg) {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery insertQuery(db);
@@ -38,7 +38,7 @@ bool MsgModel::AddMsg(const int64_t id, const int64_t friId, const Message& msg)
     insertQuery.addBindValue(msg.GetMsgType());
     insertQuery.addBindValue(msg.GetTime());
 
-    if (DBMagr::Instance()->ExecQuery(insertQuery)) {
+    if (DBMagr::Instance().ExecQuery(insertQuery)) {
         db.commit();
         return true;
     } else {
@@ -49,7 +49,7 @@ bool MsgModel::AddMsg(const int64_t id, const int64_t friId, const Message& msg)
 
 std::vector<Message> MsgModel::FindMsg(const int64_t id, const int64_t friId) {
     std::vector<Message> msgVec;
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) {
         qDebug() << "数据库连接未打开";
         return msgVec;
@@ -60,7 +60,7 @@ std::vector<Message> MsgModel::FindMsg(const int64_t id, const int64_t friId) {
     query.addBindValue(id);
     query.addBindValue(friId);
 
-    if (!DBMagr::Instance()->ExecQuery(query)) {
+    if (!DBMagr::Instance().ExecQuery(query)) {
         qDebug() << "查询失败：" << query.lastError().text();
         return msgVec;
     }

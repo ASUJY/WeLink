@@ -8,7 +8,7 @@ FriendModel::FriendModel(const QString &connName) : m_connName(connName){
 }
 
 bool FriendModel::IsTableExit() {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery query(db);
@@ -26,11 +26,11 @@ bool FriendModel::IsTableExit() {
     )";
 
 
-    return DBMagr::Instance()->ExecQuery(query, sql);
+    return DBMagr::Instance().ExecQuery(query, sql);
 }
 
 bool FriendModel::AddFriend(const int64_t id, const User &fri, FriendState state) {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery insertQuery(db);
@@ -42,7 +42,7 @@ bool FriendModel::AddFriend(const int64_t id, const User &fri, FriendState state
     insertQuery.addBindValue(QString::fromStdString(fri.GetUserState()));
     qDebug() << "SQL模板:" << insertQuery.lastQuery();
     qDebug() << "绑定参数:" << insertQuery.boundValues();
-    if (DBMagr::Instance()->ExecQuery(insertQuery)) {
+    if (DBMagr::Instance().ExecQuery(insertQuery)) {
         db.commit();
         return true;
     } else {
@@ -52,7 +52,7 @@ bool FriendModel::AddFriend(const int64_t id, const User &fri, FriendState state
 }
 
 bool FriendModel::IsFriendExit(const int64_t id, const Friend &fri) {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) {
         qDebug() << "数据库连接未打开";
         return false;
@@ -65,7 +65,7 @@ bool FriendModel::IsFriendExit(const int64_t id, const Friend &fri) {
     query.addBindValue(fri.GetUserId());
     qDebug() << "SQL模板:" << query.lastQuery();
     qDebug() << "绑定参数:" << query.boundValues();
-    if (DBMagr::Instance()->ExecQuery(query) && query.next()) {
+    if (DBMagr::Instance().ExecQuery(query) && query.next()) {
         qDebug() << "查询好友SQL成功";
         return true;
     }
@@ -75,7 +75,7 @@ bool FriendModel::IsFriendExit(const int64_t id, const Friend &fri) {
 }
 
 User FriendModel::IsFriendExit(const int64_t id, const QString &name, E_ACCOUNT_TYPE type) {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) {
         qDebug() << "数据库连接未打开";
         return User{};
@@ -92,7 +92,7 @@ User FriendModel::IsFriendExit(const int64_t id, const QString &name, E_ACCOUNT_
     query.addBindValue(id);
     query.addBindValue(name);
 
-    if (!DBMagr::Instance()->ExecQuery(query)) {
+    if (!DBMagr::Instance().ExecQuery(query)) {
         qDebug() << "查询好友SQL失败: " << query.lastQuery() << ", 查询参数: " << query.boundValues();
         return User{};
     }
@@ -111,7 +111,7 @@ User FriendModel::IsFriendExit(const int64_t id, const QString &name, E_ACCOUNT_
 std::vector<Friend> FriendModel::FindFriends(const int64_t id) {
     qDebug() << "FriendModel::FindFriends";
     std::vector<Friend> friendsVec;
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) {
         qDebug() << "数据库连接未打开";
         return friendsVec;
@@ -121,7 +121,7 @@ std::vector<Friend> FriendModel::FindFriends(const int64_t id) {
     query.prepare(sql);
     query.addBindValue(id);
 
-    if (!DBMagr::Instance()->ExecQuery(query)) {
+    if (!DBMagr::Instance().ExecQuery(query)) {
         qDebug() << "查询失败：" << query.lastError().text();
         return friendsVec;
     }
@@ -136,7 +136,7 @@ std::vector<Friend> FriendModel::FindFriends(const int64_t id) {
 
 
 bool FriendModel::UpdateFriendState(const int64_t id, const int64_t friendid, FriendState type) {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery updateQuery(db);
@@ -152,7 +152,7 @@ bool FriendModel::UpdateFriendState(const int64_t id, const int64_t friendid, Fr
     updateQuery.bindValue(":uid", id);
     updateQuery.bindValue(":fid", friendid);
 
-    if (DBMagr::Instance()->ExecQuery(updateQuery)) {
+    if (DBMagr::Instance().ExecQuery(updateQuery)) {
         db.commit();
         return true;
     } else {

@@ -9,7 +9,7 @@ FriendRequestModel:: FriendRequestModel(const QString &connName) : m_connName(co
 
 
 bool FriendRequestModel::IsTableExit() {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery query(db);
@@ -27,11 +27,11 @@ bool FriendRequestModel::IsTableExit() {
     )";
     qDebug() << "FriendRequestModel::IsTableExit()";
 
-    return DBMagr::Instance()->ExecQuery(query, sql);
+    return DBMagr::Instance().ExecQuery(query, sql);
 }
 
 bool FriendRequestModel::AddItem(const int64_t id, const User &fri, FriendState status) {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery insertQuery(db);
@@ -43,7 +43,7 @@ bool FriendRequestModel::AddItem(const int64_t id, const User &fri, FriendState 
     insertQuery.addBindValue(static_cast<int>(status));
     qDebug() << "SQL模板:" << insertQuery.lastQuery();
     qDebug() << "绑定参数:" << insertQuery.boundValues();
-    if (DBMagr::Instance()->ExecQuery(insertQuery)) {
+    if (DBMagr::Instance().ExecQuery(insertQuery)) {
         db.commit();
         return true;
     } else {
@@ -53,7 +53,7 @@ bool FriendRequestModel::AddItem(const int64_t id, const User &fri, FriendState 
 }
 
 bool FriendRequestModel::UpdateItemStatus(const int64_t id, const int64_t friendid, FriendState status) {
-    QSqlDatabase db = DBMagr::Instance()->GetConnection(m_connName);
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) return false;
 
     QSqlQuery updateQuery(db);
@@ -70,7 +70,7 @@ bool FriendRequestModel::UpdateItemStatus(const int64_t id, const int64_t friend
     updateQuery.bindValue(":fid", friendid);
     qDebug() << "SQL模板:" << updateQuery.lastQuery();
     qDebug() << "绑定参数:" << updateQuery.boundValues();
-    if (DBMagr::Instance()->ExecQuery(updateQuery)) {
+    if (DBMagr::Instance().ExecQuery(updateQuery)) {
         db.commit();
         return true;
     } else {

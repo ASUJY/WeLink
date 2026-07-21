@@ -8,9 +8,12 @@ FriendRequestModel:: FriendRequestModel(const QString &connName) : m_connName(co
 }
 
 
-bool FriendRequestModel::IsTableExit() {
+bool FriendRequestModel::IsTableExit() const{
     QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
-    if (!db.isOpen()) return false;
+    if (!db.isOpen()) {
+        qCritical() << "FriendRequestModel 连接失效 conn:" << m_connName;
+        return false;
+    }
 
     QSqlQuery query(db);
     QString sql = R"(
@@ -32,7 +35,15 @@ bool FriendRequestModel::IsTableExit() {
 
 bool FriendRequestModel::AddItem(const int64_t id, const User &fri, FriendState status) {
     QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
-    if (!db.isOpen()) return false;
+    if (!db.isOpen()) {
+        qCritical() << "AddItem 数据库未打开 conn:" << m_connName;
+        return false;
+    }
+
+    if (!db.transaction()) {
+        qCritical() << "AddItem 开启事务失败:" << db.lastError().text();
+        return false;
+    }
 
     QSqlQuery insertQuery(db);
     insertQuery.prepare("insert into im_friendrequest(userid, friendid, friendname, phone, status) values(?,?,?,?,?)");
@@ -48,13 +59,22 @@ bool FriendRequestModel::AddItem(const int64_t id, const User &fri, FriendState 
         return true;
     } else {
         db.rollback();
+        qCritical() << "AddItem 新增好友申请失败，事务回滚";
         return false;
     }
 }
 
 bool FriendRequestModel::UpdateItemStatus(const int64_t id, const int64_t friendid, FriendState status) {
     QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
-    if (!db.isOpen()) return false;
+    if (!db.isOpen()) {
+        qCritical() << "UpdateItemStatus 数据库未打开 conn:" << m_connName;
+        return false;
+    }
+
+    if (!db.transaction()) {
+        qCritical() << "UpdateItemStatus 开启事务失败";
+        return false;
+    }
 
     QSqlQuery updateQuery(db);
     const QString sql = R"(
@@ -75,6 +95,7 @@ bool FriendRequestModel::UpdateItemStatus(const int64_t id, const int64_t friend
         return true;
     } else {
         db.rollback();
+        qCritical() << "UpdateItemStatus 更新申请状态失败，事务回滚";
         return false;
     }
 }

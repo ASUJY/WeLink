@@ -1,7 +1,7 @@
 #ifndef FRIENDREQUESTMODEL_H
 #define FRIENDREQUESTMODEL_H
 
-#include "friend.hpp"
+#include "user.hpp"
 #include "common.h"
 #include <QString>
 
@@ -14,7 +14,7 @@ public:
     bool AddItem(const int64_t id, const User &fri, FriendState status);
     bool UpdateItemStatus(const int64_t id, const int64_t friendid, FriendState status);
 private:
-    bool IsTableExit();
+    bool IsTableExit() const;
 
 private:
     QString m_connName;

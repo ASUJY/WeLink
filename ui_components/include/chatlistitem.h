@@ -22,12 +22,12 @@ public:
     void Checked(bool checked);
     void Selected(bool selected);
 
-    void SetItem(std::unique_ptr<Friend> data);
+    void SetItem(std::unique_ptr<Friend>&& data);
     Friend *GetItem() const { return m_data.get(); }
 
-    void UpdateFriend(Message& message);
-    void SetContent(QString content);
-    void UpdateContent(Message& messages);
+    void UpdateFriend(const Message& message);
+    void SetContent(const QString& content);
+    void UpdateContent(const Message& messages);
 
 private:
     // 鼠标按下聊天列表项触发这个函数

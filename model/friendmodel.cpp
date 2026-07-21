@@ -129,7 +129,7 @@ std::vector<Friend> FriendModel::FindFriends(const int64_t id) {
         Friend fri;
         fri.SetUserId(query.value("friendid").toLongLong());
         fri.SetUserName(query.value("friendname").toString().toStdString());
-        friendsVec.push_back(fri);
+        friendsVec.push_back(std::move(fri));
     }
     return friendsVec;
 }

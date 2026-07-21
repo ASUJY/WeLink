@@ -13,6 +13,12 @@ class LoginWidget;
 class LoginWidget : public QWidget
 {
     Q_OBJECT
+signals:
+    void SIG_Register();
+    void SIG_LoginCommit(const QByteArray& data);
+
+private slots:
+    void OnBtnLoginClicked();
 
 public:
     explicit LoginWidget(QWidget *parent = nullptr);
@@ -22,13 +28,6 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-
-signals:
-    void SIG_Register();
-    void SIG_LoginCommit(const QByteArray& data);
-
-private slots:
-    void OnBtnLoginClicked();
 
 private:
     void SetWidgetWinTitle();

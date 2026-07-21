@@ -176,7 +176,7 @@ void AppCore::ReceiveLoginACK(const QByteArray& data) {
         m_user->SetUserName(dataObj.value("username").toString().toStdString());
         m_user->SetUserPhone(dataObj.value("phone").toString().toStdString());
         m_user->SetUserAvatar(dataObj.value("avator").toString().toStdString());
-        if (!m_userModel.IsUserExit(m_user)) {
+        if (!m_userModel.IsUserExist(m_user)) {
             m_userModel.AddUser(m_user);
         }
 

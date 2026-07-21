@@ -7,9 +7,12 @@ FriendModel::FriendModel(const QString &connName) : m_connName(connName){
     IsTableExit();
 }
 
-bool FriendModel::IsTableExit() {
+bool FriendModel::IsTableExit() const{
     QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
-    if (!db.isOpen()) return false;
+    if (!db.isOpen()) {
+        qCritical() << "FriendModel 数据库连接失效 conn:" << m_connName;
+        return false;
+    }
 
     QSqlQuery query(db);
     QString sql = R"(
@@ -29,17 +32,25 @@ bool FriendModel::IsTableExit() {
     return DBMagr::Instance().ExecQuery(query, sql);
 }
 
-bool FriendModel::AddFriend(const int64_t id, const User &fri, FriendState state) {
+bool FriendModel::AddFriend(const int64_t id, const User &fri) {
     QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
-    if (!db.isOpen()) return false;
+    if (!db.isOpen()) {
+        qCritical() << "AddFriend 连接未打开 conn:" << m_connName;
+        return false;
+    }
+
+    if (!db.transaction())
+    {
+        qCritical() << "AddFriend 开启事务失败 " << db.lastError().text();
+        return false;
+    }
 
     QSqlQuery insertQuery(db);
-    insertQuery.prepare("insert into im_friend(userid, friendid, friendname, phone, state) values(?,?,?,?,?)");
+    insertQuery.prepare("insert into im_friend(userid, friendid, friendname, phone) values(?,?,?,?,?)");
     insertQuery.addBindValue(id);
     insertQuery.addBindValue(fri.GetUserId());
     insertQuery.addBindValue(QString::fromStdString(fri.GetUserName()));
     insertQuery.addBindValue(QString::fromStdString(fri.GetUserPhone()));
-    insertQuery.addBindValue(QString::fromStdString(fri.GetUserState()));
     qDebug() << "SQL模板:" << insertQuery.lastQuery();
     qDebug() << "绑定参数:" << insertQuery.boundValues();
     if (DBMagr::Instance().ExecQuery(insertQuery)) {
@@ -47,14 +58,15 @@ bool FriendModel::AddFriend(const int64_t id, const User &fri, FriendState state
         return true;
     } else {
         db.rollback();
+        qCritical() << "AddFriend 插入失败，已回滚";
         return false;
     }
 }
 
-bool FriendModel::IsFriendExit(const int64_t id, const Friend &fri) {
+bool FriendModel::IsFriendExit(const int64_t id, const Friend &fri) const{
     QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) {
-        qDebug() << "数据库连接未打开";
+        qCritical() << "IsFriendExist 连接未打开 conn:" << m_connName;
         return false;
     }
 
@@ -66,18 +78,18 @@ bool FriendModel::IsFriendExit(const int64_t id, const Friend &fri) {
     qDebug() << "SQL模板:" << query.lastQuery();
     qDebug() << "绑定参数:" << query.boundValues();
     if (DBMagr::Instance().ExecQuery(query) && query.next()) {
-        qDebug() << "查询好友SQL成功";
+        qDebug() << "好友记录存在";
         return true;
     }
 
-    qDebug() << "查询好友SQL失败";
+    qDebug() << "未查询到对应好友";
     return false;
 }
 
-User FriendModel::IsFriendExit(const int64_t id, const QString &name, E_ACCOUNT_TYPE type) {
+User FriendModel::IsFriendExit(const int64_t id, const QString &name, E_ACCOUNT_TYPE type) const{
     QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) {
-        qDebug() << "数据库连接未打开";
+        qCritical() << "IsFriendExist 连接未打开 conn:" << m_connName;
         return User{};
     }
 
@@ -108,12 +120,11 @@ User FriendModel::IsFriendExit(const int64_t id, const QString &name, E_ACCOUNT_
     return User{};
 }
 
-std::vector<Friend> FriendModel::FindFriends(const int64_t id) {
-    qDebug() << "FriendModel::FindFriends";
+std::vector<Friend> FriendModel::FindFriends(const int64_t id) const{
     std::vector<Friend> friendsVec;
     QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
     if (!db.isOpen()) {
-        qDebug() << "数据库连接未打开";
+        qCritical() << "FindFriends 连接未打开 conn:" << m_connName;
         return friendsVec;
     }
     QSqlQuery query(db);
@@ -122,7 +133,7 @@ std::vector<Friend> FriendModel::FindFriends(const int64_t id) {
     query.addBindValue(id);
 
     if (!DBMagr::Instance().ExecQuery(query)) {
-        qDebug() << "查询失败：" << query.lastError().text();
+        qDebug() << "好友列表查询失败: " << query.lastError().text();
         return friendsVec;
     }
     while (query.next()) {
@@ -135,28 +146,36 @@ std::vector<Friend> FriendModel::FindFriends(const int64_t id) {
 }
 
 
-bool FriendModel::UpdateFriendState(const int64_t id, const int64_t friendid, FriendState type) {
-    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
-    if (!db.isOpen()) return false;
+// bool FriendModel::UpdateFriendState(const int64_t id, const int64_t friendid, FriendState type) {
+//     QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
+//     if (!db.isOpen()) return false;
 
-    QSqlQuery updateQuery(db);
-    const QString sql = R"(
-        UPDATE im_friend
-        SET state = :state
-        WHERE userid = :uid AND friendid = :fid
-    )";
+//     // 开启事务保证更新原子性
+//     if (!db.transaction())
+//     {
+//         qCritical() << "UpdateFriendState 开启事务失败";
+//         return false;
+//     }
 
-    updateQuery.prepare(sql);
-    // 绑定参数
-    updateQuery.bindValue(":state", static_cast<int>(type));
-    updateQuery.bindValue(":uid", id);
-    updateQuery.bindValue(":fid", friendid);
+//     QSqlQuery updateQuery(db);
+//     const QString sql = R"(
+//         UPDATE im_friend
+//         SET state = :state
+//         WHERE userid = :uid AND friendid = :fid
+//     )";
 
-    if (DBMagr::Instance().ExecQuery(updateQuery)) {
-        db.commit();
-        return true;
-    } else {
-        db.rollback();
-        return false;
-    }
-}
+//     updateQuery.prepare(sql);
+//     // 绑定参数
+//     updateQuery.bindValue(":state", static_cast<int>(type));
+//     updateQuery.bindValue(":uid", id);
+//     updateQuery.bindValue(":fid", friendid);
+
+//     if (DBMagr::Instance().ExecQuery(updateQuery)) {
+//         db.commit();
+//         return true;
+//     } else {
+//         db.rollback();
+//         qCritical() << "更新好友状态失败，已回滚";
+//         return false;
+//     }
+// }

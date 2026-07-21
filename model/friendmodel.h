@@ -11,14 +11,14 @@ public:
     explicit FriendModel(const QString &connName = "userConn");
     ~FriendModel() = default;
 
-    bool AddFriend(const int64_t id, const User &fri, FriendState state);
-    bool IsFriendExit(const int64_t id, const Friend &fri);
-    User IsFriendExit(const int64_t id, const QString &name, E_ACCOUNT_TYPE type);
-    std::vector<Friend> FindFriends(const int64_t id);
-    bool UpdateFriendState(const int64_t id, const int64_t friendid, FriendState type);
+    bool AddFriend(const int64_t id, const User &fri);
+    bool IsFriendExit(const int64_t id, const Friend &fri) const;
+    User IsFriendExit(const int64_t id, const QString &name, E_ACCOUNT_TYPE type) const;
+    std::vector<Friend> FindFriends(const int64_t id) const;
+    // bool UpdateFriendState(const int64_t id, const int64_t friendid, FriendState state);
 
 private:
-    bool IsTableExit();
+    bool IsTableExit() const;
 
 private:
     QString m_connName;

@@ -29,6 +29,11 @@ public:
     void SetCount(int count) { m_count = count; }
     void AddMessage(const Message& message)  {m_messages.push_back(message);}
     void AddMessage(Message&& message) noexcept { m_messages.push_back(std::move(message));}
+    template<typename... Args>
+    void EmplaceMessage(Args&&... args)
+    {
+        m_messages.emplace_back(std::forward<Args>(args)...);
+    }
     void SetState(FriendState state) { m_state = state; }
     void SetMessages(const QList<Message>& messages) { m_messages = messages; }
 

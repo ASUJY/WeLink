@@ -18,10 +18,6 @@ class ContactsPaneWidget : public QWidget
     Q_OBJECT
 signals:
     void SIG_ItemDidSelected(std::shared_ptr<ContactsItem>);
-public:
-    explicit ContactsPaneWidget(std::shared_ptr<FriendModel> friendModel, std::shared_ptr<FriendRequestModel> friendRequestModel, QWidget *parent = nullptr);
-    ~ContactsPaneWidget();
-    void AddFriendToPane(const Friend& fri);
 
 public slots:
     void ReceiveSlotAddFriendReq(const QByteArray& data);
@@ -29,6 +25,19 @@ public slots:
     void SlotAddFriendReq(const User& user);
     void SlotAddFriendReqAck(const User& user);
     // void SlotItemDidSelected();
+
+public:
+    explicit ContactsPaneWidget(std::shared_ptr<FriendModel> friendModel,
+                                std::shared_ptr<FriendRequestModel> friendRequestModel,
+                                QWidget *parent = nullptr) noexcept;
+    ~ContactsPaneWidget();
+    void AddFriendToPane(const Friend& fri);
+
+private:
+    std::unique_ptr<ContactsItem> CreateContactItem(const QString& groupName,
+                                                    int64_t userId,
+                                                    const QString& name,
+                                                    FriendState state);
 
 private:
     Ui::ContactsPaneWidget *ui;

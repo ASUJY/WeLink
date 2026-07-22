@@ -3,7 +3,7 @@
 #include "contactslistviewchild.h"
 #include <QTimer>
 
-ContactsListWidget::ContactsListWidget(QWidget *parent)
+ContactsListWidget::ContactsListWidget(QWidget *parent)noexcept
     : QListWidget{parent}
 {
     m_updateTimer = new QTimer(this);
@@ -12,12 +12,16 @@ ContactsListWidget::ContactsListWidget(QWidget *parent)
 }
 
 
-void ContactsListWidget::InsertItem(std::unique_ptr<ContactsItem> item) {
+void ContactsListWidget::InsertItem(std::unique_ptr<ContactsItem>&& item) {
+    if (!item)
+        return;
+
     if (item->GetItemType() == ContactsItemType::Group) {
         m_items.push_back(std::move(item));
     } else {
+        const QString targetGroup = item->GetGroupName();
         for (const std::shared_ptr<ContactsItem> &groupItem : m_items) {
-            if (!groupItem->GetGroupName().compare(item->GetGroupName())) {
+            if (groupItem->GetGroupName()== targetGroup) {
                 // 往指定分组中添加联系人条目
                 auto id = item->GetItemId();
                 qDebug() << "ContactsListWidget::InsertItem: " << groupItem->GetGroupName() << " " << item->GetItemId() << " " << item->GetGroupName() << "" <<item->GetItemName() << " " << static_cast<int>(item->GetItemState());
@@ -32,10 +36,10 @@ void ContactsListWidget::InsertItem(std::unique_ptr<ContactsItem> item) {
 
 void ContactsListWidget::UpdateItemStatus(const QString& groupname, int64_t id, FriendState state) {
     for (auto it = m_items.begin(); it != m_items.end(); ++it) {
-        if (!((*it)->GetGroupName().compare(groupname))) {
-            auto item = (*it)->GetChildItemById(id);
-            if (item) {
-                item->SetItemState(state);
+        if ((*it)->GetGroupName() == groupname) {
+            auto childItem  = (*it)->GetChildItemById(id);
+            if (childItem) {
+                childItem ->SetItemState(state);
                 break;
             }
         }
@@ -45,6 +49,7 @@ void ContactsListWidget::UpdateItemStatus(const QString& groupname, int64_t id, 
 
 void ContactsListWidget::UploadItems() {
     this->clear();
+    // 安全销毁所有自定义控件
     for (auto w : findChildren<ContactsListViewGroup*>()) {
         w->deleteLater();
     }
@@ -52,20 +57,24 @@ void ContactsListWidget::UploadItems() {
         w->deleteLater();
     }
 
-    for (const auto& item : m_items) {
-        if (item->GetItemType() == ContactsItemType::Group) {
-            ContactsListViewGroup *group = new ContactsListViewGroup(item, this);   // 分组列表项样式
-            group->setGeometry(0, 0, 300, 30);
-            connect(group, &ContactsListViewGroup::SIG_GroupOpenStatusDidChanged, this, &ContactsListWidget::SlotGroupOpenDidChanged);
+    for (const auto& groupItem : m_items) {
+        if (groupItem->GetItemType() != ContactsItemType::Group) {
+            continue;
+        }
 
-            QListWidgetItem *qitem = new QListWidgetItem("");
-            this->addItem(qitem);
-            this->setItemWidget(qitem, group);
-            qitem->setSizeHint(group->geometry().size());
-            if (item->GetIsOpen()) {
-                for (auto &childItem : item->GetChildItems()) {
-                    AddChildItem(childItem.second.get());
-                }
+        ContactsListViewGroup *groupWidget  = new ContactsListViewGroup(groupItem , this);   // 分组列表项样式
+        groupWidget->setGeometry(0, 0, 300, 30);
+        connect(groupWidget, &ContactsListViewGroup::SIG_GroupOpenStatusDidChanged, this, &ContactsListWidget::SlotGroupOpenDidChanged);
+
+        QListWidgetItem *qlistItem  = new QListWidgetItem("");
+        this->addItem(qlistItem );
+        this->setItemWidget(qlistItem , groupWidget);
+        qlistItem ->setSizeHint(groupWidget->geometry().size());
+
+        if (groupItem ->GetIsOpen()) {
+            const auto& childMap = groupItem->GetChildItems();
+            for (const auto &childItem : childMap) {
+                AddChildItem(childItem.second.get());
             }
         }
     }
@@ -78,23 +87,32 @@ void ContactsListWidget::SlotGroupOpenDidChanged()
 }
 
 void ContactsListWidget::AddChildItem(ContactsItem* item) {
-    ContactsListViewChild *childItem = new ContactsListViewChild(item->GetItemId(), item->GetItemName(), item->GetHeadIcon(),item->GetGroupName(), this);
-    childItem->setGeometry(0, 0, 300, 60);
-    // childItem->SetItem(item);
-    connect(childItem, &ContactsListViewChild::SIG_ItemDidSelected, this, &ContactsListWidget::SlotItemDidSelected);
+    if (!item)
+        return;
 
-    QListWidgetItem *qitem = new QListWidgetItem("");
-    this->addItem(qitem);
-    this->setItemWidget(qitem, childItem);
-    qitem->setSizeHint(childItem->geometry().size());
+    ContactsListViewChild *childWidget = new ContactsListViewChild(
+        item->GetItemId(),
+        item->GetItemName(),
+        item->GetHeadIcon(),
+        item->GetGroupName(),
+        this
+    );
+    childWidget->setGeometry(0, 0, 300, 60);
+    // childItem->SetItem(item);
+    connect(childWidget, &ContactsListViewChild::SIG_ItemDidSelected, this, &ContactsListWidget::SlotItemDidSelected);
+
+    QListWidgetItem *qlistItem  = new QListWidgetItem("");
+    this->addItem(qlistItem );
+    this->setItemWidget(qlistItem , childWidget);
+    qlistItem->setSizeHint(childWidget->geometry().size());
 }
 
 void  ContactsListWidget::SlotItemDidSelected(int64_t id, const QString& groupname) {
     for (auto it = m_items.cbegin(); it != m_items.end(); ++it) {
-        if (!((*it)->GetGroupName().compare(groupname))) {
-            auto item = (*it)->GetChildItemById(id);
-            if (item) {
-                emit SIG_ItemDidSelected(item);
+        if (((*it)->GetGroupName() == groupname)) {
+            auto childItem  = (*it)->GetChildItemById(id);
+            if (childItem ) {
+                emit SIG_ItemDidSelected(childItem );
                 return;
             }
         }

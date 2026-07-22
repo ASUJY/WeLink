@@ -314,7 +314,7 @@ void MainWindow::SlotChatView(QVariant var, PageType type) {
     if (var.canConvert<Friend*>() && type == PageType::AllChatView) {
         auto data = var.value<Friend*>();
         ui->gridLayout_3->addWidget(m_chatMainWidget.get());
-        m_chatMainWidget->SetStackedWidgettCurrentIndex(0);
+        m_chatMainWidget->SetStackedWidgetCurrentIndex(0);
         m_chatMainWidget->SetData(data);
         m_chatMainWidget->show();
     }

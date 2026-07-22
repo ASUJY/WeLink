@@ -2,8 +2,6 @@
 #include "ui_chatmainwidget.h"
 #include "chatlistitem.h"
 #include "chatpanewidget.h"
-#include "senderwidget.h"
-#include "receiverwidget.h"
 #include "ReceiverMsgItem.h"
 #include "SenderMsgItem.h"
 #include <QDebug>
@@ -22,59 +20,68 @@ ChatMainWidget::~ChatMainWidget()
     delete ui;
 }
 
-void ChatMainWidget::SetStackedWidgettCurrentIndex(int index) {
+void ChatMainWidget::SetStackedWidgetCurrentIndex(int index) {
     ui->ChatMainStackedWidget->setCurrentIndex(index);
 }
 
 
 void ChatMainWidget::SetData(Friend *data) {
+
+    if (!data) {
+        qWarning() << "ChatMainWidget::SetData Friend 空指针";
+        return;
+    }
+
     ui->listWidget->clear();    // 清空原来的聊天记录
     qDebug() << "ChatMainWidget::SetData name: " << QString::fromStdString(data->GetUserName());
     ui->labName->setText(QString::fromStdString(data->GetUserName()));
     ui->labName->setStyleSheet("color: black;");
 
-    auto messages = data->GetMessages();
+    const auto& messages = data->GetMessages();
     for (int i = 0; i < messages.count(); i++) {
-        auto message = messages[i];
+        const auto& message = messages[i];
         qDebug() << "ChatMainWidget::SetData message: " << message.GetContent();
+
         auto item = new QListWidgetItem;
         ui->listWidget->addItem(item);
+
+        // 取消item可选中，去除焦点虚线框
+        item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+
         if (message.GetMsgType() == MsgType::Sender) {
             auto widget = new SenderMsgItem(nullptr, ":/resource/head/man.svg");
-            ui->listWidget->setItemWidget(item, widget);
-            // connect(widget, &SenderWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
-            //     item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));
-            // });
             widget->SetMessage(message.GetContent());
+
+            ui->listWidget->setItemWidget(item, widget);
             item->setSizeHint(widget->sizeHint());
-            // 取消item可选中，彻底杜绝焦点框
-            item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+
         } else if (message.GetMsgType() == MsgType::Receive) {
             auto widget = new ReceiverMsgItem(nullptr, ":/resource/icon/app.png");
-            ui->listWidget->setItemWidget(item, widget);
-            // connect(widget, &ReceiverWidget::SIG_LabelSizeChanged, [=](QRect rect) mutable {
-            //     item->setSizeHint(QSize(width() * 3 / 5, rect.height() + 20));
-            // });
             widget->SetMessage(message.GetContent());
+
+            ui->listWidget->setItemWidget(item, widget);
             item->setSizeHint(widget->sizeHint());
-            // 取消item可选中，彻底杜绝焦点框
-            item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
         }
-        ui->listWidget->scrollToBottom();
     }
+    ui->listWidget->scrollToBottom();
 }
 
 void ChatMainWidget::SlotBtnSendMsgClicked() {
-    QString content = ui->textEdit->toPlainText();
+    QString content = ui->textEdit->toPlainText().trimmed();
     if (content.isEmpty()) return;
 
-    ChatListItem* chatitem = ChatPaneWidget::GetCurrentSelectedItem();
+    ChatListItem* chatItem = ChatPaneWidget::GetCurrentSelectedItem();
+    if (!chatItem || !chatItem->GetItem()) {
+        qWarning() << "未选中任何聊天对象，无法发送消息";
+        return;
+    }
+
     Message message(content, QTime::currentTime().toString("hh:mm:ss"), Sender);
-    chatitem->UpdateFriend(message);
+    chatItem->UpdateFriend(message);
 
     //
-    qDebug() << "ChatMainWidget::SlotBtnSendMsgClicked: userid: " << chatitem->GetItem()->GetUserId();
-    emit SIG_SendChatMsg(chatitem->GetItem()->GetUserId(), content);
+    qDebug() << "ChatMainWidget::SlotBtnSendMsgClicked: userid: " << chatItem->GetItem()->GetUserId();
+    emit SIG_SendChatMsg(chatItem->GetItem()->GetUserId(), content);
     ui->textEdit->clear();
-    SetData(chatitem->GetItem());
+    SetData(chatItem->GetItem());
 }

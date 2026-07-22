@@ -20,7 +20,7 @@ public:
     ~ChatMainWidget();
 
     void SetData(Friend *data);
-    void SetStackedWidgettCurrentIndex(int index);
+    void SetStackedWidgetCurrentIndex(int index);
 
 private slots:
     void SlotBtnSendMsgClicked();

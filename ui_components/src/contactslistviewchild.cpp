@@ -2,18 +2,20 @@
 
 #include <QPainter>
 
-ContactsListViewChild::ContactsListViewChild(int64_t id, const QString& name, const QString& headIcon, const QString& groupname, QWidget *parent)
+ContactsListViewChild::ContactsListViewChild(int64_t id,
+                                             const QString& name,
+                                             const QString& headIcon,
+                                             const QString& groupname,
+                                             QWidget *parent) noexcept
     : m_userid(id), m_username(name), m_headIcon(headIcon), m_groupname(groupname) {}
 
 ContactsListViewChild::~ContactsListViewChild() {
-    // if (m_item) {
-    //     delete m_item;
-    //     m_item = nullptr;
-    // }
+
 }
 
 void ContactsListViewChild::paintEvent(QPaintEvent *) {
     qDebug() << "ContactsListViewChild::paintEvent";
+
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.fillRect(this->rect(), QColor("#D9D8D7"));
@@ -37,8 +39,7 @@ void ContactsListViewChild::paintEvent(QPaintEvent *) {
 void ContactsListViewChild::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton)
     {
-        // User user;
-        // user.SetUserName(m_item->GetItemName().toStdString());
         emit SIG_ItemDidSelected(m_userid, m_groupname);
     }
+    QWidget::mousePressEvent(event);
 }

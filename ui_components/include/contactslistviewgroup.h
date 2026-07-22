@@ -17,19 +17,22 @@ signals:
     void SIG_GroupOpenStatusDidChanged();
 
 public:
-    explicit ContactsListViewGroup(const std::shared_ptr<ContactsItem>& item, QWidget *parent = nullptr);
+    explicit ContactsListViewGroup(const std::shared_ptr<ContactsItem>& item, QWidget *parent = nullptr) noexcept;
     ~ContactsListViewGroup();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
-    void SetGroupState();
-    void SetLabTitle();
+    void UpdateGroupVisual();
+    void UpdateTitleText();
 
 private:
     Ui::ContactsListViewGroup *ui;
     std::shared_ptr<ContactsItem> m_item;
+
+    static const QString ICON_ARROW_DOWN;
+    static const QString ICON_ARROW_RIGHT;
 
 };
 

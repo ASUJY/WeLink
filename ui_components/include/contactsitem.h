@@ -6,7 +6,7 @@
 #include <memory>
 #include "common.h"
 
-enum ContactsItemType : int {
+enum class ContactsItemType : int {
     Group = 0,
     Item,
 };
@@ -26,16 +26,27 @@ public:
     void SetItemName(const QString& name) {m_name = name;}
     void SetItemId(int64_t id) {m_id = id;}
     void SetHeadIcon(const QString& headIcon) {m_headIcon = headIcon;}
-    void SetItemType(int type) {m_type = type;}
+    void SetItemType(ContactsItemType type) {m_type = type;}
     void SetItemState(FriendState state) {m_state = state;}
+
     void AddChildItem(int64_t id, std::unique_ptr<ContactsItem> item) {
         m_childItems[id] = std::move(item);
     }
+    void RemoveChildItem(int64_t id) {
+        m_childItems.erase(id);
+    }
+    void ClearAllChildItems() {
+        m_childItems.clear();
+    }
+    bool HasChildItem(int64_t id) const {
+        return m_childItems.find(id) != m_childItems.cend();
+    }
+
     QString GetGroupName() const {return m_groupName;}
     bool GetIsOpen() const {return m_isOpen;}
     QString GetItemName() const {return m_name;}
     int64_t GetItemId() const {return m_id;}
-    int GetItemType() const {return m_type;}
+    ContactsItemType GetItemType() const {return m_type;}
     FriendState GetItemState() const {return m_state;}
     QString GetHeadIcon() const {return m_headIcon;}
     const std::map<int64_t, std::shared_ptr<ContactsItem>>& GetChildItems() const {return m_childItems;}
@@ -49,10 +60,10 @@ public:
 
 private:
     QString m_name;
-    int64_t m_id;
+    int64_t m_id = -1;
     QString m_headIcon;
     FriendState m_state = FriendState::DONE;
-    int m_type = ContactsItemType::Group;
+    ContactsItemType m_type = ContactsItemType::Group;
 
     // 用于列表中的分组，例如联系人列表，新的好友列表
     QString m_groupName;

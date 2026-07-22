@@ -3,7 +3,7 @@
 #include "common.h"
 #include <QButtonGroup>
 
-ContactsMainWidget::ContactsMainWidget(QWidget *parent)
+ContactsMainWidget::ContactsMainWidget(QWidget *parent) noexcept
     : QWidget(parent)
     , ui(new Ui::ContactsMainWidget)
 {
@@ -16,14 +16,21 @@ ContactsMainWidget::ContactsMainWidget(QWidget *parent)
     btnGroup->addButton(ui->btnAddFriend, 1);
     btnGroup->addButton(ui->btnRejectFriend, 2);
 
-    connect(btnGroup, &QButtonGroup::buttonClicked, this, [=](QAbstractButton* btn){
-        if (btn == ui->btnAddFriend) {
-            SendSlotAddFriendACK(FriendState::ACCEPT);
-            m_item->SetItemState(FriendState::ACCEPT);
-        } else {
-            SendSlotAddFriendACK(FriendState::REJECT);
-            m_item->SetItemState(FriendState::REJECT);
+    connect(btnGroup, &QButtonGroup::buttonClicked, this, [this](QAbstractButton* btn){
+        if (!m_item) {
+            qWarning() << "ContactsMainWidget: m_item 为空，无法处理好友申请";
+            return;
         }
+
+        FriendState newState;
+        if (btn == ui->btnAddFriend) {
+            newState = FriendState::ACCEPT;
+        } else {
+            newState = FriendState::REJECT;
+        }
+        SendSlotAddFriendACK(newState);
+        m_item->SetItemState(newState);
+
         SetStackedWidgetCurrentIndex(m_item);
     });
 
@@ -37,37 +44,57 @@ ContactsMainWidget::~ContactsMainWidget()
 
 void ContactsMainWidget::SetStackedWidgetCurrentIndex(const std::shared_ptr<ContactsItem>& item) {
     m_item = item;
-    if (item->GetItemState() == FriendState::PendingVerification) {
-        ui->labName_3->setText(item->GetItemName());
-        ui->btnHeadIcon_3->setIcon(QIcon(":/resource/head/man.svg"));
+    if (!m_item) {
+        ui->stackedWidget->setCurrentIndex(3);
+        return;
+    }
+
+    FriendState state = m_item->GetItemState();
+    const QString& name = m_item->GetItemName();
+    QIcon headIcon(":/resource/head/man.svg");
+    switch (state) {
+    case FriendState::PendingVerification:
+        ui->labName_3->setText(name);
+        ui->btnHeadIcon_3->setIcon(headIcon);
         ui->labName_3->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(1);
-    } else if (item->GetItemState() == FriendState::PendingApproval) {
-        ui->labName->setText(item->GetItemName());
-        ui->btnHeadIcon->setIcon(QIcon(":/resource/head/man.svg"));
+        break;
+    case FriendState::PendingApproval:
+        ui->labName->setText(name);
+        ui->btnHeadIcon->setIcon(headIcon);
         ui->labName->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(0);
-    } else if (item->GetItemState() == FriendState::DONE) {
-        ui->labName_2->setText(item->GetItemName());
-        ui->btnHeadIcon_2->setIcon(QIcon(":/resource/head/man.svg"));
+        break;
+    case FriendState::DONE:
+        ui->labName_2->setText(name);
+        ui->btnHeadIcon_2->setIcon(headIcon);
         ui->labName_2->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(2);
-    } else if (item->GetItemState() == FriendState::ACCEPT) {
-        ui->labName_4->setText(item->GetItemName());
-        ui->btnHeadIcon_4->setIcon(QIcon(":/resource/head/man.svg"));
+        break;
+    case FriendState::ACCEPT:
+        ui->labName_4->setText(name);
+        ui->btnHeadIcon_4->setIcon(headIcon);
         ui->labName_4->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(4);
-    } else if (item->GetItemState() == FriendState::REJECT) {
-        ui->labName_5->setText(item->GetItemName());
-        ui->btnHeadIcon_5->setIcon(QIcon(":/resource/head/man.svg"));
+        break;
+    case FriendState::REJECT:
+        ui->labName_5->setText(name);
+        ui->btnHeadIcon_5->setIcon(headIcon);
         ui->labName_5->setStyleSheet("color: black;");
         ui->stackedWidget->setCurrentIndex(5);
-    } else {
+        break;
+    default:
         ui->stackedWidget->setCurrentIndex(3);
+        break;
     }
 }
 
 void ContactsMainWidget::SendSlotAddFriendACK(FriendState type) {
+    if (!m_item) {
+        qWarning() << "SendSlotAddFriendACK: m_item 为空";
+        return;
+    }
+
     User user;
     user.SetUserName(m_item->GetItemName().toStdString());
     user.SetUserId(m_item->GetItemId());

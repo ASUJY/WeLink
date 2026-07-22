@@ -13,7 +13,8 @@ public:
         Sender
     };
 
-    explicit BubbleLabel(QWidget *parent = nullptr);
+    explicit BubbleLabel(QWidget *parent = nullptr) noexcept;
+    ~BubbleLabel() = default;
     void SetBubbleType(BubbleType type);
 
 protected:
@@ -21,10 +22,11 @@ protected:
 
 private:
     BubbleType m_type = Receiver;
-    const int m_radius = 8;     // 气泡圆角大小
-    const int m_triSize = 6;    // 尖角三角尺寸
-    const int m_paddingX = 12;  // 文字左右内边距
-    const int m_paddingY = 8;   // 文字上下内边距
+    static const int BUBBLE_RADIUS;
+    static const int TRIANGLE_SIZE;
+    static const int PADDING_X;
+    static const int PADDING_Y;
+    static const int MAX_WIDTH;
 };
 
 #endif // BUBBLELABEL_H

@@ -15,15 +15,15 @@ class ChatMainWidget : public QWidget
 signals:
     void SIG_SendChatMsg(int64_t id, const QString& content);
 
+private slots:
+    void SlotBtnSendMsgClicked();
+
 public:
     explicit ChatMainWidget(QWidget *parent = nullptr);
     ~ChatMainWidget();
 
     void SetData(Friend *data);
     void SetStackedWidgetCurrentIndex(int index);
-
-private slots:
-    void SlotBtnSendMsgClicked();
 
 private:
     Ui::ChatMainWidget *ui;

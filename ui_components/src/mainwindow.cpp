@@ -4,17 +4,20 @@
 #include <QJsonDocument>
 #include "friend.hpp"
 
-MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, std::shared_ptr<MsgModel> msgModel, std::shared_ptr<FriendRequestModel> friendRequestModel, QWidget *parent)
+MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel,
+                       std::shared_ptr<MsgModel> msgModel, std::shared_ptr<FriendRequestModel> friendRequestModel,
+                       QWidget *parent) noexcept
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), m_page(ChatWidget)
+    , ui(new Ui::MainWindow),
+    m_page(ChatPage::ChatWidget),
+    m_user(user),
+    m_friendModel(friendModel),
+    m_friendRequestModel(friendRequestModel),
+    m_msgModel(msgModel)
 {
     ui->setupUi(this);
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
     SetWidgetWinTitle();
-    m_friendModel = friendModel;
-    m_friendRequestModel = friendRequestModel;
-    m_msgModel = msgModel;
-    m_user = user;
     // Init();
 }
 
@@ -24,7 +27,6 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::Init() {
-    // InitAddFriendWindow();
     InitChatMainWidget();
     InitChatPaneWidget();
     InitContactsPaneWidget();
@@ -38,11 +40,17 @@ void MainWindow::Init() {
 }
 
 void MainWindow::InitAddFriendWindow() {
+    if (m_addFriendWindow)
+        return;
+
     m_addFriendWindow = new AddFriendWindow(this);
     m_addFriendWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_GetFriendInfo, this, &MainWindow::SIG_SEND_GetFriendInfo);
-    connect(this, static_cast<void (MainWindow::*)(const QByteArray&)>(&MainWindow::SIG_RECEIVE_GetFriendInfoACK), m_addFriendWindow, static_cast<void(AddFriendWindow::*)(const QByteArray&)>(&AddFriendWindow::ReceiveSlotGetFriendInfoACK));
-    connect(this, static_cast<void (MainWindow::*)(const User& user)>(&MainWindow::SIG_RECEIVE_GetFriendInfoACK), m_addFriendWindow, static_cast<void(AddFriendWindow::*)(const User&)>(&AddFriendWindow::ReceiveSlotGetFriendInfoACK));
+    connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_GetFriendInfo,
+            this, &MainWindow::SIG_SEND_GetFriendInfo);
+    connect(this, static_cast<void (MainWindow::*)(const QByteArray&)>(&MainWindow::SIG_RECEIVE_GetFriendInfoACK), m_addFriendWindow,
+            static_cast<void(AddFriendWindow::*)(const QByteArray&)>(&AddFriendWindow::ReceiveSlotGetFriendInfoACK));
+    connect(this, static_cast<void (MainWindow::*)(const User& user)>(&MainWindow::SIG_RECEIVE_GetFriendInfoACK),
+            m_addFriendWindow, static_cast<void(AddFriendWindow::*)(const User&)>(&AddFriendWindow::ReceiveSlotGetFriendInfoACK));
 
     // 主动发送添加好友请求
     connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_AddFriendReq, this, &MainWindow::SendSlotAddFriendReq);
@@ -66,8 +74,8 @@ void MainWindow::InitChatPaneWidget() {
 
     auto friends = m_friendModel->FindFriends(m_user->GetUserId());
     for (int i = 0; i < friends.size(); ++i) {
-        QList<Message> messages1;
-        std::unique_ptr<Friend> fri = std::make_unique<Friend>(friends[i].GetUserId(), QString::fromStdString(friends[i].GetUserName()), ":/resource/head/man.svg", false, "2026", 0, messages1);
+        QList<Message> emptyMsg;
+        std::unique_ptr<Friend> fri = std::make_unique<Friend>(friends[i].GetUserId(), QString::fromStdString(friends[i].GetUserName()), ":/resource/head/man.svg", false, "2026", 0, emptyMsg);
         auto msgVec = m_msgModel->FindMsg(m_user->GetUserId(), friends[i].GetUserId());
         for (int j = 0; j < msgVec.size(); ++j) {
             fri->AddMessage(msgVec[j]);
@@ -161,12 +169,12 @@ Area MainWindow::GetArea(int x, int y) {
  */
 Qt::CursorShape MainWindow::GetCursorForArea(Area area) {
     switch (area) {
-        case Top: case Bottom:          return Qt::SizeVerCursor;
-        case Left: case Right:          return Qt::SizeHorCursor;
-        case TopLeft: case BottomRight: return Qt::SizeFDiagCursor;
-        case TopRight: case BottomLeft: return Qt::SizeBDiagCursor;
-        case Center:                    return Qt::SizeAllCursor;
-        default:                        return Qt::ArrowCursor;
+        case Area::Top: case Area::Bottom:          return Qt::SizeVerCursor;
+        case Area::Left: case Area::Right:          return Qt::SizeHorCursor;
+        case Area::TopLeft: case Area::BottomRight: return Qt::SizeFDiagCursor;
+        case Area::TopRight: case Area::BottomLeft: return Qt::SizeBDiagCursor;
+        case Area::Center:                          return Qt::SizeAllCursor;
+        default:                                    return Qt::ArrowCursor;
     }
 }
 
@@ -180,6 +188,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
         m_area = GetArea(event->pos().x(), event->pos().y());
         setCursor(GetCursorForArea(m_area));
     }
+    QMainWindow::mousePressEvent(event);
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event) {
@@ -192,31 +201,31 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
     setCursor(GetCursorForArea(m_area));
 
     switch (m_area) {
-    case Top:
+    case Area::Top:
         currentRect.setTop(m_pressRect.top() + moveSize.y());
         break;
-    case Bottom:
+    case Area::Bottom:
         currentRect.setBottom(m_pressRect.bottom() + moveSize.y());
         break;
-    case Left:
+    case Area::Left:
         currentRect.setLeft(m_pressRect.left() + moveSize.x());
         break;
-    case Right:
+    case Area::Right:
         currentRect.setRight(m_pressRect.right() + moveSize.x());
         break;
-    case TopLeft:
+    case Area::TopLeft:
         currentRect.setTopLeft(m_pressRect.topLeft() + moveSize);
         break;
-    case TopRight:
+    case Area::TopRight:
         currentRect.setTopRight(m_pressRect.topRight() + moveSize);
         break;
-    case BottomLeft:
+    case Area::BottomLeft:
         currentRect.setBottomLeft(m_pressRect.bottomLeft() + moveSize);
         break;
-    case BottomRight:
+    case Area::BottomRight:
         currentRect.setBottomRight(m_pressRect.bottomRight() + moveSize);
         break;
-    case Center:
+    case Area::Center:
         move(currentPos.x() - m_posx, currentPos.y() - m_posy);
         return;
     }
@@ -249,6 +258,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
 void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
     m_isMouseDown = false;
     unsetCursor();
+    QMainWindow::mouseReleaseEvent(event);
 }
 
 void MainWindow::ShowAddFriendWindow() {
@@ -275,17 +285,17 @@ void MainWindow::ReceiveSlotAddFriendAck(const QByteArray& data) {
 void MainWindow::SlotSelectEvent() {
     // 取消右侧导航栏之前选中的按钮的选中状态，然后将当前的按钮设置为选中状态
     m_btn->setChecked(false);
-    m_btn = (QPushButton*)sender();
+    m_btn = qobject_cast<QPushButton*>(sender());
     m_btn->setChecked(true);
 
     switch (m_page) {
-    case ChatWidget:
+    case ChatPage::ChatWidget:
         ui->gridLayout_2->removeWidget(m_chatPaneWidget.get());
         ui->gridLayout_3->removeWidget(m_chatMainWidget.get());
         m_chatPaneWidget->hide();
         m_chatMainWidget->hide();
         break;
-    case Contactwidget:
+    case ChatPage::Contactwidget:
         ui->gridLayout_2->removeWidget(m_contactsPaneWidget.get());
         ui->gridLayout_3->removeWidget(m_contactsMainWidget.get());
         m_contactsPaneWidget->hide();
@@ -329,42 +339,57 @@ void MainWindow::SlotContactsItemDidSelected(const std::shared_ptr<ContactsItem>
     m_contactsMainWidget->SetStackedWidgetCurrentIndex(item);
 }
 
+QByteArray MainWindow::BuildAddFriendRequestPacket(const User& self, const User& target)
+{
+    QJsonObject dataJson;
+    dataJson["friendname"] = QString::fromStdString(target.GetUserName());
+    dataJson["friendid"] = QString::number(target.GetUserId());
+    dataJson["username"] = QString::fromStdString(self.GetUserName());
+    dataJson["userid"] = QString::number(self.GetUserId());
+
+    QJsonObject root;
+    root["data"] = dataJson;
+    root["msgtype"] = static_cast<int>(E_MSG_TYPE::ADD_FRIEND_REQ);
+    QJsonDocument doc(root);
+    return doc.toJson(QJsonDocument::Compact);
+}
+
+QByteArray MainWindow::BuildAddFriendAckPacket(const User& self, const User& target, FriendState state)
+{
+    QJsonObject dataJson;
+    dataJson["friendname"] = QString::fromStdString(target.GetUserName());
+    dataJson["friendid"] = QString::number(target.GetUserId());
+    dataJson["username"] = QString::fromStdString(self.GetUserName());
+    dataJson["userid"] = QString::number(self.GetUserId());
+    dataJson["ackType"] = QString::number(static_cast<int>(state));
+
+    QJsonObject root;
+    root["data"] = dataJson;
+    root["msgtype"] = static_cast<int>(E_MSG_TYPE::ADD_FRIEND_ACK);
+    QJsonDocument doc(root);
+    return doc.toJson(QJsonDocument::Compact);
+}
+
 void MainWindow::SendSlotAddFriendReqAck(const User& frienduser, FriendState type) {
     qDebug() << "MainWindow::SlotAddFriendReqAck";
     if (type == FriendState::ACCEPT) {
-        // 在联系人列表中添加朋友项
-        m_contactsPaneWidget->SlotAddFriendReqAck(frienduser);
-        // 在聊天列表中添加朋友项
-        m_chatPaneWidget->SlotAddFriendReqAck(frienduser);
+        m_contactsPaneWidget->SlotAddFriendReqAck(frienduser);  // 在联系人列表中添加朋友项
+        m_chatPaneWidget->SlotAddFriendReqAck(frienduser);      // 在聊天列表中添加朋友项
     }
     m_friendRequestModel->UpdateItemStatus(m_user->GetUserId(), frienduser.GetUserId(), static_cast<FriendState>(type));
+    QByteArray pkt = BuildAddFriendAckPacket(*m_user, frienduser, type);
 
-    QJsonObject dataJson;
-    dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
-    dataJson.insert("friendid", QString::number(frienduser.GetUserId()));
-    dataJson.insert("username", QString::fromStdString(m_user->GetUserName()));
-    dataJson.insert("userid", QString::number(m_user->GetUserId()));
-    dataJson.insert("ackType", QString::number(static_cast<int>(type)));
-    QJsonObject json;
-    json.insert("data", dataJson);
-    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::ADD_FRIEND_ACK));
-    QJsonDocument document;
-    document.setObject(json);
-
-    auto data = document.toJson(QJsonDocument::Compact);
-
-    emit SIG_SEND_AddFriendReqAck(data, frienduser, type);
+    emit SIG_SEND_AddFriendReqAck(pkt, frienduser, type);
 }
 
 void MainWindow::SlotOneChat(const QByteArray& data) {
 
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
-    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) {
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError) || !jsonDoc.isObject()) {
+        qWarning() << "SlotOneChat JSON parse error:" << jsonError.errorString();
         return;
     }
-
-    if (!jsonDoc.isObject()) return;
 
     QJsonObject jsonObj = jsonDoc.object();
     QJsonValue dataVal = jsonObj.value("data");
@@ -387,18 +412,8 @@ void MainWindow::SlotOneChat(const QByteArray& data) {
 
 void MainWindow::SendSlotAddFriendReq(const User& frienduser) {
     qDebug() << frienduser.GetUserName() << "AppCore SlotAddFriendReq " << frienduser.GetUserId();
-    QJsonObject dataJson;
-    dataJson.insert("friendname", QString::fromStdString(frienduser.GetUserName()));
-    dataJson.insert("friendid", QString::number(frienduser.GetUserId()));
-    dataJson.insert("username", QString::fromStdString(m_user->GetUserName()));
-    dataJson.insert("userid", QString::number(m_user->GetUserId()));
-    QJsonObject json;
-    json.insert("data", dataJson);
-    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::ADD_FRIEND_REQ));
-    QJsonDocument document;
-    document.setObject(json);
 
-    auto data = document.toJson(QJsonDocument::Compact);
-    emit SIG_SEND_AddFriendReq(data);
+    QByteArray pkt = BuildAddFriendRequestPacket(*m_user, frienduser);
+    emit SIG_SEND_AddFriendReq(pkt);
     m_friendRequestModel->AddItem(m_user->GetUserId(), frienduser, FriendState::PendingVerification);
 }

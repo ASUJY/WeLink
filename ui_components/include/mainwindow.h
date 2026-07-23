@@ -12,7 +12,7 @@
 #include "msgmodel.h"
 #include "friendrequestmodel.h"
 
-enum Area {
+enum class Area : int {
     Top,
     Left,
     Right,
@@ -24,7 +24,7 @@ enum Area {
     BottomRight
 };
 
-enum ChatPage {
+enum class ChatPage : int {
     ChatWidget = 0,
     Contactwidget
 };
@@ -66,7 +66,9 @@ private slots:
     void SlotChatView(QVariant var, PageType type);
 
 public:
-    explicit MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel, std::shared_ptr<MsgModel> msgModel, std::shared_ptr<FriendRequestModel> friendRequestModel, QWidget *parent = nullptr);
+    explicit MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> friendModel,
+                        std::shared_ptr<MsgModel> msgModel, std::shared_ptr<FriendRequestModel> friendRequestModel,
+                        QWidget *parent = nullptr) noexcept;
     ~MainWindow() override;
     void Init();
 
@@ -87,12 +89,15 @@ private:
     Qt::CursorShape GetCursorForArea(Area area);
     void ShowAddFriendWindow();
 
+    QByteArray BuildAddFriendRequestPacket(const User& self, const User& target);
+    QByteArray BuildAddFriendAckPacket(const User& self, const User& target, FriendState state);
+
 private:
     Ui::MainWindow *ui;
 
     // 当前选中的按钮(右侧导航栏的按钮)
     QPushButton* m_btn;
-    ChatPage m_page = ChatWidget;
+    ChatPage m_page = ChatPage::ChatWidget;
 
     bool m_isMouseDown = false;
     QPoint m_pressPos;
@@ -105,7 +110,7 @@ private:
     std::unique_ptr<ChatMainWidget> m_chatMainWidget;
     std::unique_ptr<ContactsPaneWidget> m_contactsPaneWidget;
     std::unique_ptr<ContactsMainWidget> m_contactsMainWidget;
-    AddFriendWindow* m_addFriendWindow;
+    AddFriendWindow* m_addFriendWindow = nullptr;
 
     std::shared_ptr<FriendModel> m_friendModel;
     std::shared_ptr<FriendRequestModel> m_friendRequestModel;

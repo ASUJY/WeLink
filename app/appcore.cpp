@@ -7,7 +7,7 @@
 #include <QDebug>
 #include <QMessageBox>
 
-AppCore::AppCore() {
+AppCore::AppCore() noexcept {
     m_loginWidget = new LoginWidget;
     m_loginWidget->setAttribute(Qt::WA_DeleteOnClose);
     connect(m_loginWidget, &LoginWidget::destroyed, this, [this](){
@@ -29,11 +29,12 @@ AppCore::AppCore() {
 
     connect(m_netMediator.get(), &net::CommunicationMediator::SIG_ReadyData, this, &AppCore::SlotReadyRead);
 
-    // Add Friend
+    // Get Friend Info
     connect(m_mainWindow.get(), &MainWindow::SIG_SEND_GetFriendInfo, this, &AppCore::SendSlotGetFriendInfo);
     connect(this, static_cast<void (AppCore::*)(const QByteArray&)>(&AppCore::SIG_RECEIVE_GetFriendInfoACK), m_mainWindow.get(), &MainWindow::ReceiveSlotGetFriendInfoACK);
     connect(this, static_cast<void (AppCore::*)(const User&)>(&AppCore::SIG_RECEIVE_GetFriendInfoACK), m_mainWindow.get(), static_cast<void (MainWindow::*)(const User&)>(&MainWindow::SIG_RECEIVE_GetFriendInfoACK));
 
+    // Add Friend
     // connect(this, &::AppCore::GetFriendInfoFailed, m_mainWindow.get(), &MainWindow::SlotGetFriendInfoFailed);
     connect(m_mainWindow.get(), &MainWindow::SIG_SEND_AddFriendReq, this, &AppCore::SendSlotAddFriendReq);
     connect(this, &AppCore::SIG_RECEIVE_AddFriendAck, m_mainWindow.get(), &MainWindow::ReceiveSlotAddFriendAck);
@@ -59,27 +60,26 @@ AppCore::AppCore() {
 
 AppCore::~AppCore() {
     if (m_loginWidget) {
-        m_loginWidget->hide();
-        delete m_loginWidget;
+        m_loginWidget->close();
         m_loginWidget = nullptr;
     }
     if (m_registerWidget) {
-        m_registerWidget->hide();
-        delete m_registerWidget;
+        m_registerWidget->close();
         m_registerWidget = nullptr;
     }
 }
 
 void AppCore::SlotShowRegisterWidget() {
-    if (m_registerWidget == nullptr) {
-        m_registerWidget = new RegisterWidget;
-        m_registerWidget->setAttribute(Qt::WA_DeleteOnClose);
-        connect(m_registerWidget, &RegisterWidget::SIG_RegisterCommit, this, &AppCore::SlotRegisterCommit);
-        connect(m_registerWidget, &RegisterWidget::destroyed, this, [this](){
-            m_registerWidget = nullptr;
-        });
-        m_registerWidget->show();
-    }
+    if (m_registerWidget != nullptr)
+        return;
+
+    m_registerWidget = new RegisterWidget;
+    m_registerWidget->setAttribute(Qt::WA_DeleteOnClose);
+    connect(m_registerWidget, &RegisterWidget::SIG_RegisterCommit, this, &AppCore::SlotRegisterCommit);
+    connect(m_registerWidget, &RegisterWidget::destroyed, this, [this](){
+        m_registerWidget = nullptr;
+    });
+    m_registerWidget->show();
 }
 
 void AppCore::SlotRegisterCommit(const QByteArray& data) {
@@ -97,6 +97,7 @@ void AppCore::SlotReadyRead(const QByteArray& data, int len) {
     QJsonParseError jsonError;
     QJsonDocument jsonDocument = QJsonDocument::fromJson(data, &jsonError);
     if (jsonDocument.isNull() || (jsonError.error != QJsonParseError::NoError)) {
+        qWarning() << "AppCore::SlotReadyRead json parse error:" << jsonError.errorString();
         return;
     }
     if (jsonDocument.isObject()) {
@@ -104,7 +105,6 @@ void AppCore::SlotReadyRead(const QByteArray& data, int len) {
         int msgtype = jsonObj.value("msgtype").toInt();
         auto msgHandler = GetHandler(msgtype);
         msgHandler(data);
-
     }
 }
 
@@ -112,7 +112,7 @@ MsgHandler  AppCore::GetHandler(int msgtype) {
     auto it = m_msgHandlerMap.find(static_cast<E_MSG_TYPE>(msgtype));
     if (it == m_msgHandlerMap.end()) {
         // 返回一个默认的处理器，空操作
-        return [=](const QByteArray& data){
+        return [msgtype](const QByteArray& data){
             qDebug() << "msgtype:" << msgtype << " can not find handler!";
         };
     }
@@ -122,26 +122,22 @@ MsgHandler  AppCore::GetHandler(int msgtype) {
 void AppCore::RegisterSuccess(const QByteArray& data) {
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
-    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) {
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError) || !jsonDoc.isObject()) {
         return;
     }
-    if (!jsonDoc.isObject()) return;
 
     QJsonObject jsonObj = jsonDoc.object();
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
-
     E_ERR_TYPE errtype = static_cast<E_ERR_TYPE>(dataObj.value("errtype").toInt());
+
+    if (!m_registerWidget)
+        return;
+
     if (errtype == E_ERR_TYPE::REG_MSG_ACK_SUCCESS) {
-        if (this->m_registerWidget == nullptr) {
-            return;
-        }
         // 临时弹窗告诉用户注册成功，后面有时间再优化UI界面
         QMessageBox::about(this->m_registerWidget, "提示", "注册成功");
     } else if (errtype == E_ERR_TYPE::USER_EXIT){
-        if (this->m_registerWidget == nullptr) {
-            return;
-        }
         QMessageBox::about(this->m_registerWidget, "提示", "用户已存在");
     }
 
@@ -150,17 +146,15 @@ void AppCore::RegisterSuccess(const QByteArray& data) {
 void AppCore::ReceiveLoginACK(const QByteArray& data) {
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
-    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) {
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError) || !jsonDoc.isObject()) {
         return;
     }
-
-    if (!jsonDoc.isObject()) return;
 
     QJsonObject jsonObj = jsonDoc.object();
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
-
     E_ERR_TYPE errtype = static_cast<E_ERR_TYPE>(dataObj.value("errtype").toInt());
+
     if (errtype == E_ERR_TYPE::ACCOUNT_ERROR) {
         QMessageBox::about(this->m_loginWidget, "提示", "用户名密码错误");
         return;
@@ -171,11 +165,11 @@ void AppCore::ReceiveLoginACK(const QByteArray& data) {
         QMessageBox::about(this->m_loginWidget, "提示", "用户已登录");
         return;
     } else if (errtype == E_ERR_TYPE::LOGIN_MSG_ACK_SUCCESS) {
-
         m_user->SetUserId(dataObj.value("userid").toInteger());
         m_user->SetUserName(dataObj.value("username").toString().toStdString());
         m_user->SetUserPhone(dataObj.value("phone").toString().toStdString());
         m_user->SetUserAvatar(dataObj.value("avator").toString().toStdString());
+
         if (!m_userModel.IsUserExist(m_user)) {
             m_userModel.AddUser(m_user);
         }
@@ -224,13 +218,10 @@ void AppCore::ReceiveSlotAddFriendAck(const QByteArray& data) {
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
 
-    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError)) return;
-    if (!jsonDoc.isObject()) return;
+    if (jsonDoc.isNull() || (jsonError.error != QJsonParseError::NoError) || !jsonDoc.isObject()) return;
 
     QJsonObject jsonObj = jsonDoc.object();
     QJsonValue dataVal = jsonObj.value("data");
-    // if (jsontmp.isNull() || !jsontmp.isObject()) return;
-
     QJsonObject dataObj = dataVal.toObject();
 
     FriendState type = static_cast<FriendState>(dataObj.value("ackType").toString().toInt());
@@ -251,33 +242,37 @@ void AppCore::ReceiveSlotAddFriendAck(const QByteArray& data) {
 }
 
 void AppCore::SendSlotAddFriendReqAck(const QByteArray& data, const User& frienduser, FriendState type) {
-    Friend fri;
-    fri.SetUserId(frienduser.GetUserId());
-    fri.SetUserName(frienduser.GetUserName());
     if (type == FriendState::ACCEPT) {
+        Friend fri;
+        fri.SetUserId(frienduser.GetUserId());
+        fri.SetUserName(frienduser.GetUserName());
         m_friendModel->AddFriend(m_user->GetUserId(), fri);
     }
     // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
     bool res = m_netMediator->SendData(data, data.size());
 }
 
+QByteArray AppCore::BuildOneChatPacket(int64_t receiverId, const QString& content, const QString& currentTime) {
+    QJsonObject dataJson;
+    dataJson["senderId"]    = QString::number(m_user->GetUserId());
+    dataJson["receiverId"]  = QString::number(receiverId);
+    dataJson["content"]     = content;
+    dataJson["createtime"]  = currentTime;
+
+    QJsonObject root;
+    root["data"] = dataJson;
+    root["msgtype"] = static_cast<int>(E_MSG_TYPE::ONE_CHAT_MSG);
+    QJsonDocument document(root);
+    return document.toJson(QJsonDocument::Compact);
+}
+
 void AppCore::SlotSendChatMsg(int64_t id, const QString& content) {
     qDebug() << "AppCore::SlotSendChatMsg userid: " << id;
-    QJsonObject dataJson;
-    QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-    dataJson.insert("senderId", QString::number(m_user->GetUserId()));
-    dataJson.insert("receiverId", QString::number(id));
-    dataJson.insert("content", content);
-    dataJson.insert("createtime", currentTime);
-    QJsonObject json;
-    json.insert("data", dataJson);
-    json.insert("msgtype", static_cast<int>(E_MSG_TYPE::ONE_CHAT_MSG));
-    QJsonDocument document;
-    document.setObject(json);
 
-    auto data = document.toJson(QJsonDocument::Compact);
-    qDebug() << "m_tcpSocket->write:" << document.toJson(QJsonDocument::Compact);
-    bool res = m_netMediator->SendData(data, data.size());
+    QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    QByteArray pkt = BuildOneChatPacket(id, content, currentTime);
+    qDebug() << "m_tcpSocket->write:" << pkt;
+    bool res = m_netMediator->SendData(pkt, pkt.size());
 
     Message msg(content, currentTime, MsgType::Sender);
     m_msgModel->AddMsg(m_user->GetUserId(), id, msg);

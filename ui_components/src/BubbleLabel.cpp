@@ -80,3 +80,21 @@ void BubbleLabel::paintEvent(QPaintEvent *event) {
     // 第二步：再调用基类绘制文字（上层，不会被遮挡）
     QLabel::paintEvent(event);              // 执行 QLabel 原生的绘制逻辑：绘制文字（保证文字在背景上层）
 }
+
+QSize BubbleLabel::sizeHint() const
+{
+    // 关键：使用最大宽度作为文本排版宽度
+    const int textWidth = maximumWidth();
+    QFontMetrics fm(font());
+    // 获取文本在指定宽度下的实际包围矩形
+    QRect textRect = fm.boundingRect(QRect(0,0,textWidth, 99999), Qt::TextWordWrap, text());
+
+    // 加上内容边距（contentsMargins）
+    QMargins margins = contentsMargins();
+    int w = textRect.width() + margins.left() + margins.right();
+    int h = textRect.height() + margins.top() + margins.bottom();
+
+    // 宽度不能超过上限
+    w = qMin(w, maximumWidth());
+    return QSize(w, h);
+}

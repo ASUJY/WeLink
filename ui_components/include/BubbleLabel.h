@@ -19,6 +19,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    QSize sizeHint() const override;
 
 private:
     BubbleType m_type = Receiver;

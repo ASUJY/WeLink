@@ -27,10 +27,6 @@ signals:
     void SIG_RECEIVE_AddFriendAck(const QByteArray& data);
     void SIG_ONECHAT(const QByteArray& data);
 
-public:
-    AppCore() noexcept;
-    ~AppCore();
-
 public slots:
     void SlotRegisterCommit(const QByteArray& data);
     void SlotLoginCommit(const QByteArray& data);
@@ -45,6 +41,10 @@ public slots:
 
 private slots:
     void SlotShowRegisterWidget();
+
+public:
+    AppCore() noexcept;
+    ~AppCore();
 
 private:
     MsgHandler GetHandler(int msgtype);

@@ -6,11 +6,13 @@
 #include <QJsonObject>
 
 ContactsPaneWidget::ContactsPaneWidget(
+    const std::shared_ptr<User>& user,
     std::shared_ptr<FriendModel> friendModel,
     std::shared_ptr<FriendRequestModel> friendRequestModel,
     QWidget *parent) noexcept
     : QWidget(parent),
     ui(new Ui::ContactsPaneWidget),
+    m_user(user),
     m_friendModel(friendModel),
     m_friendRequestModel(friendRequestModel)
 {
@@ -57,13 +59,12 @@ std::unique_ptr<ContactsItem> ContactsPaneWidget::CreateContactItem(const QStrin
 }
 
 void ContactsPaneWidget::SlotAddFriendReq(const User& user) {
-    qDebug() << "ContactsPaneWidget::SlotAddFriendReq start";
     auto item = CreateContactItem(tr("新的朋友"),
                                   user.GetUserId(),
                                   QString::fromStdString(user.GetUserName()),
                                   FriendState::PendingVerification);
     ui->contactsListWidget->InsertItem(std::move(item));
-    qDebug() << "ContactsPaneWidget::SlotAddFriendReq end";
+    m_friendRequestModel->AddItem(m_user->GetUserId(), user, FriendState::PendingVerification);
 }
 
 void ContactsPaneWidget::SlotAddFriendReqAck(const User& user) {
@@ -135,5 +136,13 @@ void ContactsPaneWidget::AddFriendToPane(const Friend& fri) {
                                   fri.GetUserId(),
                                   QString::fromStdString(fri.GetUserName()),
                                   FriendState::DONE);
+    ui->contactsListWidget->InsertItem(std::move(item));
+}
+
+void ContactsPaneWidget::AddFriendToPane(const FriendRequest& fri) {
+    auto item = CreateContactItem(tr("新的朋友"),
+                                  fri.GetUserId(),
+                                  QString::fromStdString(fri.GetUserName()),
+                                  fri.GetFriendState());
     ui->contactsListWidget->InsertItem(std::move(item));
 }

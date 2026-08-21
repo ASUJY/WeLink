@@ -174,7 +174,7 @@ void AppCore::ReceiveLoginACK(const QByteArray& data) {
             m_userModel.AddUser(m_user);
         }
 
-        m_mainWindow->Init();
+        m_mainWindow->Init(m_user);
 
         if (jsonObj.contains("offlinemsg")) {
             QJsonArray array = jsonObj["offlinemsg"].toArray();

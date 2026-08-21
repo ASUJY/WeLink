@@ -8,6 +8,7 @@ add_library(ModelLib STATIC
   friendmodel.h friendmodel.cpp
   msgmodel.h msgmodel.cpp
   friendrequestmodel.h friendrequestmodel.cpp
+  friendrequest.hpp
 )
 
 target_include_directories(

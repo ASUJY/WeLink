@@ -26,10 +26,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::Init() {
+void MainWindow::Init(const std::shared_ptr<User>& user) {
     InitChatMainWidget();
     InitChatPaneWidget();
-    InitContactsPaneWidget();
+    InitContactsPaneWidget(user);
     InitContactsMainWidget();
 
     // this->setMouseTracking(true);
@@ -87,8 +87,8 @@ void MainWindow::InitChatPaneWidget() {
     m_chatPaneWidget->show();
 }
 
-void MainWindow::InitContactsPaneWidget() {
-    m_contactsPaneWidget = std::make_unique<ContactsPaneWidget>(m_friendModel, m_friendRequestModel);
+void MainWindow::InitContactsPaneWidget(const std::shared_ptr<User>& user) {
+    m_contactsPaneWidget = std::make_unique<ContactsPaneWidget>(user, m_friendModel, m_friendRequestModel);
     // 接收到好友发来的添加朋友请求，在 新的好友列表 中新增一项
     connect(this, &MainWindow::SIG_RECEIVE_AddFriendReq, m_contactsPaneWidget.get(), &ContactsPaneWidget::ReceiveSlotAddFriendReq);
     // 接收到好友发来的添加朋友通过请求，在 联系人列表 中新增一项
@@ -99,6 +99,11 @@ void MainWindow::InitContactsPaneWidget() {
     auto friends = m_friendModel->FindFriends(m_user->GetUserId());
     for (int i = 0; i < friends.size(); ++i) {
         m_contactsPaneWidget->AddFriendToPane(friends[i]);
+    }
+
+    auto friendsrequests = m_friendRequestModel->GetAllFriendRequest(m_user->GetUserId());
+    for (auto it = friendsrequests.begin(); it != friendsrequests.end(); ++it) {
+        m_contactsPaneWidget->AddFriendToPane(*it);
     }
 
 }

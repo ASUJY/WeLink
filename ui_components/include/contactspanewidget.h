@@ -27,11 +27,13 @@ public slots:
     // void SlotItemDidSelected();
 
 public:
-    explicit ContactsPaneWidget(std::shared_ptr<FriendModel> friendModel,
+    explicit ContactsPaneWidget(const std::shared_ptr<User>& user,
+                                std::shared_ptr<FriendModel> friendModel,
                                 std::shared_ptr<FriendRequestModel> friendRequestModel,
                                 QWidget *parent = nullptr) noexcept;
     ~ContactsPaneWidget();
     void AddFriendToPane(const Friend& fri);
+    void AddFriendToPane(const FriendRequest& fri);
 
 private:
     std::unique_ptr<ContactsItem> CreateContactItem(const QString& groupName,
@@ -41,6 +43,7 @@ private:
 
 private:
     Ui::ContactsPaneWidget *ui;
+    std::shared_ptr<User> m_user;
     std::shared_ptr<FriendModel> m_friendModel;
     std::shared_ptr<FriendRequestModel> m_friendRequestModel;
 };

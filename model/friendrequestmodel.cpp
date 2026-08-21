@@ -99,3 +99,31 @@ bool FriendRequestModel::UpdateItemStatus(const int64_t id, const int64_t friend
         return false;
     }
 }
+
+std::vector<FriendRequest> FriendRequestModel::GetAllFriendRequest(const int64_t id) {
+    std::vector<FriendRequest> friendReqVec;
+    QSqlDatabase db = DBMagr::Instance().GetConnection(m_connName);
+    if (!db.isOpen()) {
+        qCritical() << "GetAllFriendRequest 连接未打开 conn:" << m_connName;
+        return friendReqVec;
+    }
+
+    QSqlQuery query(db);
+    QString sql = "select * from im_friendrequest where userid = ?";
+    query.prepare(sql);
+    query.addBindValue(id);
+
+    if (!DBMagr::Instance().ExecQuery(query)) {
+        qDebug() << "好友列表查询失败: " << query.lastError().text();
+        return friendReqVec;
+    }
+
+    while (query.next()) {
+        FriendRequest fri;
+        fri.SetUserId(query.value("friendid").toLongLong());
+        fri.SetUserName(query.value("friendname").toString().toStdString());
+        fri.SetFriendState(static_cast<FriendState>(query.value("status").toInt()));
+        friendReqVec.push_back(std::move(fri));
+    }
+    return friendReqVec;
+}

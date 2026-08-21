@@ -70,7 +70,7 @@ public:
                         std::shared_ptr<MsgModel> msgModel, std::shared_ptr<FriendRequestModel> friendRequestModel,
                         QWidget *parent = nullptr) noexcept;
     ~MainWindow() override;
-    void Init();
+    void Init(const std::shared_ptr<User>& user);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -82,7 +82,7 @@ private:
     void InitAddFriendWindow();
     void InitChatMainWidget();
     void InitChatPaneWidget();
-    void InitContactsPaneWidget();
+    void InitContactsPaneWidget(const std::shared_ptr<User>& user);
     void InitContactsMainWidget();
     void SetWidgetWinTitle();
     Area GetArea(int x, int y);

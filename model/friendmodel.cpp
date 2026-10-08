@@ -23,7 +23,7 @@ bool FriendModel::IsTableExit() const{
             account TEXT UNIQUE,
             phone TEXT UNIQUE,
             avatar TEXT,
-            state INTEGER NOT NULL,
+            state INTEGER,
             PRIMARY KEY (userid, friendid)
         )
     )";
@@ -46,7 +46,7 @@ bool FriendModel::AddFriend(const int64_t id, const User &fri) {
     }
 
     QSqlQuery insertQuery(db);
-    insertQuery.prepare("insert into im_friend(userid, friendid, friendname, phone) values(?,?,?,?,?)");
+    insertQuery.prepare("insert into im_friend(userid, friendid, friendname, phone) values(?,?,?,?)");
     insertQuery.addBindValue(id);
     insertQuery.addBindValue(fri.GetUserId());
     insertQuery.addBindValue(QString::fromStdString(fri.GetUserName()));

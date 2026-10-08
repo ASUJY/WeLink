@@ -67,14 +67,6 @@ void ContactsPaneWidget::SlotAddFriendReq(const User& user) {
     m_friendRequestModel->AddItem(m_user->GetUserId(), user, FriendState::PendingVerification);
 }
 
-void ContactsPaneWidget::SlotAddFriendReqAck(const User& user) {
-    auto item = CreateContactItem(tr("联系人"),
-                                  user.GetUserId(),
-                                  QString::fromStdString(user.GetUserName()),
-                                  FriendState::DONE);
-    ui->contactsListWidget->InsertItem(std::move(item));
-}
-
 void ContactsPaneWidget::ReceiveSlotAddFriendReq(const QByteArray& data) {
     qDebug() << "ContactsPaneWidget::SlotReciveAddFriendReq";
     QJsonParseError jsonError;
@@ -103,6 +95,15 @@ void ContactsPaneWidget::ReceiveSlotAddFriendReq(const QByteArray& data) {
     m_friendRequestModel->AddItem(myid, fri, FriendState::PendingApproval);
 }
 
+void ContactsPaneWidget::SlotAddFriendReqAck(const User& user) {
+    auto item = CreateContactItem(tr("联系人"),
+                                  user.GetUserId(),
+                                  QString::fromStdString(user.GetUserName()),
+                                  FriendState::DONE);
+    ui->contactsListWidget->InsertItem(std::move(item));
+    m_friendModel->AddFriend(m_user->GetUserId(), user);
+}
+
 void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     qDebug() << "ContactsPaneWidget::SIG_ReciveAddFriendAckAgree";
     QJsonParseError jsonError;
@@ -129,6 +130,14 @@ void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     // 在联系人分组新建条目
     auto item = CreateContactItem(tr("联系人"), friendid, friendname, FriendState::DONE);
     ui->contactsListWidget->InsertItem(std::move(item));
+
+    Friend fri;
+    fri.SetUserId(friendid);
+    fri.SetUserName(friendname.toStdString());
+
+    if (!m_friendModel->IsFriendExit(m_user->GetUserId(), fri)) {
+        m_friendModel->AddFriend(m_user->GetUserId(), fri);
+    }
 }
 
 void ContactsPaneWidget::AddFriendToPane(const Friend& fri) {

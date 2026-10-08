@@ -229,16 +229,7 @@ void AppCore::ReceiveSlotAddFriendAck(const QByteArray& data) {
         return;
     }
 
-    QString friendname = dataObj.value("sendername").toString();
-    int64_t friendid = dataObj.value("senderid").toInteger();
-    Friend fri;
-    fri.SetUserId(friendid);
-    fri.SetUserName(friendname.toStdString());
-
-    if (!m_friendModel->IsFriendExit(m_user->GetUserId(), fri)) {
-        m_friendModel->AddFriend(m_user->GetUserId(), fri);
-        emit SIG_RECEIVE_AddFriendAck(data);
-    }
+    emit SIG_RECEIVE_AddFriendAck(data);
 }
 
 void AppCore::SendSlotAddFriendReqAck(const QByteArray& data, const User& frienduser, FriendState type) {

@@ -16,10 +16,10 @@ target_sources(UiLib PRIVATE
     include/contactspanewidget.h
     include/chatmainwidget.h
     include/contactsmainwidget.h
-    include/contactslistviewgroup.h
-    include/contactslistwidget.h
+
+
     include/contactsitem.h
-    include/contactslistviewchild.h
+
     include/chatlistitem.h
     include/senderwidget.h
     include/label.h
@@ -42,7 +42,7 @@ target_sources(UiLib PRIVATE
     forms/contactspanewidget.ui
     forms/chatmainwidget.ui
     forms/contactsmainwidget.ui
-    forms/contactslistviewgroup.ui
+
     forms/chatlistitem.ui
     forms/senderwidget.ui
     forms/receiverwidget.ui

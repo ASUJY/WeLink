@@ -204,19 +204,11 @@
     </widget>
    </item>
    <item>
-    <widget class="ContactsListWidget" name="contactsListWidget"/>
-   </item>
-   <item>
     <widget class="ContactsTreeView" name="contactsTreeView"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>ContactsListWidget</class>
-   <extends>QListWidget</extends>
-   <header location="global">contactslistwidget.h</header>
-  </customwidget>
   <customwidget>
    <class>ContactsTreeView</class>
    <extends>QTreeView</extends>

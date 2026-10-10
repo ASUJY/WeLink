@@ -27,6 +27,9 @@ target_sources(UiLib PRIVATE
     include/BubbleLabel.h
     include/SenderMsgItem.h
     include/ReceiverMsgItem.h
+    include/contactstreemodel.h
+    include/contactsitemdelegate.h
+    include/contactstreeview.h
     
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}

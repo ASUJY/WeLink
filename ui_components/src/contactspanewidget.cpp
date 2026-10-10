@@ -25,6 +25,12 @@ ContactsPaneWidget::ContactsPaneWidget(
     groupNewFriend->SetItemType(ContactsItemType::Group);
     groupNewFriend->SetItemName(tr("新的朋友"));
     ui->contactsListWidget->InsertItem(std::move(groupNewFriend));
+    std::unique_ptr<ContactsItem> groupNewFriend1 = std::make_unique<ContactsItem>();
+    groupNewFriend1->SetGroupName(tr("新的朋友"));
+    groupNewFriend1->SetIsOpen(false);
+    groupNewFriend1->SetItemType(ContactsItemType::Group);
+    groupNewFriend1->SetItemName(tr("新的朋友"));
+    ui->contactsTreeView->InsertItem(std::move(groupNewFriend1));
 
     // 初始化【联系人】分组
     std::unique_ptr<ContactsItem> groupContact = std::make_unique<ContactsItem>();
@@ -33,8 +39,15 @@ ContactsPaneWidget::ContactsPaneWidget(
     groupContact->SetItemType(ContactsItemType::Group);
     groupContact->SetItemName(tr("联系人"));
     ui->contactsListWidget->InsertItem(std::move(groupContact));
+    std::unique_ptr<ContactsItem> groupContact1 = std::make_unique<ContactsItem>();
+    groupContact1->SetGroupName(tr("联系人"));
+    groupContact1->SetIsOpen(false);
+    groupContact1->SetItemType(ContactsItemType::Group);
+    groupContact1->SetItemName(tr("联系人"));
+    ui->contactsTreeView->InsertItem(std::move(groupContact1));
 
     connect(ui->contactsListWidget, &ContactsListWidget::SIG_ItemDidSelected, this, &ContactsPaneWidget::SIG_ItemDidSelected);
+    connect(ui->contactsTreeView, &ContactsTreeView::SIG_ItemDidSelected, this, &ContactsPaneWidget::SIG_ItemDidSelected);
 }
 
 ContactsPaneWidget::~ContactsPaneWidget()
@@ -64,6 +77,11 @@ void ContactsPaneWidget::SlotAddFriendReq(const User& user) {
                                   QString::fromStdString(user.GetUserName()),
                                   FriendState::PendingVerification);
     ui->contactsListWidget->InsertItem(std::move(item));
+    auto item1 = CreateContactItem(tr("新的朋友"),
+                                  user.GetUserId(),
+                                  QString::fromStdString(user.GetUserName()),
+                                  FriendState::PendingVerification);
+    ui->contactsTreeView->InsertItem(std::move(item1));
     m_friendRequestModel->AddItem(m_user->GetUserId(), user, FriendState::PendingVerification);
 }
 
@@ -91,6 +109,8 @@ void ContactsPaneWidget::ReceiveSlotAddFriendReq(const QByteArray& data) {
 
     auto item = CreateContactItem(tr("新的朋友"), friendid, friendname, FriendState::PendingApproval);
     ui->contactsListWidget->InsertItem(std::move(item));
+    auto item1 = CreateContactItem(tr("新的朋友"), friendid, friendname, FriendState::PendingApproval);
+    ui->contactsTreeView->InsertItem(std::move(item1));
 
     m_friendRequestModel->AddItem(myid, fri, FriendState::PendingApproval);
 }
@@ -101,6 +121,11 @@ void ContactsPaneWidget::SlotAddFriendReqAck(const User& user) {
                                   QString::fromStdString(user.GetUserName()),
                                   FriendState::DONE);
     ui->contactsListWidget->InsertItem(std::move(item));
+    auto item1 = CreateContactItem(tr("联系人"),
+                                  user.GetUserId(),
+                                  QString::fromStdString(user.GetUserName()),
+                                  FriendState::DONE);
+    ui->contactsTreeView->InsertItem(std::move(item1));
     m_friendModel->AddFriend(m_user->GetUserId(), user);
 }
 
@@ -130,6 +155,8 @@ void ContactsPaneWidget::SlotReciveAddFriendAckAgree(const QByteArray& data) {
     // 在联系人分组新建条目
     auto item = CreateContactItem(tr("联系人"), friendid, friendname, FriendState::DONE);
     ui->contactsListWidget->InsertItem(std::move(item));
+    auto item1 = CreateContactItem(tr("联系人"), friendid, friendname, FriendState::DONE);
+    ui->contactsTreeView->InsertItem(std::move(item1));
 
     Friend fri;
     fri.SetUserId(friendid);
@@ -146,6 +173,11 @@ void ContactsPaneWidget::AddFriendToPane(const Friend& fri) {
                                   QString::fromStdString(fri.GetUserName()),
                                   FriendState::DONE);
     ui->contactsListWidget->InsertItem(std::move(item));
+    auto item1 = CreateContactItem(tr("联系人"),
+                                  fri.GetUserId(),
+                                  QString::fromStdString(fri.GetUserName()),
+                                  FriendState::DONE);
+    ui->contactsTreeView->InsertItem(std::move(item1));
 }
 
 void ContactsPaneWidget::AddFriendToPane(const FriendRequest& fri) {
@@ -154,4 +186,9 @@ void ContactsPaneWidget::AddFriendToPane(const FriendRequest& fri) {
                                   QString::fromStdString(fri.GetUserName()),
                                   fri.GetFriendState());
     ui->contactsListWidget->InsertItem(std::move(item));
+    auto item1 = CreateContactItem(tr("新的朋友"),
+                                  fri.GetUserId(),
+                                  QString::fromStdString(fri.GetUserName()),
+                                  fri.GetFriendState());
+    ui->contactsTreeView->InsertItem(std::move(item1));
 }

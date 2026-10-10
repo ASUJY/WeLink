@@ -233,12 +233,6 @@ void AppCore::ReceiveSlotAddFriendAck(const QByteArray& data) {
 }
 
 void AppCore::SendSlotAddFriendReqAck(const QByteArray& data, const User& frienduser, FriendState type) {
-    if (type == FriendState::ACCEPT) {
-        Friend fri;
-        fri.SetUserId(frienduser.GetUserId());
-        fri.SetUserName(frienduser.GetUserName());
-        m_friendModel->AddFriend(m_user->GetUserId(), fri);
-    }
     // 后面可以根据返回值来判断数据是否发送成功，或者根据返回的状态码告诉用户是网络问题还是密码错误之类的原因
     bool res = m_netMediator->SendData(data, data.size());
 }

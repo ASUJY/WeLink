@@ -141,7 +141,7 @@
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="../../app/resource.qrc">:/resource/icon/menu/search2.svg</pixmap>
+            <pixmap>:/resource/icon/menu/search2.svg</pixmap>
            </property>
            <property name="alignment">
             <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -192,7 +192,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../app/resource.qrc">
+            <iconset>
              <normaloff>:/resource/icon/menu/plus.svg</normaloff>:/resource/icon/menu/plus.svg</iconset>
            </property>
           </widget>
@@ -206,6 +206,9 @@
    <item>
     <widget class="ContactsListWidget" name="contactsListWidget"/>
    </item>
+   <item>
+    <widget class="ContactsTreeView" name="contactsTreeView"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -214,9 +217,12 @@
    <extends>QListWidget</extends>
    <header location="global">contactslistwidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>ContactsTreeView</class>
+   <extends>QTreeView</extends>
+   <header location="global">contactstreeview.h</header>
+  </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../app/resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -18,9 +18,9 @@ BubbleLabel::BubbleLabel(QWidget *parent) noexcept : QLabel(parent) {
 }
 
 void BubbleLabel::SetBubbleType(BubbleLabel::BubbleType type) {
-    if (m_type == type) {
-        return;     // 【优化】类型未变化直接返回，避免无意义更新、重绘
-    }
+    // if (m_type == type) {
+    //     return;     // 【优化】类型未变化直接返回，避免无意义更新、重绘
+    // }
 
     m_type = type;
 
@@ -52,7 +52,7 @@ void BubbleLabel::paintEvent(QPaintEvent *event) {
     QColor bgColor;                                 // 气泡背景色
 
     if (m_type == Sender) {
-        // 我方绿色气泡，尖角朝左（右侧边缘三角）
+        // 我方绿色气泡，尖角朝右（右侧边缘三角）
         bgColor = QColor(143, 232, 102);            // 浅绿色背景
         // 气泡主体矩形（右侧扣除三角宽度）
         QRect bodyRect(0, 0, w - TRIANGLE_SIZE, h);
@@ -63,7 +63,7 @@ void BubbleLabel::paintEvent(QPaintEvent *event) {
         path.lineTo(w - TRIANGLE_SIZE, centerY + TRIANGLE_SIZE);    // 画第二条线
         path.closeSubpath();                                // 闭合路径，形成三角形
     } else {
-        // 对方白色气泡，尖角朝右（左侧边缘三角）
+        // 对方白色气泡，尖角朝左（左侧边缘三角）
         bgColor = QColor(244, 244, 244);
         // 气泡主体矩形（左侧扣除三角宽度）
         QRect bodyRect(TRIANGLE_SIZE, 0, w - TRIANGLE_SIZE, h);
@@ -83,14 +83,14 @@ void BubbleLabel::paintEvent(QPaintEvent *event) {
 
 QSize BubbleLabel::sizeHint() const
 {
-    // 关键：使用最大宽度作为文本排版宽度
-    const int textWidth = maximumWidth();
-    QFontMetrics fm(font());
+    // 文本排版时允许使用的宽度：最大宽度 - 边距
+    QMargins margins = contentsMargins();
+    const int textWidth = maximumWidth() - margins.left() - margins.right();
+    QFontMetrics fm(font());        // 字体度量对象 fm，用来计算当前字体下文字占用的宽高
     // 获取文本在指定宽度下的实际包围矩形
-    QRect textRect = fm.boundingRect(QRect(0,0,textWidth, 99999), Qt::TextWordWrap, text());
+    QRect textRect = fm.boundingRect(QRect(0,0,textWidth, INT_MAX), Qt::TextWordWrap, text());
 
     // 加上内容边距（contentsMargins）
-    QMargins margins = contentsMargins();
     int w = textRect.width() + margins.left() + margins.right();
     int h = textRect.height() + margins.top() + margins.bottom();
 

@@ -11,7 +11,7 @@ class CommunicationMediator : public QObject
 {
     Q_OBJECT
 public:
-    explicit CommunicationMediator(QObject *parent = nullptr){};
+    explicit CommunicationMediator(QObject *parent = nullptr) : QObject(parent){};
     virtual ~CommunicationMediator() = default;
 
     virtual bool SendData(const QByteArray& data, int len) = 0;

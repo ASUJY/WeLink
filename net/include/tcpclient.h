@@ -11,7 +11,7 @@ class TcpClient : public AbstractNet
 {
     Q_OBJECT
 public:
-    explicit TcpClient(CommunicationMediator* mediator, QObject *parent = nullptr);
+    explicit TcpClient(QObject *parent = nullptr);
     ~TcpClient();
 
     bool OpenNetwork() override;

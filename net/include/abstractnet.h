@@ -2,7 +2,6 @@
 #define ABSTRACTNET_H
 
 #include <QObject>
-#include "communicationmediator.h"
 
 namespace net {
 
@@ -10,7 +9,7 @@ class AbstractNet : public QObject
 {
     Q_OBJECT
 public:
-    explicit AbstractNet(QObject *parent = nullptr) {};
+    explicit AbstractNet(QObject *parent = nullptr) : QObject(parent) {};
     virtual ~AbstractNet() = default;
 
     virtual bool OpenNetwork() = 0;
@@ -21,9 +20,9 @@ public slots:
     virtual void RecvData() = 0;
 
 signals:
+    void SIG_ReadyData(const QByteArray& data, int len);
 
 protected:
-    CommunicationMediator* m_commMediator = nullptr;
     // bool m_isOpenNetwork = false;
 };
 

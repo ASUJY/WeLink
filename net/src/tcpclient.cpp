@@ -8,9 +8,8 @@
 namespace net {
 const int MAXRETRIES = 3;
 
-TcpClient::TcpClient(CommunicationMediator* mediator, QObject *parent) : AbstractNet(parent) {
+TcpClient::TcpClient(QObject *parent) : AbstractNet(parent) {
     m_retryTime = new QTimer(this);
-    m_commMediator = mediator;
 }
 
 TcpClient::~TcpClient() {
@@ -133,7 +132,7 @@ bool TcpClient::SendData(const QByteArray& data, int len) {
 void TcpClient::RecvData() {
     qDebug() << "TcpClient";
     QByteArray data = m_tcpSocket->readAll();
-    m_commMediator->RecvData(data, data.size());
+    emit SIG_ReadyData(data, data.size());
 }
 
 }   // namespace net end

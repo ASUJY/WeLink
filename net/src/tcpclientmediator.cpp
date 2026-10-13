@@ -2,8 +2,10 @@
 #include "tcpclient.h"
 
 namespace net {
+
 TcpClientMediator::TcpClientMediator() {
     m_net = new TcpClient(this);
+    connect(m_net, &AbstractNet::SIG_ReadyData, this, &CommunicationMediator::RecvData);
 }
 
 TcpClientMediator::~TcpClientMediator() {
@@ -13,12 +15,9 @@ TcpClientMediator::~TcpClientMediator() {
     }
 }
 
-bool TcpClientMediator::SendData(const QByteArray& data, int len) {
-    if (!m_net || !m_net->SendData(data, len)) {
-        return false;
-    }
 
-    return true;
+bool TcpClientMediator::SendData(const QByteArray& data, int len) {
+    return m_net && m_net->SendData(data, len);
 }
 
 void TcpClientMediator::RecvData(const QByteArray& data, int len) {

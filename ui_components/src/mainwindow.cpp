@@ -16,7 +16,8 @@ MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> 
     m_msgModel(msgModel)
 {
     ui->setupUi(this);
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
+    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
+    this->setMouseTracking(true);   // 开启鼠标跟踪，让窗口在鼠标未按下时也能接收 mouseMoveEvent 事件
     SetWidgetWinTitle();
     // Init();
 }
@@ -288,7 +289,7 @@ void MainWindow::ReceiveSlotAddFriendAck(const QByteArray& data) {
 }
 
 void MainWindow::SlotSelectEvent() {
-    // 取消右侧导航栏之前选中的按钮的选中状态，然后将当前的按钮设置为选中状态
+    // 取消左侧导航栏之前选中的按钮的选中状态，然后将当前的按钮设置为选中状态
     m_btn->setChecked(false);
     m_btn = qobject_cast<QPushButton*>(sender());
     m_btn->setChecked(true);

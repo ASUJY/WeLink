@@ -12,7 +12,7 @@ public:
     explicit AbstractNet(QObject *parent = nullptr) : QObject(parent) {};
     virtual ~AbstractNet() = default;
 
-    virtual bool OpenNetwork() = 0;
+    virtual void OpenNetwork() = 0;
     virtual void CloseNetwork() = 0;
     virtual bool SendData(const QByteArray& data, int len) = 0;
 

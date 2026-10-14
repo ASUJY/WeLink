@@ -14,20 +14,23 @@ public:
     explicit TcpClient(QObject *parent = nullptr);
     ~TcpClient();
 
-    bool OpenNetwork() override;
+    void OpenNetwork() override;
     void CloseNetwork() override;
     bool SendData(const QByteArray& data, int len) override;
 
 public slots:
     void RecvData() override;
 
-    bool AttemptReconnect();
+    void AttemptReconnect();
 
+private:
+    void ScheduleReconnect();
 
 private:
     QTcpSocket* m_tcpSocket = nullptr;
     QTimer *m_retryTime = nullptr;
     int m_retryCount = 0;
+    bool m_networkEnabled = false;
 };
 
 }   // namespace net end

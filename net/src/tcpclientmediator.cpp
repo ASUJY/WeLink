@@ -6,13 +6,10 @@ namespace net {
 TcpClientMediator::TcpClientMediator() {
     m_net = new TcpClient(this);
     connect(m_net, &AbstractNet::SIG_ReadyData, this, &CommunicationMediator::RecvData);
+    m_net->OpenNetwork();
 }
 
 TcpClientMediator::~TcpClientMediator() {
-    if (m_net) {
-        delete m_net;
-        m_net = nullptr;
-    }
 }
 
 

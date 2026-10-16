@@ -51,7 +51,7 @@ TcpClient::~TcpClient() {
 }
 
 void TcpClient::CloseNetwork() {
-    // 显示关闭网络后，不再自动重连
+    // 显式关闭网络后，不再自动重连
     m_networkEnabled = false;
     if (m_retryTime) {
         m_retryTime->stop();
@@ -60,9 +60,6 @@ void TcpClient::CloseNetwork() {
     if (m_tcpSocket) {
         m_tcpSocket->disconnectFromHost();
     }
-
-
-    // m_isOpenNetwork = false;
 }
 
 void TcpClient::OpenNetwork() {
@@ -118,7 +115,6 @@ void TcpClient::AttemptReconnect() {
         return;
     }
 
-
     ++m_retryCount;
     qInfo() << "First attempt to connect to：" << ip << ":" << port;
 
@@ -128,7 +124,10 @@ void TcpClient::AttemptReconnect() {
 }
 
 bool TcpClient::SendData(const QByteArray& data, int len) {
-    if (data.isEmpty() || len <= 0) {
+    constexpr quint32 kMaxMessageLen = 1024 * 1024; // 1MB
+
+    if (data.isEmpty() || len <= 0 || len != data.size()
+        || static_cast<quint32>(len) > kMaxMessageLen) {
         return false;
     }
 
@@ -137,7 +136,15 @@ bool TcpClient::SendData(const QByteArray& data, int len) {
         return false;
     }
 
-    if(m_tcpSocket->write(data) != len) {
+    // 将消息长度转换为网络字节序(大端序)
+    quint32 netLen = qToBigEndian<quint32>(static_cast<quint32>(len));
+    // 组装完整的数据帧: 4字节长度头+JSON消息体
+    QByteArray packet;
+    packet.resize(sizeof(netLen));
+    std::memcpy(packet.data(), &netLen, sizeof(netLen));
+    packet.append(data);
+
+    if(m_tcpSocket->write(packet) != packet.size()) {
         return false;
     }
 
@@ -150,9 +157,37 @@ void TcpClient::RecvData() {
     if (!m_tcpSocket) {
         return;
     }
-    QByteArray data = m_tcpSocket->readAll();
+
+    const QByteArray data = m_tcpSocket->readAll();
     if (!data.isEmpty()) {
-        emit SIG_ReadyData(data, data.size());
+        m_recvBuffer.append(data);
+    }
+
+    constexpr qsizetype kHeaderLen = 4;
+    constexpr quint32 kMaxMessageLen = 1024 * 1024; // 1MB
+
+    while (m_recvBuffer.size() >= kHeaderLen) {
+        const auto* header = reinterpret_cast<const uchar*>(m_recvBuffer.constData());
+        const quint32 bodyLen = qFromBigEndian<quint32>(header);
+
+        if (bodyLen == 0 || bodyLen > kMaxMessageLen) {
+            qWarning() << "Invalid message length:" << bodyLen;
+
+            // 协议帧不合法，无法可靠恢复边界
+            m_recvBuffer.clear();
+            return;
+        }
+
+        const qsizetype totalLen = kHeaderLen + static_cast<qsizetype>(bodyLen);
+        if (m_recvBuffer.size() < totalLen) {
+            break;
+        }
+
+        const QByteArray body = m_recvBuffer.mid(kHeaderLen, static_cast<qsizetype>(bodyLen));
+        m_recvBuffer.remove(0, totalLen);
+
+        // 向上层发送完整 JSON 消息
+        emit SIG_ReadyData(body, body.size());
     }
 }
 

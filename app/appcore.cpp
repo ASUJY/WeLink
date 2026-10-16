@@ -53,7 +53,7 @@ AppCore::AppCore() noexcept {
     // m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_REQ, std::bind(&AppCore::ReceiveSlotAddFriendReq, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_ACK, std::bind(&AppCore::ReceiveSlotAddFriendAck, this, std::placeholders::_1)});
-     m_msgHandlerMap.insert({E_MSG_TYPE::ONE_CHAT_MSG, std::bind(&AppCore::SlotOneChat, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::ONE_CHAT_MSG, std::bind(&AppCore::SlotOneChat, this, std::placeholders::_1)});
 
     m_loginWidget->show();
 }

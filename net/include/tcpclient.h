@@ -28,6 +28,8 @@ private:
 
 private:
     QTcpSocket* m_tcpSocket = nullptr;
+    QByteArray m_recvBuffer;    // 累积 TCP 接收到的数据
+
     QTimer *m_retryTime = nullptr;
     int m_retryCount = 0;
     bool m_networkEnabled = false;

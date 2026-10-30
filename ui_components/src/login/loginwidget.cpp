@@ -149,7 +149,7 @@ QByteArray LoginWidget::MakeLoginJSON() {
     QJsonObject dataJson;
     dataJson.insert("username", ui->lineEditUser->text().trimmed());
     dataJson.insert("password", ui->lineEditPwd->text().trimmed());
-    dataJson.insert("accountType", QString::number(static_cast<int>(CheckAccountType())));
+    dataJson.insert("accountType", static_cast<int>(CheckAccountType()));
 
     QJsonObject json;
     json.insert("data", dataJson);

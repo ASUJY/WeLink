@@ -16,27 +16,21 @@ enum class E_MSG_TYPE : int {
 
 enum class E_ERR_TYPE : int {
     UNKNOWN = 0,
+    REG_MSG_ACK_INVALID_INPUT,
     REG_MSG_ACK_SUCCESS,
     USER_EXIT,
     LOGIN_MSG_ACK_SUCCESS,
     USER_NO_REGISTER,
     USER_ONLINE,
     ACCOUNT_ERROR,
+    REQUEST_DATA_ERROR,
     GET_FRIEND_INFO_FAILED,
     GET_FRIEND_INFO_SUCCESS,
+    SERVER_BUSY
 };
 
-enum class E_ACCOUNT_TYPE : int {
-    NICKNAME = 0,
-    PHONE
-};
+enum class E_ACCOUNT_TYPE : int { NICKNAME = 0, PHONE };
 
-enum class FriendState : int {
-    ACCEPT = 0,
-    REJECT,
-    DONE,
-    PendingVerification,
-    PendingApproval
-};
+enum class FriendState : int { ACCEPT = 0, REJECT, DONE, PendingVerification, PendingApproval };
 
-#endif // COMMON_H
+#endif

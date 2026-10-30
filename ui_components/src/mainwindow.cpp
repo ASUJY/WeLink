@@ -45,6 +45,9 @@ void MainWindow::InitAddFriendWindow() {
         return;
 
     m_addFriendWindow = new AddFriendWindow(this);
+    connect(m_addFriendWindow, &QObject::destroyed, this, [this](){
+        m_addFriendWindow = nullptr;
+    });
     m_addFriendWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(m_addFriendWindow, &AddFriendWindow::SIG_SEND_GetFriendInfo,
             this, &MainWindow::SIG_SEND_GetFriendInfo);
@@ -269,7 +272,9 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
 
 void MainWindow::ShowAddFriendWindow() {
     InitAddFriendWindow();
-    m_addFriendWindow->show();
+    if (m_addFriendWindow) {
+        m_addFriendWindow->show();
+    }
 }
 
 void MainWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {

@@ -50,9 +50,9 @@ bool UserModel::AddUser(const std::shared_ptr<User>& user) {
     }
 
     QSqlQuery insertQuery(db);
-    insertQuery.prepare("insert into im_user(userid, phone, nickname, avatar) values(?,?,?,?)");
+    insertQuery.prepare("insert into im_user(userid, account, phone, nickname, avatar) values(?,?,?,?,?)");
     insertQuery.addBindValue(user->GetUserId());
-    // insertQuery.addBindValue(QString::fromStdString(user.GetUserAccount()));
+    insertQuery.addBindValue(QString::fromStdString(user->GetUserAccount()));
     insertQuery.addBindValue(QString::fromStdString(user->GetUserPhone()));
     insertQuery.addBindValue(QString::fromStdString(user->GetUserName()));
     insertQuery.addBindValue(QString::fromStdString(user->GetUserAvatar()));

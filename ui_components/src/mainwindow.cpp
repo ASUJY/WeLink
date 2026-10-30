@@ -354,9 +354,9 @@ QByteArray MainWindow::BuildAddFriendRequestPacket(const User& self, const User&
 {
     QJsonObject dataJson;
     dataJson["friendname"] = QString::fromStdString(target.GetUserName());
-    dataJson["friendid"] = QString::number(target.GetUserId());
+    dataJson["friendid"] = target.GetUserId();
     dataJson["username"] = QString::fromStdString(self.GetUserName());
-    dataJson["userid"] = QString::number(self.GetUserId());
+    dataJson["userid"] = self.GetUserId();
 
     QJsonObject root;
     root["data"] = dataJson;
@@ -369,10 +369,10 @@ QByteArray MainWindow::BuildAddFriendAckPacket(const User& self, const User& tar
 {
     QJsonObject dataJson;
     dataJson["friendname"] = QString::fromStdString(target.GetUserName());
-    dataJson["friendid"] = QString::number(target.GetUserId());
+    dataJson["friendid"] = target.GetUserId();
     dataJson["username"] = QString::fromStdString(self.GetUserName());
-    dataJson["userid"] = QString::number(self.GetUserId());
-    dataJson["ackType"] = QString::number(static_cast<int>(state));
+    dataJson["userid"] = self.GetUserId();
+    dataJson["ackType"] = static_cast<int>(state);
 
     QJsonObject root;
     root["data"] = dataJson;
@@ -406,7 +406,7 @@ void MainWindow::SlotOneChat(const QByteArray& data) {
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
     qDebug() << "MainWindow::SlotOneChat" << dataObj.value("senderId");
-    int64_t id = dataObj.value("senderId").toString().toLongLong();
+    int64_t id = dataObj.value("senderId").toInteger();
     QString content = dataObj.value("content").toString();
     QString createtime = dataObj.value("createtime").toString();
     qDebug() << "MainWindow::SlotOneChat";

@@ -224,7 +224,7 @@ void AppCore::ReceiveSlotAddFriendAck(const QByteArray& data) {
     QJsonValue dataVal = jsonObj.value("data");
     QJsonObject dataObj = dataVal.toObject();
 
-    FriendState type = static_cast<FriendState>(dataObj.value("ackType").toString().toInt());
+    FriendState type = static_cast<FriendState>(dataObj.value("ackType").toInt());
     if (type == FriendState::REJECT) {
         return;
     }
@@ -239,8 +239,8 @@ void AppCore::SendSlotAddFriendReqAck(const QByteArray& data, const User& friend
 
 QByteArray AppCore::BuildOneChatPacket(int64_t receiverId, const QString& content, const QString& currentTime) {
     QJsonObject dataJson;
-    dataJson["senderId"]    = QString::number(m_user->GetUserId());
-    dataJson["receiverId"]  = QString::number(receiverId);
+    dataJson["senderId"]    = m_user->GetUserId();
+    dataJson["receiverId"]  = receiverId;
     dataJson["content"]     = content;
     dataJson["createtime"]  = currentTime;
 

@@ -55,6 +55,13 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="3">
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>-1</number>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QWidget" name="menuWidget" native="true">
       <property name="minimumSize">
@@ -166,7 +173,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../../app/resource.qrc">
+             <iconset>
               <normaloff>:/resource/icon/menu/head.png</normaloff>:/resource/icon/menu/head.png</iconset>
             </property>
             <property name="iconSize">
@@ -238,7 +245,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../../app/resource.qrc">
+             <iconset>
               <normaloff>:/resource/icon/menu/chat.svg</normaloff>
               <normalon>:/resource/icon/menu/chat2.svg</normalon>:/resource/icon/menu/chat.svg</iconset>
             </property>
@@ -271,7 +278,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../../app/resource.qrc">
+             <iconset>
               <normaloff>:/resource/icon/menu/contact.svg</normaloff>
               <normalon>:/resource/icon/menu/contact2.svg</normalon>:/resource/icon/menu/contact.svg</iconset>
             </property>
@@ -346,7 +353,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="../../app/resource.qrc">
+             <iconset>
               <normaloff>:/resource/icon/menu/more.svg</normaloff>:/resource/icon/menu/more.svg</iconset>
             </property>
             <property name="iconSize">
@@ -363,68 +370,9 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="4">
-     <widget class="QWidget" name="chatWidget" native="true">
-      <layout class="QGridLayout" name="gridLayout_3">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>6</number>
-       </property>
-       <property name="rightMargin">
-        <number>6</number>
-       </property>
-       <property name="bottomMargin">
-        <number>6</number>
-       </property>
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QWidget" name="contentWidget" native="true"/>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QWidget" name="chatListwidget" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>259</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>250</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <property name="spacing">
-        <number>0</number>
-       </property>
-      </layout>
-     </widget>
-    </item>
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="../../app/resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

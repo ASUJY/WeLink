@@ -324,11 +324,11 @@ QPushButton#btnSendMsg:pressed {
 
 
 /*contactspanewidget.ui*/
-QWidget#ContactsPaneWidget {
+/*QWidget#ContactsPaneWidget {
     border: 0px;
     background: #f4f4f4;
     border-radius: 5px;
-}
+}*/
 QPushButton#btnPlus {
     border: 1px;
     background: #ddd;

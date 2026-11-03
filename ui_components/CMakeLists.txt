@@ -11,15 +11,10 @@ target_sources(UiLib PRIVATE
     include/login/loginwidget.h
     include/register/registerwidget.h
     include/mainwindow.h
-    include/chatpanewidget.h
+    include/chatwidget.h
+    include/contactswidget.h
     include/addfriendwindow.h
-    include/contactspanewidget.h
-    include/chatmainwidget.h
-    include/contactsmainwidget.h
-
-
     include/contactsitem.h
-
     include/chatlistitem.h
     include/senderwidget.h
     include/label.h
@@ -36,16 +31,13 @@ target_sources(UiLib PRIVATE
     ${REGISTER_SRC_LIST}
     
     forms/loginwidget.ui
-    forms/chatpanewidget.ui
     forms/mainwindow.ui
     forms/addfriendwindow.ui
-    forms/contactspanewidget.ui
-    forms/chatmainwidget.ui
-    forms/contactsmainwidget.ui
-
     forms/chatlistitem.ui
     forms/senderwidget.ui
     forms/receiverwidget.ui
+    forms/chatwidget.ui
+    forms/contactswidget.ui
 )
 
 target_include_directories(UiLib PUBLIC

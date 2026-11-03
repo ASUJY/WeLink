@@ -3,14 +3,12 @@
 
 #include <QMainWindow>
 #include <QMouseEvent>
-#include "chatpanewidget.h"
-#include "chatmainwidget.h"
-#include "contactspanewidget.h"
-#include "contactsmainwidget.h"
 #include "addfriendwindow.h"
 #include "friendmodel.h"
 #include "msgmodel.h"
 #include "friendrequestmodel.h"
+#include "chatwidget.h"
+#include "contactswidget.h"
 
 enum class Area : int {
     Top,
@@ -78,12 +76,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
-
     void InitAddFriendWindow();
-    void InitChatMainWidget();
-    void InitChatPaneWidget();
-    void InitContactsPaneWidget(const std::shared_ptr<User>& user);
-    void InitContactsMainWidget();
+    void InitChatWidget();
+    void InitContactsWidget(const std::shared_ptr<User>& user);
     void SetWidgetWinTitle();
     Area GetArea(int x, int y);
     Qt::CursorShape GetCursorForArea(Area area);
@@ -97,7 +92,6 @@ private:
 
     // 当前选中的按钮(左侧导航栏的按钮)
     QPushButton* m_btn;
-    ChatPage m_page = ChatPage::ChatWidget;
 
     bool m_isMouseDown = false;
     QPoint m_pressPos;
@@ -106,10 +100,8 @@ private:
     int m_posy = 0;
     Area m_area;
 
-    std::unique_ptr<ChatPaneWidget> m_chatPaneWidget;
-    std::unique_ptr<ChatMainWidget> m_chatMainWidget;
-    std::unique_ptr<ContactsPaneWidget> m_contactsPaneWidget;
-    std::unique_ptr<ContactsMainWidget> m_contactsMainWidget;
+    ChatWidget* m_chatWidget;
+    ContactsWidget* m_contactsWidget;
     AddFriendWindow* m_addFriendWindow = nullptr;
 
     std::shared_ptr<FriendModel> m_friendModel;

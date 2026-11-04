@@ -4,7 +4,7 @@ aux_source_directory(./src/register REGISTER_SRC_LIST)
 
 
 add_library(UiLib STATIC
-    #../app/resource.qrc
+#../app/resource.qrc
     )
 
 target_sources(UiLib PRIVATE
@@ -25,6 +25,7 @@ target_sources(UiLib PRIVATE
     include/contactstreemodel.h
     include/contactsitemdelegate.h
     include/contactstreeview.h
+    include/searchlineedit.h
     
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}

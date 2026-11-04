@@ -14,6 +14,7 @@ ChatWidget::ChatWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
+
     // chatmain init
     ui->ChatMainStackedWidget->setCurrentIndex(1);
     connect(ui->btnSendMsg, &QPushButton::clicked, this, &ChatWidget::SlotBtnSendMsgClicked);
@@ -35,6 +36,40 @@ ChatWidget::ChatWidget(QWidget *parent)
         emit SIG_AddFriend();
     });
     ui->btnPlus->setMenu(menu);
+
+    InitSearchLineEdit();
+}
+
+void ChatWidget::InitSearchLineEdit() {
+    QAction* searchAction = new QAction(ui->leditSearch);
+    searchAction->setIcon(QIcon(":/resource/icon/menu/search2.svg"));
+    ui->leditSearch->addAction(searchAction, QLineEdit::LeadingPosition);
+    ui->leditSearch->setPlaceholderText(tr("搜索"));
+
+    // 创建一个清除动作并设置图标
+    QAction *clearAction = new QAction(ui->leditSearch);
+    clearAction->setIcon(QIcon(":/res/close_transparent.png"));
+    // 初始时不显示清除图标
+    // 将清除动作添加到LineEdit的末尾位置
+    ui->leditSearch->addAction(clearAction, QLineEdit::TrailingPosition);
+
+    // 当需要显示清除图标时，更改为实际的清除图标
+    connect(ui->leditSearch, &QLineEdit::textChanged, [clearAction](const QString &text) {
+        if (!text.isEmpty()) {
+            clearAction->setIcon(QIcon(":/resource/icon/menu/close_search.png"));
+        } else {
+            clearAction->setIcon(QIcon(":/resource/icon/menu/close_transparent.png")); // 文本为空时，切换回透明图标
+        }
+    });
+
+    // 连接清除动作的触发信号到槽函数，用于清除文本
+    connect(clearAction, &QAction::triggered, this, [this, clearAction]() {
+        ui->leditSearch->clear();
+        clearAction->setIcon(QIcon(":/resource/icon/menu/close_transparent.png")); // 清除文本后，切换回透明图标
+        ui->leditSearch->clearFocus();
+        //清除按钮被按下则不显示搜索框
+        // ShowSearch(false);
+    });
 }
 
 ChatWidget::~ChatWidget()

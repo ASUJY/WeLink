@@ -42,6 +42,7 @@ public:
 private:
     // 抽取创建聊天项公共函数(UI创建代码)
     void CreateChatListItem(int64_t friendId, std::unique_ptr<Friend>&& fri);
+    void InitSearchLineEdit();
 
 private:
     Ui::ChatWidget *ui;

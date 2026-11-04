@@ -189,7 +189,8 @@ QWidget#ChatListWidget {
 }
 
 QWidget#searchWidget {
-    background: #ddd;
+/*    background: #ddd;*/
+    background: #f4f4f4;
 /*    border: none;*/
     border-radius: 5px;
 }
@@ -343,9 +344,9 @@ QWidget#toolWidget {
     background: #f4f4f4;
 /*    margin: 1px;*/
 }
-QWidget#searchWidget {
+/*QWidget#searchWidget {
     background: white;
-}
+}*/
 QLineEdit#leditSearch {
     border: 0px;
     background: white;

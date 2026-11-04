@@ -26,7 +26,7 @@ target_sources(UiLib PRIVATE
     include/contactsitemdelegate.h
     include/contactstreeview.h
     include/searchlineedit.h
-    
+    include/chatpanelistwidget.h
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}
     ${REGISTER_SRC_LIST}

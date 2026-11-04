@@ -220,6 +220,28 @@ QPushButton#btnSearch {
 QToolButton#btnPlus {
     background: white;
 }
+#chatpaneListWidget {
+    background-color: rgb(247,247,248);
+    border: none;
+}
+
+#chatpaneListWidget::item:selected {
+    background-color: #d3d7d4;
+    border: none;
+    outline: none;
+}
+
+#chatpaneListWidget::item:hover {
+    background-color: rgb(206,207,208);
+    border: none;
+    outline: none;
+}
+
+#chatpaneListWidget::focus {
+    border: none;
+    outline: none;
+}
+
 
 /* ChatListItem */
 QWidget#widget

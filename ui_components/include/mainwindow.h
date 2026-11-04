@@ -56,7 +56,7 @@ public slots:
     void ReceiveSlotAddFriendAck(const QByteArray& data);
     void SlotSendChatMsg(int64_t id, const QString &message);
     void SlotContactsItemDidSelected(const std::shared_ptr<ContactsItem>&);
-    void SlotOneChat(const QByteArray& data);
+    void ReceiveSlotOneChat(const QByteArray& data);
     void SendSlotAddFriendReq(const User& frienduser);
 
 private slots:

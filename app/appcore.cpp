@@ -45,7 +45,7 @@ AppCore::AppCore() noexcept {
 
     // Send Message
     connect(m_mainWindow.get(), &MainWindow::SIG_SendChatMsg, this, &AppCore::SlotSendChatMsg);
-    connect(this, &AppCore::SIG_ONECHAT, m_mainWindow.get(), &MainWindow::SlotOneChat);
+    connect(this, &AppCore::SIG_RECEIVE_ONECHAT, m_mainWindow.get(), &MainWindow::ReceiveSlotOneChat);
 
     m_msgHandlerMap.insert({E_MSG_TYPE::REG_MSG_ACK, std::bind(&AppCore::RegisterSuccess, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::LOGIN_MSG_ACK, std::bind(&AppCore::ReceiveLoginACK, this, std::placeholders::_1)});
@@ -53,7 +53,7 @@ AppCore::AppCore() noexcept {
     // m_msgHandlerMap.insert({E_MSG_TYPE::GET_FRIEND_INFO_FAILED, std::bind(&AppCore::GetFriendInfoFailed, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_REQ, std::bind(&AppCore::ReceiveSlotAddFriendReq, this, std::placeholders::_1)});
     m_msgHandlerMap.insert({E_MSG_TYPE::ADD_FRIEND_ACK, std::bind(&AppCore::ReceiveSlotAddFriendAck, this, std::placeholders::_1)});
-    m_msgHandlerMap.insert({E_MSG_TYPE::ONE_CHAT_MSG, std::bind(&AppCore::SlotOneChat, this, std::placeholders::_1)});
+    m_msgHandlerMap.insert({E_MSG_TYPE::ONE_CHAT_MSG, std::bind(&AppCore::ReceiveSlotOneChat, this, std::placeholders::_1)});
 
     m_loginWidget->show();
 }
@@ -181,7 +181,7 @@ void AppCore::ReceiveLoginACK(const QByteArray& data) {
             for (int i = 0; i < array.size(); ++i) {
                 QString jsonStr = array[i].toString();
                 QJsonDocument jsonDoc1 = QJsonDocument::fromJson(jsonStr.toUtf8());
-                emit SIG_ONECHAT(jsonDoc1.toJson());
+                emit SIG_RECEIVE_ONECHAT(jsonDoc1.toJson());
             }
         }
 
@@ -263,7 +263,7 @@ void AppCore::SlotSendChatMsg(int64_t id, const QString& content) {
     m_msgModel->AddMsg(m_user->GetUserId(), id, msg);
 }
 
-void AppCore::SlotOneChat(const QByteArray& data) {
+void AppCore::ReceiveSlotOneChat(const QByteArray& data) {
     qDebug() << "AppCore::SlotOneChat";
-    emit SIG_ONECHAT(data);
+    emit SIG_RECEIVE_ONECHAT(data);
 }

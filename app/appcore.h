@@ -25,7 +25,7 @@ signals:
     void SIG_RECEIVE_GetFriendInfoACK(const User& user);
     void SIG_RECEIVE_AddFriendReq(const QByteArray& data);
     void SIG_RECEIVE_AddFriendAck(const QByteArray& data);
-    void SIG_ONECHAT(const QByteArray& data);
+    void SIG_RECEIVE_ONECHAT(const QByteArray& data);
 
 public slots:
     void SlotRegisterCommit(const QByteArray& data);
@@ -37,7 +37,7 @@ public slots:
     void ReceiveSlotAddFriendAck(const QByteArray& data);
     void SendSlotAddFriendReqAck(const QByteArray& data, const User& user, FriendState type);
     void SlotSendChatMsg(int64_t id, const QString& content);
-    void SlotOneChat(const QByteArray& data);
+    void ReceiveSlotOneChat(const QByteArray& data);
 
 private slots:
     void SlotShowRegisterWidget();

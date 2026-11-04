@@ -362,7 +362,7 @@ void MainWindow::SendSlotAddFriendReqAck(const User& frienduser, FriendState typ
     emit SIG_SEND_AddFriendReqAck(pkt, frienduser, type);
 }
 
-void MainWindow::SlotOneChat(const QByteArray& data) {
+void MainWindow::ReceiveSlotOneChat(const QByteArray& data) {
 
     QJsonParseError jsonError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
@@ -382,6 +382,12 @@ void MainWindow::SlotOneChat(const QByteArray& data) {
     qDebug() << "id: " << id << " content: " << content << " createtime: " << createtime;
     auto item = m_chatWidget->GetItemById(id);
     if (item) {
+        if (item == m_chatWidget->GetCurrentSelectedItem()) {
+            Message message(content, createtime, Receive);
+            item->UpdateContent2(message);
+            m_msgModel->AddMsg(m_user->GetUserId(), id, message);
+            return;
+        }
         Message message(content, createtime, Receive);
         item->UpdateContent(message);
         m_msgModel->AddMsg(m_user->GetUserId(), id, message);

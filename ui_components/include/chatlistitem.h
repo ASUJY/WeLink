@@ -28,6 +28,7 @@ public:
     void UpdateFriend(const Message& message);
     void SetContent(const QString& content);
     void UpdateContent(const Message& messages);
+    void UpdateContent2(const Message& messages);
 
 private:
     // 鼠标按下聊天列表项触发这个函数

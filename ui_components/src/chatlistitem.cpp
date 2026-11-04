@@ -97,3 +97,14 @@ void ChatListItem::UpdateContent(const Message& messages) {
         SetContent(msgList.last().GetContent());
     }
 }
+
+
+void ChatListItem::UpdateContent2(const Message& messages) {
+    qDebug() << "ChatListItem::UpdateContent: message content:" << messages.GetContent()
+    << " message type: " << messages.GetMsgType() << " msg time: " << messages.GetTime();
+    if (!m_data)
+        return;
+
+    m_data->AddMessage(messages);
+    emit SIG_Selected(this);
+}

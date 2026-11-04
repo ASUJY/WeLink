@@ -127,14 +127,14 @@ void ChatWidget::AddFriendToPane(std::unique_ptr<Friend>&& fri) {
 
 void ChatWidget::CreateChatListItem(int64_t friendId, std::unique_ptr<Friend>&& fri) {
 
+    ChatListItem* chatItem = new ChatListItem(this);
+    chatItem->SetItem(std::move(fri));
+
     QListWidgetItem* listItem  = new QListWidgetItem;       // 创建列表单行载体对象，代表列表中的一行。
     // QVariant var = QVariant::fromValue(fri.get());
     // listItem->setData(Qt::UserRole, var);
-    listItem->setSizeHint(QSize(250, 65));
+    listItem->setSizeHint(chatItem->sizeHint());
     ui->chatpaneListWidget->addItem(listItem );                     // 在列表中新增一行
-
-    ChatListItem* chatItem = new ChatListItem(this);
-    chatItem->SetItem(std::move(fri));
     ui->chatpaneListWidget->setItemWidget(listItem , chatItem);     // 把列表中的这一行的显示效果替换为自定义控件的显示效果
 
     m_mapIdToChatItem[friendId] = chatItem;

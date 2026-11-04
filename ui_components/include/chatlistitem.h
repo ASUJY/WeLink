@@ -30,6 +30,12 @@ public:
     void UpdateContent(const Message& messages);
     void UpdateContent2(const Message& messages);
 
+    QSize sizeHint() const override;
+
+protected:
+    void enterEvent(QEnterEvent *event) override;
+    void leaveEvent(QEvent *event) override;
+
 private:
     // 鼠标按下聊天列表项触发这个函数
     void mousePressEvent(QMouseEvent *event) override;
@@ -37,7 +43,7 @@ private:
 private:
     Ui::ChatListItem *ui;
     std::unique_ptr<Friend> m_data;
-    bool m_isChecked;   // 该item是否被点击
+    bool m_isChecked = false;   // 该item是否被点击
 };
 
 #endif // CHATLISTITEM_H

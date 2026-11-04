@@ -18,9 +18,11 @@ void ChatListItem::SetItem(std::unique_ptr<Friend>&& data) {
 
     m_data = std::move(data);
     auto pixmap = QPixmap(":/resource/head/man.svg");
-    ui->labHeadIcon->setPixmap(pixmap);
-    ui->labName->setText(QString::fromStdString(m_data->GetUserName()));
-    ui->labName->setStyleSheet("color: black;");
+    // 设置图片自动缩放
+    ui->labHeadIcon->setPixmap(pixmap.scaled(ui->labHeadIcon->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    ui->labHeadIcon->setScaledContents(true);
+    ui->labFriName->setText(QString::fromStdString(m_data->GetUserName()));
+    // ui->labFriName->setStyleSheet("color: black;");
     ui->labTime->setText(m_data->GetTime());
     if (m_data->GetMessages().count() > 0) {
         // setContent(data)
@@ -45,9 +47,9 @@ void ChatListItem::Checked(bool checked) {
 
 void ChatListItem::Selected(bool selected) {
     if (selected) {
-        ui->widget->setStyleSheet("QWidget#widget{background: #c3c3c3;}");
+        ui->widget->setStyleSheet("QWidget#widget{background: #2cb46e;}");
     } else {
-        ui->widget->setStyleSheet("QWidget#widget{background: #dfdfdf;}");
+        ui->widget->setStyleSheet("QWidget#widget{background: #f4f4f4;}");
     }
 }
 
@@ -98,7 +100,6 @@ void ChatListItem::UpdateContent(const Message& messages) {
     }
 }
 
-
 void ChatListItem::UpdateContent2(const Message& messages) {
     qDebug() << "ChatListItem::UpdateContent: message content:" << messages.GetContent()
     << " message type: " << messages.GetMsgType() << " msg time: " << messages.GetTime();
@@ -107,4 +108,27 @@ void ChatListItem::UpdateContent2(const Message& messages) {
 
     m_data->AddMessage(messages);
     emit SIG_Selected(this);
+}
+
+QSize ChatListItem::sizeHint() const
+{
+    return QSize(250, 70); // 返回自定义的尺寸
+}
+
+void ChatListItem::enterEvent(QEnterEvent *event)
+{
+    if (m_isChecked) return;
+    ui->widget->setStyleSheet("background-color: #c3c3c3;");
+    QWidget::enterEvent(event);
+}
+
+void ChatListItem::leaveEvent(QEvent *event)
+{
+    // 离开时恢复选中态或普通态
+    ui->widget->setStyleSheet(
+        m_isChecked
+            ? "background-color: #2cb46e;"
+            : "background-color: #f4f4f4;"
+        );
+    QWidget::leaveEvent(event);
 }

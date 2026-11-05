@@ -387,7 +387,7 @@
               <number>0</number>
              </property>
              <property name="bottomMargin">
-              <number>0</number>
+              <number>1</number>
              </property>
              <property name="horizontalSpacing">
               <number>0</number>
@@ -464,7 +464,7 @@
               <number>25</number>
              </property>
              <property name="topMargin">
-              <number>0</number>
+              <number>1</number>
              </property>
              <property name="rightMargin">
               <number>25</number>

@@ -15,9 +15,10 @@ MainWindow::MainWindow(std::shared_ptr<User> user, std::shared_ptr<FriendModel> 
     m_msgModel(msgModel)
 {
     ui->setupUi(this);
-    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
+    // this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
+    // this->setWindowIcon(QIcon{});
     this->setMouseTracking(true);   // 开启鼠标跟踪，让窗口在鼠标未按下时也能接收 mouseMoveEvent 事件
-    SetWidgetWinTitle();
+    // SetWidgetWinTitle();
     // Init();
 }
 
@@ -112,28 +113,28 @@ void MainWindow::InitContactsWidget(const std::shared_ptr<User>& user) {
 }
 
 
-void MainWindow::SetWidgetWinTitle() {
-    ui->winTitleWidget->setFixedHeight(24);
+// void MainWindow::SetWidgetWinTitle() {
+//     ui->winTitleWidget->setFixedHeight(24);
 
-    QSize btnSize(12,12);
-    ui->btnMWinClose->setFixedSize(btnSize);
-    ui->btnMWinMin->setFixedSize(btnSize);
-    ui->btnMWinMax->setFixedSize(btnSize);
+//     QSize btnSize(12,12);
+//     ui->btnMWinClose->setFixedSize(btnSize);
+//     ui->btnMWinMin->setFixedSize(btnSize);
+//     ui->btnMWinMax->setFixedSize(btnSize);
 
-    ui->btnMWinClose->setFlat(true);
-    ui->btnMWinMin->setFlat(true);
-    ui->btnMWinMax->setFlat(true);
+//     ui->btnMWinClose->setFlat(true);
+//     ui->btnMWinMin->setFlat(true);
+//     ui->btnMWinMax->setFlat(true);
 
-    connect(ui->btnMWinClose, &QPushButton::clicked, this, [=](){
-        this->close();
-    });
-    connect(ui->btnMWinMin, &QPushButton::clicked, this, [=](){
-        this->showMinimized();
-    });
-    connect(ui->btnMWinMax, &QPushButton::clicked, this, [=](){
-        this->showMaximized();
-    });
-}
+//     connect(ui->btnMWinClose, &QPushButton::clicked, this, [=](){
+//         this->close();
+//     });
+//     connect(ui->btnMWinMin, &QPushButton::clicked, this, [=](){
+//         this->showMinimized();
+//     });
+//     connect(ui->btnMWinMax, &QPushButton::clicked, this, [=](){
+//         this->showMaximized();
+//     });
+// }
 
 /**
  * 根据鼠标坐标(x,y)判断鼠标位于窗口的哪个区域

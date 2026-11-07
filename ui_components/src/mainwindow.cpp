@@ -308,7 +308,6 @@ void MainWindow::SlotChatView(QVariant var, PageType type) {
         auto data = var.value<Friend*>();
         m_chatWidget->SetStackedWidgetCurrentIndex(0);
         m_chatWidget->SetData(data);
-        m_chatWidget->SetData2(data);
     }
 }
 

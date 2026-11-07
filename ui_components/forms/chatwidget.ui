@@ -396,47 +396,6 @@
               <number>100</number>
              </property>
              <item row="0" column="0">
-              <widget class="QListWidget" name="chatListWidget">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QListWidget{
-            background:white;
-            border:none;
-            outline:none;
-        }
-        QListWidget::item{
-            background:transparent;
-            border:none;
-            outline:none;
-        }
-        QListWidget::item:hover{
-            background:transparent;
-            border:none;
-            outline:none;
-        }
-        QListWidget::item:selected{
-            background:transparent;
-            border:none;
-            outline:none;
-        }
-        QListWidget::item:focus{
-            outline:none;
-        }</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
               <widget class="ChatMsgListView" name="chatListView"/>
              </item>
             </layout>

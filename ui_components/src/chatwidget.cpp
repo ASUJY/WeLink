@@ -1,7 +1,5 @@
 #include "chatwidget.h"
 #include "ui_chatwidget.h"
-#include "ReceiverMsgItem.h"
-#include "SenderMsgItem.h"
 #include <QMenu>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -187,47 +185,6 @@ void ChatWidget::SetStackedWidgetCurrentIndex(int index) {
 }
 
 void ChatWidget::SetData(Friend *data) {
-
-    if (!data) {
-        qWarning() << "ChatWidget::SetData Friend 空指针";
-        return;
-    }
-
-    ui->chatListWidget->clear();    // 清空原来的聊天记录
-    qDebug() << "ChatWidget::SetData name: " << QString::fromStdString(data->GetUserName());
-    ui->labName->setText(QString::fromStdString(data->GetUserName()));
-    ui->labName->setStyleSheet("color: black;");
-
-    const auto& messages = data->GetMessages();
-    for (int i = 0; i < messages.count(); i++) {
-        const auto& message = messages[i];
-        qDebug() << "ChatWidget::SetData message: " << message.GetContent();
-
-        auto item = new QListWidgetItem;
-        ui->chatListWidget->addItem(item);
-
-        // 取消item可选中，去除焦点虚线框
-        item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
-
-        if (message.GetMsgType() == MsgType::Sender) {
-            auto widget = new SenderMsgItem(nullptr, ":/resource/head/man.svg");
-            widget->SetMessage(message.GetContent());
-
-            ui->chatListWidget->setItemWidget(item, widget);
-            item->setSizeHint(widget->sizeHint());
-
-        } else if (message.GetMsgType() == MsgType::Receive) {
-            auto widget = new ReceiverMsgItem(nullptr, ":/resource/icon/app.png");
-            widget->SetMessage(message.GetContent());
-
-            ui->chatListWidget->setItemWidget(item, widget);
-            item->setSizeHint(widget->sizeHint());
-        }
-    }
-    ui->chatListWidget->scrollToBottom();
-}
-
-void ChatWidget::SetData2(Friend *data) {
     if (!data) {
         qWarning() << "ChatWidget::SetData Friend 空指针";
         return;
@@ -266,11 +223,6 @@ void ChatWidget::SetData2(Friend *data) {
     }
 
     ui->chatListView->SetMessage(rows);
-
-    // if (!rows.isEmpty()) {
-    //     ui->chatListWidget->scrollTo(
-    //         ui->chatListView->index(rows.size() - 1, 0));
-    // }
 }
 
 void ChatWidget::SlotBtnSendMsgClicked() {
@@ -291,5 +243,4 @@ void ChatWidget::SlotBtnSendMsgClicked() {
     emit SIG_SendChatMsg(chatItem->GetItem()->GetUserId(), content);
     ui->textEdit->clear();
     SetData(chatItem->GetItem());
-    SetData2(chatItem->GetItem());
 }

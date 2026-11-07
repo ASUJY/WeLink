@@ -102,11 +102,6 @@ QWidget#chatWidget {
    background: #f4f4f4;
 }
 
-QWidget#chatListwidget {
-    border: none;
-    background: #f4f4f4;
-}
-
 QWidget#centralWidget {
     background: #f4f4f4;
     border: 1px solid #ddd;
@@ -181,11 +176,6 @@ QPushButton#btnMWinMax:hover {
 
 QPushButton#btnHead,QPushButton#btnAllChat, QPushButton#btnContact, QPushButton#btnMore {
     border: none;
-}
-
-QWidget#ChatListWidget {
-    border: none;
-    background: #e3e3e3;
 }
 
 QWidget#searchWidget {
@@ -339,6 +329,11 @@ QPushButton#btnSendMsg:pressed {
     background-color: #cccccc;  /* 按下更深一点 */
 }
 
+#chatListView{
+    background:white;
+    border:none;
+    outline:none;
+}
 
 /*contactspanewidget.ui*/
 /*QWidget#ContactsPaneWidget {

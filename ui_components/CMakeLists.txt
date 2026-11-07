@@ -16,12 +16,7 @@ target_sources(UiLib PRIVATE
     include/addfriendwindow.h
     include/contactsitem.h
     include/chatlistitem.h
-    include/senderwidget.h
     include/label.h
-    include/receiverwidget.h
-    include/BubbleLabel.h
-    include/SenderMsgItem.h
-    include/ReceiverMsgItem.h
     include/contactstreemodel.h
     include/contactsitemdelegate.h
     include/contactstreeview.h
@@ -39,8 +34,8 @@ target_sources(UiLib PRIVATE
     forms/mainwindow.ui
     forms/addfriendwindow.ui
     forms/chatlistitem.ui
-    forms/senderwidget.ui
-    forms/receiverwidget.ui
+
+
     forms/chatwidget.ui
     forms/contactswidget.ui
 )

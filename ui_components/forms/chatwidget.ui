@@ -436,6 +436,9 @@
                </property>
               </widget>
              </item>
+             <item row="1" column="0">
+              <widget class="ChatMsgListView" name="chatListView"/>
+             </item>
             </layout>
            </widget>
           </item>
@@ -787,6 +790,11 @@
    <class>ChatPaneListWidget</class>
    <extends>QListWidget</extends>
    <header location="global">chatpanelistwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ChatMsgListView</class>
+   <extends>QListView</extends>
+   <header location="global">chatmsglistview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

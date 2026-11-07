@@ -34,6 +34,7 @@ public:
     ~ChatWidget();
 
     void SetData(Friend *data);
+    void SetData2(Friend *data);
     void SetStackedWidgetCurrentIndex(int index);
     static ChatListItem* GetCurrentSelectedItem() noexcept { return m_selectedItem; }
     ChatListItem* GetItemById(int64_t id) const;

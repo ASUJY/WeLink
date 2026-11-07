@@ -38,6 +38,7 @@ ChatWidget::ChatWidget(QWidget *parent)
     ui->btnPlus->setMenu(menu);
 
     InitSearchLineEdit();
+
 }
 
 void ChatWidget::InitSearchLineEdit() {
@@ -226,6 +227,52 @@ void ChatWidget::SetData(Friend *data) {
     ui->chatListWidget->scrollToBottom();
 }
 
+void ChatWidget::SetData2(Friend *data) {
+    if (!data) {
+        qWarning() << "ChatWidget::SetData Friend 空指针";
+        return;
+    }
+    ui->chatListView->SetHeader(":/resource/head/man.svg", ":/resource/icon/app.png");
+    ui->labName->setText(
+        QString::fromStdString(data->GetUserName()));
+
+    QList<ChatMessage> rows;
+    const auto &messages = data->GetMessages();
+
+    for (const auto &message : messages) {
+        ChatMessage row;
+
+        row.text = message.GetContent();
+
+        row.msgType =
+            message.GetMsgType() == MsgType::Sender
+                ? ChatMessageType::Sender
+                : ChatMessageType::Receiver;
+
+        // 将此处替换为 Message 的实际时间读取接口。
+        // 如果 GetTime() 返回 std::string：
+        // row.time = QString::fromStdString(message.GetTime().toStdString());
+        // 如果返回 QString：
+        row.time = message.GetTime();
+
+        // 将此处替换为 Message 的实际图片字段或图片路径接口。
+        // row.imagePath = message.GetImagePath();
+
+        row.contentType = row.imagePath.isEmpty()
+                              ? ChatContentType::Text
+                              : ChatContentType::Image;
+
+        rows.append(row);
+    }
+
+    ui->chatListView->SetMessage(rows);
+
+    // if (!rows.isEmpty()) {
+    //     ui->chatListWidget->scrollTo(
+    //         ui->chatListView->index(rows.size() - 1, 0));
+    // }
+}
+
 void ChatWidget::SlotBtnSendMsgClicked() {
     QString content = ui->textEdit->toPlainText().trimmed();
     if (content.isEmpty()) return;
@@ -244,4 +291,5 @@ void ChatWidget::SlotBtnSendMsgClicked() {
     emit SIG_SendChatMsg(chatItem->GetItem()->GetUserId(), content);
     ui->textEdit->clear();
     SetData(chatItem->GetItem());
+    SetData2(chatItem->GetItem());
 }

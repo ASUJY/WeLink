@@ -27,6 +27,10 @@ target_sources(UiLib PRIVATE
     include/contactstreeview.h
     include/searchlineedit.h
     include/chatpanelistwidget.h
+    include/chatmsglistmodel.h
+    include/chatmsgdelegate.h
+    include/chatmsglistview.h
+
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}
     ${REGISTER_SRC_LIST}

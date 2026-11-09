@@ -18,3 +18,8 @@ void SearchPopupItem::SetText(const QString &text)
 {
     ui->labPopItemText->setText(text);
 }
+
+QString SearchPopupItem::Text()
+{
+    return ui->labPopItemText->text();
+}

@@ -54,7 +54,28 @@ void AddFriendWindow::SlotSearchFriend() {
     rootJson["msgtype"] = static_cast<int>(E_MSG_TYPE::GET_FRIEND_INFO_REQ);
 
     QJsonDocument document(rootJson);
-    auto sendData  = document.toJson(QJsonDocument::Compact);
+    auto sendData = document.toJson(QJsonDocument::Compact);
+
+    emit SIG_SEND_GetFriendInfo(sendData , username, accountType);
+}
+
+void AddFriendWindow::SearchFriend(QString phone) {
+    // 根据用户名，手机号进行搜索
+    QString username = phone;
+    if (username.isEmpty()) {
+        ui->stackedWidget->setCurrentIndex(1);
+        return;
+    }
+    E_ACCOUNT_TYPE accountType = CheckAccountType();
+    QJsonObject dataJson;
+    dataJson["username"] = username;
+    dataJson["accountType"] = static_cast<int>(accountType);
+    QJsonObject rootJson;
+    rootJson["data"] = dataJson;
+    rootJson["msgtype"] = static_cast<int>(E_MSG_TYPE::GET_FRIEND_INFO_REQ);
+
+    QJsonDocument document(rootJson);
+    auto sendData = document.toJson(QJsonDocument::Compact);
 
     emit SIG_SEND_GetFriendInfo(sendData , username, accountType);
 }

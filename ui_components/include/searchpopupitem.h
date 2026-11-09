@@ -16,6 +16,7 @@ public:
     ~SearchPopupItem();
 
     void SetText(const QString& text);
+    QString Text();
 
 private:
     Ui::SearchPopupItem *ui;

@@ -83,6 +83,7 @@ private:
     Area GetArea(int x, int y);
     Qt::CursorShape GetCursorForArea(Area area);
     void ShowAddFriendWindow();
+    void ShowAddFriendWindowPopup(const QString phone);
 
     QByteArray BuildAddFriendRequestPacket(const User& self, const User& target);
     QByteArray BuildAddFriendAckPacket(const User& self, const User& target, FriendState state);

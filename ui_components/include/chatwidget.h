@@ -20,6 +20,7 @@ class ChatWidget : public QWidget
 signals:
     void SIG_SendChatMsg(int64_t id, const QString& content);
     void SIG_AddFriend();
+    void SIG_AddFriendPopup(const QString text);
     void SIG_ItemClicked(QVariant var, PageType type);
 
 public slots:
@@ -58,7 +59,7 @@ private:
 
     static ChatListItem *m_selectedItem;    // 当前被选中的聊天项
 
-    SearchPopup m_searchPopup;
+    SearchPopup *m_searchPopup = nullptr;
 };
 
 #endif // CHATWIDGET_H

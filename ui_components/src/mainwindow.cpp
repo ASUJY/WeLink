@@ -66,6 +66,7 @@ void MainWindow::InitChatWidget() {
 
     // 添加好友按钮
     connect(m_chatWidget, &ChatWidget::SIG_AddFriend, this, &MainWindow::ShowAddFriendWindow);
+    connect(m_chatWidget, &ChatWidget::SIG_AddFriendPopup, this, &MainWindow::ShowAddFriendWindowPopup);
     // 选择聊天列表中的某一项，展示对应的聊天窗口
     connect(m_chatWidget, &ChatWidget::SIG_ItemClicked, this, &MainWindow::SlotChatView);
     // 接收好友添加请求，在聊天列表中增加一项
@@ -270,6 +271,14 @@ void MainWindow::ShowAddFriendWindow() {
     if (m_addFriendWindow) {
         m_addFriendWindow->show();
     }
+}
+
+void MainWindow::ShowAddFriendWindowPopup(const QString phone) {
+    InitAddFriendWindow();
+    if (m_addFriendWindow) {
+        m_addFriendWindow->show();
+    }
+    m_addFriendWindow->SearchFriend(phone);
 }
 
 void MainWindow::ReceiveSlotGetFriendInfoACK(const QByteArray& data) {

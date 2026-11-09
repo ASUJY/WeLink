@@ -32,11 +32,11 @@ SearchPopup::SearchPopup(QWidget* parent) : QFrame(parent, Qt::Tool | Qt::Framel
     layout->addWidget(m_listWidget);
 
     connect(m_listWidget, &QListWidget::itemClicked, this, [this](QListWidgetItem* clickedItem) {
-                if (clickedItem->text() == QStringLiteral("网络查找账号")) {
-                    // emit SIG_AddFriendClicked();
-                    HidePopup();
-                }
-            });
+        if (m_listWidget->itemWidget(clickedItem) == m_searchPopupItem) {
+            HidePopup();
+            emit SIG_AddFriendClicked(m_searchPopupItem->Text());
+        }
+    });
 }
 
 SearchPopup::~SearchPopup()

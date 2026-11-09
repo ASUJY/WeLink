@@ -76,18 +76,21 @@ void ChatWidget::InitSearchLineEdit() {
 }
 
 void ChatWidget::InitSearchPopup() {
+    m_searchPopup = new SearchPopup(this);
+
     // 点击搜索框时显示弹窗
     connect(ui->leditSearch, &SearchLineEdit::SIG_FOCUS_IN, this, [this]() {
-        m_searchPopup.ShowBelow(ui->leditSearch);
+        m_searchPopup->ShowBelow(ui->leditSearch);
     });
 
-    connect(ui->leditSearch, &QLineEdit::textChanged,
-            this, [this](const QString& text) {
-                m_searchPopup.SetItemText(text);
-                if (!m_searchPopup.isVisible()) {
-                    m_searchPopup.ShowBelow(ui->leditSearch);
-                }
-            });
+    connect(ui->leditSearch, &QLineEdit::textChanged, this, [this](const QString& text) {
+        m_searchPopup->SetItemText(text);
+        if (!m_searchPopup->isVisible()) {
+            m_searchPopup->ShowBelow(ui->leditSearch);
+        }
+    });
+
+    connect(m_searchPopup, &SearchPopup::SIG_AddFriendClicked, this, &ChatWidget::SIG_AddFriendPopup);
 
     // 输入文字时显示弹窗
     // connect(ui->leditSearch, &SearchLineEdit::textChanged, this, [this](const QString &text) {
@@ -109,7 +112,7 @@ bool ChatWidget::eventFilter(QObject *watched, QEvent *event)
 
 void ChatWidget::HandleGlobalMousePress(QMouseEvent *event) {
 
-    if (!m_searchPopup.isVisible()) {
+    if (!m_searchPopup->isVisible()) {
         return;
     }
     // 鼠标点击的全局坐标
@@ -120,8 +123,8 @@ void ChatWidget::HandleGlobalMousePress(QMouseEvent *event) {
         ui->leditSearch->size());
 
     // 弹窗在屏幕坐标中的矩形
-    const QRect popupRect(m_searchPopup.mapToGlobal(QPoint(0, 0)),
-        m_searchPopup.size());
+    const QRect popupRect(m_searchPopup->mapToGlobal(QPoint(0, 0)),
+        m_searchPopup->size());
 
 
     // 点击搜索框或者弹窗内部，不关闭
@@ -132,7 +135,7 @@ void ChatWidget::HandleGlobalMousePress(QMouseEvent *event) {
     }
 
     ui->leditSearch->clear();
-    m_searchPopup.HidePopup();
+    m_searchPopup->HidePopup();
 }
 
 ChatWidget::~ChatWidget()
@@ -242,8 +245,6 @@ ChatListItem* ChatWidget::GetItemById(int64_t id) const{
         return nullptr;
     return iter->second;
 }
-
-
 
 void ChatWidget::SetStackedWidgetCurrentIndex(int index) {
     ui->ChatMainStackedWidget->setCurrentIndex(index);

@@ -8,6 +8,10 @@
 class SearchPopup : public QFrame
 {
     Q_OBJECT
+
+signals:
+    void SIG_AddFriendClicked(const QString text);
+
 public:
     SearchPopup(QWidget* parent = nullptr);
     ~SearchPopup();

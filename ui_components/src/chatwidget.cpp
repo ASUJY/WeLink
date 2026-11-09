@@ -81,6 +81,14 @@ void ChatWidget::InitSearchPopup() {
         m_searchPopup.ShowBelow(ui->leditSearch);
     });
 
+    connect(ui->leditSearch, &QLineEdit::textChanged,
+            this, [this](const QString& text) {
+                m_searchPopup.SetItemText(text);
+                if (!m_searchPopup.isVisible()) {
+                    m_searchPopup.ShowBelow(ui->leditSearch);
+                }
+            });
+
     // 输入文字时显示弹窗
     // connect(ui->leditSearch, &SearchLineEdit::textChanged, this, [this](const QString &text) {
     //     if (!m_searchPopup.isVisible()) {

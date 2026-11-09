@@ -32,6 +32,7 @@
         <file>resource/icon/menu/mute.svg</file>
         <file>resource/icon/menu/close_search.png</file>
         <file>resource/icon/menu/close_transparent.png</file>
+        <file>resource/icon/menu/add_friend.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>resource/qss/default.css</file>

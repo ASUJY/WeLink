@@ -2,6 +2,8 @@
 #define SEARCHPOPUP_H
 
 #include <QFrame>
+#include <QListWidget>
+#include "searchpopupitem.h"
 
 class SearchPopup : public QFrame
 {
@@ -13,6 +15,11 @@ public:
     // 弹窗显示在指定控件下方
     void ShowBelow(QWidget* widget);
     void HidePopup();
+
+    void SetItemText(const QString& text);
+private:
+    QListWidget* m_listWidget = nullptr;
+    SearchPopupItem* m_searchPopupItem = nullptr;
 };
 
 #endif // SEARCHPOPUP_H

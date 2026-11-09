@@ -1,17 +1,42 @@
 #include "searchpopup.h"
 #include <QApplication>
 #include <QMouseEvent>
+#include <QLayout>
+
 SearchPopup::SearchPopup(QWidget* parent) : QFrame(parent, Qt::Tool | Qt::FramelessWindowHint)
 {
     setAttribute(Qt::WA_ShowWithoutActivating);
     setFixedSize(250, 200);
+    setObjectName("SearchPopup");
     setStyleSheet(
-        "QFrame {"
+        "QFrame#SearchPopup  {"
         "    background-color: white;"
         "    border: 1px solid #DDDDDD;"
         "    border-radius: 6px;"
         "}"
         );
+
+    auto *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    m_listWidget = new QListWidget(this);
+    m_listWidget->setFrameShape(QFrame::NoFrame);
+    m_listWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    m_searchPopupItem = new SearchPopupItem(m_listWidget);
+
+    auto* listWidItem = new QListWidgetItem(m_listWidget);
+    m_listWidget->addItem(listWidItem);
+    m_listWidget->setItemWidget(listWidItem, m_searchPopupItem);
+    listWidItem->setSizeHint(QSize(250, 45));
+    layout->addWidget(m_listWidget);
+
+    connect(m_listWidget, &QListWidget::itemClicked, this, [this](QListWidgetItem* clickedItem) {
+                if (clickedItem->text() == QStringLiteral("网络查找账号")) {
+                    // emit SIG_AddFriendClicked();
+                    HidePopup();
+                }
+            });
 }
 
 SearchPopup::~SearchPopup()
@@ -32,4 +57,10 @@ void SearchPopup::ShowBelow(QWidget *widget) {
 
 void SearchPopup::HidePopup() {
     this->hide();
+}
+
+void SearchPopup::SetItemText(const QString& text) {
+    if (m_searchPopupItem) {
+        m_searchPopupItem->SetText(text);
+    }
 }

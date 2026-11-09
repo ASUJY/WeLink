@@ -26,6 +26,7 @@ target_sources(UiLib PRIVATE
     include/chatmsgdelegate.h
     include/chatmsglistview.h
     include/searchpopup.h
+    include/searchpopupitem.h
 
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}
@@ -39,6 +40,7 @@ target_sources(UiLib PRIVATE
 
     forms/chatwidget.ui
     forms/contactswidget.ui
+    forms/searchpopupitem.ui
 )
 
 target_include_directories(UiLib PUBLIC

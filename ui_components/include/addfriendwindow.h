@@ -28,7 +28,7 @@ private slots:
 public:
     explicit AddFriendWindow(QWidget *parent = nullptr);
     ~AddFriendWindow() override;
-    void SearchFriend(QString phone);
+    void SearchFriend(const QString name);
 
 private:
     E_ACCOUNT_TYPE CheckAccountType() const;

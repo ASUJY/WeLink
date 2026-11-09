@@ -59,9 +59,10 @@ void AddFriendWindow::SlotSearchFriend() {
     emit SIG_SEND_GetFriendInfo(sendData , username, accountType);
 }
 
-void AddFriendWindow::SearchFriend(QString phone) {
+void AddFriendWindow::SearchFriend(const QString name) {
     // 根据用户名，手机号进行搜索
-    QString username = phone;
+    ui->leditSearch->setText(name);
+    QString username = name;
     if (username.isEmpty()) {
         ui->stackedWidget->setCurrentIndex(1);
         return;

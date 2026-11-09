@@ -25,6 +25,7 @@ target_sources(UiLib PRIVATE
     include/chatmsglistmodel.h
     include/chatmsgdelegate.h
     include/chatmsglistview.h
+    include/searchpopup.h
 
     ${SRC_LIST}
     ${LOGIN_SRC_LIST}

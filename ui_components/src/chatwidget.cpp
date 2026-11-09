@@ -37,6 +37,8 @@ ChatWidget::ChatWidget(QWidget *parent)
 
     InitSearchLineEdit();
 
+    qApp->installEventFilter(this);
+
 }
 
 void ChatWidget::InitSearchLineEdit() {
@@ -69,10 +71,65 @@ void ChatWidget::InitSearchLineEdit() {
         //清除按钮被按下则不显示搜索框
         // ShowSearch(false);
     });
+
+    InitSearchPopup();
+}
+
+void ChatWidget::InitSearchPopup() {
+    // 点击搜索框时显示弹窗
+    connect(ui->leditSearch, &SearchLineEdit::SIG_FOCUS_IN, this, [this]() {
+        m_searchPopup.ShowBelow(ui->leditSearch);
+    });
+
+    // 输入文字时显示弹窗
+    // connect(ui->leditSearch, &SearchLineEdit::textChanged, this, [this](const QString &text) {
+    //     if (!m_searchPopup.isVisible()) {
+    //         m_searchPopup.ShowBelow(ui->leditSearch);
+    //     }
+    // });
+}
+
+bool ChatWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress)
+    {
+        auto *mouseEvent = static_cast<QMouseEvent *>(event);
+        HandleGlobalMousePress(mouseEvent);
+    }
+    return QWidget::eventFilter(watched, event);
+}
+
+void ChatWidget::HandleGlobalMousePress(QMouseEvent *event) {
+
+    if (!m_searchPopup.isVisible()) {
+        return;
+    }
+    // 鼠标点击的全局坐标
+    const QPoint globalPos = event->globalPosition().toPoint();
+
+    // 搜索框在屏幕坐标中的矩形
+    const QRect searchRect(ui->leditSearch->mapToGlobal(QPoint(0, 0)),
+        ui->leditSearch->size());
+
+    // 弹窗在屏幕坐标中的矩形
+    const QRect popupRect(m_searchPopup.mapToGlobal(QPoint(0, 0)),
+        m_searchPopup.size());
+
+
+    // 点击搜索框或者弹窗内部，不关闭
+    // 如果点击位置不在弹窗内部，则关闭弹窗
+    if (searchRect.contains(globalPos) || popupRect.contains(globalPos))
+    {
+        return;
+    }
+
+    ui->leditSearch->clear();
+    m_searchPopup.HidePopup();
 }
 
 ChatWidget::~ChatWidget()
 {
+    qApp->removeEventFilter(this);
     for (auto it = m_mapIdToChatItem.begin(); it != m_mapIdToChatItem.end(); ++it) {
         ChatListItem* widget = it->second;
         if (widget) {

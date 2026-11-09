@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "chatlistitem.h"
+#include "searchpopup.h"
 
 enum PageType {
     AllChatView,
@@ -39,10 +40,15 @@ public:
     ChatListItem* GetItemById(int64_t id) const;
     void AddFriendToPane(std::unique_ptr<Friend>&& fri);
 
+protected:
+    bool eventFilter(QObject *watched, QEvent* event) override;
+
 private:
     // 抽取创建聊天项公共函数(UI创建代码)
     void CreateChatListItem(int64_t friendId, std::unique_ptr<Friend>&& fri);
     void InitSearchLineEdit();
+    void InitSearchPopup();
+    void HandleGlobalMousePress(QMouseEvent *event);
 
 private:
     Ui::ChatWidget *ui;
@@ -51,6 +57,8 @@ private:
     std::map<int64_t, ChatListItem*> m_mapIdToChatItem;
 
     static ChatListItem *m_selectedItem;    // 当前被选中的聊天项
+
+    SearchPopup m_searchPopup;
 };
 
 #endif // CHATWIDGET_H

@@ -24,9 +24,20 @@ void SearchLineEdit::LimitTextLength(QString text) {
     }
 }
 
+void SearchLineEdit::focusInEvent(QFocusEvent *event)
+{
+    QLineEdit::focusInEvent(event);
+    emit SIG_FOCUS_IN();
+}
+
 void SearchLineEdit::focusOutEvent(QFocusEvent *event) {
     // 调用基类的focusOutEvent()方法，保证基类的行为得到执行
     QLineEdit::focusOutEvent(event);
     //发送失去焦点得信号
-    emit SIG_FOUCUS_OUT();
+    emit SIG_FOCUS_OUT();
+}
+
+void SearchLineEdit::mousePressEvent(QMouseEvent *event) {
+    QLineEdit::mousePressEvent(event);
+    emit SIG_FOCUS_IN();
 }

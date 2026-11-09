@@ -7,14 +7,17 @@ class SearchLineEdit : public QLineEdit
 {
     Q_OBJECT
 signals:
-    void SIG_FOUCUS_OUT();
+    void SIG_FOCUS_OUT();
+    void SIG_FOCUS_IN();
 public:
     explicit SearchLineEdit(QWidget* parent = nullptr);
     ~SearchLineEdit() = default;
     void SetMaxLength(int maxLen);
 
 protected:
+    void focusInEvent(QFocusEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     void LimitTextLength(QString text);

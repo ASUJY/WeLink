@@ -15,7 +15,6 @@ public:
     void SetMaxLength(int maxLen);
 
 protected:
-    void focusInEvent(QFocusEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
 
